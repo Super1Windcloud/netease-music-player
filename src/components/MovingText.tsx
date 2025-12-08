@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import Animated, {
+	cancelAnimation,
 	Easing,
 	StyleProps,
-	cancelAnimation,
 	useAnimatedStyle,
 	useSharedValue,
 	withDelay,
@@ -41,7 +41,7 @@ export const MovingText = ({ text, animationThreshold, style }: MovingTextProps)
 			cancelAnimation(translateX)
 			translateX.value = 0
 		}
-	}, [translateX, text, animationThreshold, shouldAnimate, textWidth])
+	}, [translateX, shouldAnimate, textWidth])
 
 	const animatedStyle = useAnimatedStyle(() => {
 		return {

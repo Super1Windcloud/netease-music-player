@@ -1,14 +1,14 @@
+import { Image } from 'expo-image'
+import { Link } from 'expo-router'
+import { useMemo } from 'react'
+import { FlatList, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 import { unknownArtistImageUri } from '@/constants/images'
 import { screenPadding } from '@/constants/tokens'
 import { artistNameFilter } from '@/helpers/filter'
 import { useNavigationSearch } from '@/hooks/useNavigationSearch'
 import { useArtists } from '@/store/library'
 import { defaultStyles, utilsStyles } from '@/styles'
-import { Link } from 'expo-router'
-import { Image } from 'expo-image'
-import { useMemo } from 'react'
-import { FlatList, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
 
 const ItemSeparatorComponent = () => {
 	return <View style={[utilsStyles.itemSeparator, { marginLeft: 50, marginVertical: 12 }]} />

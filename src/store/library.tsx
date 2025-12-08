@@ -1,8 +1,8 @@
+import { Track } from 'react-native-track-player'
+import { create } from 'zustand'
 import library from '@/assets/data/library.json'
 import { unknownTrackImageUri } from '@/constants/images'
 import { Artist, Playlist, TrackWithPlaylist } from '@/helpers/types'
-import { Track } from 'react-native-track-player'
-import { create } from 'zustand'
 
 interface LibraryState {
 	tracks: TrackWithPlaylist[]

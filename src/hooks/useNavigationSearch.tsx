@@ -1,7 +1,7 @@
-import { colors } from '@/constants/tokens'
 import { useNavigation } from 'expo-router'
-import { useLayoutEffect, useState } from 'react'
+import { useCallback, useLayoutEffect, useState } from 'react'
 import { SearchBarProps } from 'react-native-screens'
+import { colors } from '@/constants/tokens'
 
 const defaultSearchOptions: SearchBarProps = {
 	tintColor: colors.primary,
@@ -17,9 +17,12 @@ export const useNavigationSearch = ({
 
 	const navigation = useNavigation()
 
-	const handleOnChangeText: SearchBarProps['onChangeText'] = ({ nativeEvent: { text } }) => {
-		setSearch(text)
-	}
+	const handleOnChangeText: SearchBarProps['onChangeText'] = useCallback(
+		({ nativeEvent: { text } }) => {
+			setSearch(text)
+		},
+		[],
+	)
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
@@ -29,7 +32,7 @@ export const useNavigationSearch = ({
 				onChangeText: handleOnChangeText,
 			},
 		})
-	}, [navigation, searchBarOptions])
+	}, [navigation, searchBarOptions, handleOnChangeText])
 
 	return search
 }

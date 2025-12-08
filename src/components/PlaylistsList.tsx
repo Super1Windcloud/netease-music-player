@@ -1,12 +1,12 @@
+import { Image } from 'expo-image'
+import { useMemo } from 'react'
+import { FlatList, FlatListProps, Text, View } from 'react-native'
 import { PlaylistListItem } from '@/components/PlaylistListItem'
 import { unknownTrackImageUri } from '@/constants/images'
 import { playlistNameFilter } from '@/helpers/filter'
 import { Playlist } from '@/helpers/types'
 import { useNavigationSearch } from '@/hooks/useNavigationSearch'
 import { utilsStyles } from '@/styles'
-import { Image } from 'expo-image'
-import { useMemo } from 'react'
-import { FlatList, FlatListProps, Text, View } from 'react-native'
 
 type PlaylistsListProps = {
 	playlists: Playlist[]

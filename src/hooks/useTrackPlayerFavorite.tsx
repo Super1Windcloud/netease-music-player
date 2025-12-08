@@ -1,6 +1,6 @@
-import { useFavorites } from '@/store/library'
 import { useCallback } from 'react'
 import TrackPlayer, { useActiveTrack } from 'react-native-track-player'
+import { useFavorites } from '@/store/library'
 
 export const useTrackPlayerFavorite = () => {
 	const activeTrack = useActiveTrack()

@@ -1,9 +1,9 @@
-import { colors } from '@/constants/tokens'
-import { Playlist } from '@/helpers/types'
-import { defaultStyles } from '@/styles'
 import { AntDesign } from '@expo/vector-icons'
 import { Image } from 'expo-image'
 import { StyleSheet, Text, TouchableHighlight, TouchableHighlightProps, View } from 'react-native'
+import { colors } from '@/constants/tokens'
+import { Playlist } from '@/helpers/types'
+import { defaultStyles } from '@/styles'
 
 type PlaylistListItemProps = {
 	playlist: Playlist

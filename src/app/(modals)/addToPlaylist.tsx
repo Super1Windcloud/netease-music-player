@@ -1,14 +1,14 @@
+import { useHeaderHeight } from '@react-navigation/elements'
+import { useLocalSearchParams, useRouter } from 'expo-router'
+import { StyleSheet } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import TrackPlayer, { Track } from 'react-native-track-player'
 import { PlaylistsList } from '@/components/PlaylistsList'
 import { screenPadding } from '@/constants/tokens'
 import { Playlist } from '@/helpers/types'
 import { usePlaylists, useTracks } from '@/store/library'
 import { useQueue } from '@/store/queue'
 import { defaultStyles } from '@/styles'
-import { useHeaderHeight } from '@react-navigation/elements'
-import { useLocalSearchParams, useRouter } from 'expo-router'
-import { StyleSheet } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import TrackPlayer, { Track } from 'react-native-track-player'
 
 const AddToPlaylistModal = () => {
 	const router = useRouter()

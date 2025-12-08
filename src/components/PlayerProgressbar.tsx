@@ -1,10 +1,10 @@
-import { colors, fontSize } from '@/constants/tokens'
-import { formatSecondsToMinutes } from '@/helpers/miscellaneous'
-import { defaultStyles, utilsStyles } from '@/styles'
 import { StyleSheet, Text, View, ViewProps } from 'react-native'
 import { Slider } from 'react-native-awesome-slider'
 import { useSharedValue } from 'react-native-reanimated'
 import TrackPlayer, { useProgress } from 'react-native-track-player'
+import { colors, fontSize } from '@/constants/tokens'
+import { formatSecondsToMinutes } from '@/helpers/miscellaneous'
+import { defaultStyles, utilsStyles } from '@/styles'
 
 export const PlayerProgressBar = ({ style }: ViewProps) => {
 	const { duration, position } = useProgress(250)
