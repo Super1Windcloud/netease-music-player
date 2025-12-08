@@ -1,8 +1,8 @@
 import { Entypo, Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
 import { StyleSheet, Text, TouchableHighlight, View } from 'react-native'
-import LoaderKit from 'react-native-loader-kit'
-import { Track, useActiveTrack, useIsPlaying } from 'react-native-track-player'
+import { ActivityIndicator } from 'react-native'
+import { Track, useActiveTrack, useIsPlaying } from '@/lib/expo-track-player'
 import { TrackShortcutsMenu } from '@/components/TrackShortcutsMenu'
 import { StopPropagation } from '@/components/utils/StopPropagation'
 import { unknownTrackImageUri } from '@/constants/images'
@@ -40,10 +40,10 @@ export const TracksListItem = ({
 
 					{isActiveTrack &&
 						(playing ? (
-							<LoaderKit
+							<ActivityIndicator
 								style={styles.trackPlayingIconIndicator}
-								name="LineScaleParty"
 								color={colors.icon}
+								size="small"
 							/>
 						) : (
 							<Ionicons

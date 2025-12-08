@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react'
-import { getColors } from 'react-native-image-colors'
-import { IOSImageColors } from 'react-native-image-colors/build/types'
 import { colors } from '@/constants/tokens'
 
-export const usePlayerBackground = (imageUrl: string) => {
-	const [imageColors, setImageColors] = useState<IOSImageColors | null>(null)
+type PlayerImageColors = {
+	background: string
+	primary: string
+}
+
+export const usePlayerBackground = (_imageUrl: string) => {
+	const [imageColors, setImageColors] = useState<PlayerImageColors | null>(null)
 
 	useEffect(() => {
-		getColors(imageUrl, {
-			fallback: colors.background,
-			cache: true,
-			key: imageUrl,
-		}).then((colors) => setImageColors(colors as IOSImageColors))
-	}, [imageUrl])
+		// Expo Go fallback: use theme colors without native image analysis
+		setImageColors({
+			background: colors.background,
+			primary: colors.primary,
+		})
+	}, [])
 
 	return { imageColors }
 }

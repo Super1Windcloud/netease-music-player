@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import TrackPlayer, { useActiveTrack } from 'react-native-track-player'
+import TrackPlayer, { useActiveTrack } from '@/lib/expo-track-player'
 import { useFavorites } from '@/store/library'
 
 export const useTrackPlayerFavorite = () => {

@@ -1,4 +1,4 @@
-import { Event, useTrackPlayerEvents } from 'react-native-track-player'
+import { Event, useTrackPlayerEvents } from '@/lib/expo-track-player'
 
 const events = [Event.PlaybackState, Event.PlaybackError, Event.PlaybackActiveTrackChanged]
 

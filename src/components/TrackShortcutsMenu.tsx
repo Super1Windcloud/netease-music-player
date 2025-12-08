@@ -1,7 +1,7 @@
-import { MenuView } from '@react-native-menu/menu'
 import { useRouter } from 'expo-router'
 import { PropsWithChildren } from 'react'
-import TrackPlayer, { Track } from 'react-native-track-player'
+import { ActionSheetIOS, Alert, Platform, Pressable } from 'react-native'
+import TrackPlayer, { Track } from '@/lib/expo-track-player'
 import { match } from 'ts-pattern'
 import { useFavorites } from '@/store/library'
 import { useQueue } from '@/store/queue'
@@ -46,23 +46,49 @@ export const TrackShortcutsMenu = ({ track, children }: TrackShortcutsMenuProps)
 			.otherwise(() => console.warn(`Unknown menu action ${id}`))
 	}
 
-	return (
-		<MenuView
-			onPressAction={({ nativeEvent: { event } }) => handlePressAction(event)}
-			actions={[
+	const showMenu = () => {
+		const options = [
+			{
+				id: isFavorite ? 'remove-from-favorites' : 'add-to-favorites',
+				label: isFavorite ? 'Remove from favorites' : 'Add to favorites',
+			},
+			{
+				id: 'add-to-playlist',
+				label: 'Add to playlist',
+			},
+			{ id: 'cancel', label: 'Cancel' },
+		]
+
+		if (Platform.OS === 'ios') {
+			ActionSheetIOS.showActionSheetWithOptions(
 				{
-					id: isFavorite ? 'remove-from-favorites' : 'add-to-favorites',
-					title: isFavorite ? 'Remove from favorites' : 'Add to favorites',
-					image: isFavorite ? 'star.fill' : 'star',
+					options: options.map((option) => option.label),
+					cancelButtonIndex: options.length - 1,
+				},
+				(buttonIndex) => {
+					const selected = options[buttonIndex]
+					if (selected && selected.id !== 'cancel') {
+						handlePressAction(selected.id)
+					}
+				},
+			)
+		} else {
+			Alert.alert('Track actions', undefined, [
+				{
+					text: options[0].label,
+					onPress: () => handlePressAction(options[0].id),
 				},
 				{
-					id: 'add-to-playlist',
-					title: 'Add to playlist',
-					image: 'plus',
+					text: options[1].label,
+					onPress: () => handlePressAction(options[1].id),
 				},
-			]}
-		>
-			{children}
-		</MenuView>
-	)
+				{
+					text: options[2].label,
+					style: 'cancel',
+				},
+			])
+		}
+	}
+
+	return <Pressable onPress={showMenu}>{children}</Pressable>
 }

@@ -1,4 +1,4 @@
-import { Track } from 'react-native-track-player'
+import { Track } from '@/lib/expo-track-player'
 
 export type Playlist = {
 	name: string

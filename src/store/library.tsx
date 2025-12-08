@@ -1,4 +1,4 @@
-import { Track } from 'react-native-track-player'
+import { Track } from '@/lib/expo-track-player'
 import { create } from 'zustand'
 import library from '@/assets/data/library.json'
 import { unknownTrackImageUri } from '@/constants/images'

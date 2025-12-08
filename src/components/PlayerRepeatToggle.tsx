@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { ComponentProps } from 'react'
-import { RepeatMode } from 'react-native-track-player'
+import { RepeatMode } from '@/lib/expo-track-player'
 import { match } from 'ts-pattern'
 import { colors } from '@/constants/tokens'
 import { useTrackPlayerRepeatMode } from '@/hooks/useTrackPlayerRepeatMode'
