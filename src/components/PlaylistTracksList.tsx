@@ -4,9 +4,9 @@ import { generateTracksListId } from '@/helpers/miscellaneous'
 import { Playlist } from '@/helpers/types'
 import { useNavigationSearch } from '@/hooks/useNavigationSearch'
 import { defaultStyles } from '@/styles'
+import { Image } from 'expo-image'
 import { useMemo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import { QueueControls } from './QueueControls'
 import { TracksList } from './TracksList'
 
@@ -31,11 +31,12 @@ export const PlaylistTracksList = ({ playlist }: { playlist: Playlist }) => {
 			ListHeaderComponent={
 				<View>
 					<View style={styles.artworkImageContainer}>
-						<FastImage
+						<Image
 							source={{
 								uri: playlist.artworkPreview,
-								priority: FastImage.priority.high,
+								priority: 'high',
 							}}
+							contentFit="cover"
 							style={styles.artworkImage}
 						/>
 					</View>

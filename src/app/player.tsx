@@ -9,9 +9,9 @@ import { usePlayerBackground } from '@/hooks/usePlayerBackground'
 import { useTrackPlayerFavorite } from '@/hooks/useTrackPlayerFavorite'
 import { defaultStyles, utilsStyles } from '@/styles'
 import { FontAwesome } from '@expo/vector-icons'
+import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useActiveTrack } from 'react-native-track-player'
 
@@ -41,12 +41,12 @@ const PlayerScreen = () => {
 
 				<View style={{ flex: 1, marginTop: top + 70, marginBottom: bottom }}>
 					<View style={styles.artworkImageContainer}>
-						<FastImage
+						<Image
 							source={{
 								uri: activeTrack.artwork ?? unknownTrackImageUri,
-								priority: FastImage.priority.high,
+								priority: 'high',
 							}}
-							resizeMode="cover"
+							contentFit="cover"
 							style={styles.artworkImage}
 						/>
 					</View>

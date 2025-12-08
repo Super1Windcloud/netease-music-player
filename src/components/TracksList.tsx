@@ -2,9 +2,9 @@ import { TracksListItem } from '@/components/TracksListItem'
 import { unknownTrackImageUri } from '@/constants/images'
 import { useQueue } from '@/store/queue'
 import { utilsStyles } from '@/styles'
+import { Image } from 'expo-image'
 import { useRef } from 'react'
 import { FlatList, FlatListProps, Text, View } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import TrackPlayer, { Track } from 'react-native-track-player'
 import { QueueControls } from './QueueControls'
 
@@ -75,8 +75,9 @@ export const TracksList = ({
 				<View>
 					<Text style={utilsStyles.emptyContentText}>No songs found</Text>
 
-					<FastImage
-						source={{ uri: unknownTrackImageUri, priority: FastImage.priority.normal }}
+					<Image
+						source={{ uri: unknownTrackImageUri, priority: 'normal' }}
+						contentFit="cover"
 						style={utilsStyles.emptyContentImage}
 					/>
 				</View>

@@ -5,9 +5,9 @@ import { useNavigationSearch } from '@/hooks/useNavigationSearch'
 import { useArtists } from '@/store/library'
 import { defaultStyles, utilsStyles } from '@/styles'
 import { Link } from 'expo-router'
+import { Image } from 'expo-image'
 import { useMemo } from 'react'
 import { FlatList, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import { ScrollView } from 'react-native-gesture-handler'
 
 const ItemSeparatorComponent = () => {
@@ -44,11 +44,12 @@ const ArtistsScreen = () => {
 						<View>
 							<Text>No artist found</Text>
 
-							<FastImage
+							<Image
 								source={{
 									uri: unknownArtistImageUri,
-									priority: FastImage.priority.normal,
+									priority: 'normal',
 								}}
+								contentFit="cover"
 								style={utilsStyles.emptyContentImage}
 							/>
 						</View>
@@ -60,11 +61,12 @@ const ArtistsScreen = () => {
 								<TouchableHighlight activeOpacity={0.8}>
 									<View style={styles.artistItemContainer}>
 										<View>
-											<FastImage
+											<Image
 												source={{
 													uri: unknownArtistImageUri,
-													priority: FastImage.priority.normal,
+													priority: 'normal',
 												}}
+												contentFit="cover"
 												style={styles.artistImage}
 											/>
 										</View>

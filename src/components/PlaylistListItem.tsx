@@ -2,8 +2,8 @@ import { colors } from '@/constants/tokens'
 import { Playlist } from '@/helpers/types'
 import { defaultStyles } from '@/styles'
 import { AntDesign } from '@expo/vector-icons'
+import { Image } from 'expo-image'
 import { StyleSheet, Text, TouchableHighlight, TouchableHighlightProps, View } from 'react-native'
-import FastImage from 'react-native-fast-image'
 
 type PlaylistListItemProps = {
 	playlist: Playlist
@@ -14,11 +14,12 @@ export const PlaylistListItem = ({ playlist, ...props }: PlaylistListItemProps) 
 		<TouchableHighlight activeOpacity={0.8} {...props}>
 			<View style={styles.playlistItemContainer}>
 				<View>
-					<FastImage
+					<Image
 						source={{
 							uri: playlist.artworkPreview,
-							priority: FastImage.priority.normal,
+							priority: 'normal',
 						}}
+						contentFit="cover"
 						style={styles.playlistArtworkImage}
 					/>
 				</View>
