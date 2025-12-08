@@ -8,11 +8,11 @@ You can follow along the entire development of this project here 👇
 ## Installation
 
 ```bash
-yarn install
+npm  install
 ```
 
-## Run IOS
+## Run Start
 
 ```bash
-npx expo run:ios
+npm start
 ```
