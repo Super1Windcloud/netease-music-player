@@ -1,7 +1,7 @@
 import { FontAwesome6 } from '@expo/vector-icons'
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native'
-import TrackPlayer, { useIsPlaying } from '@/lib/expo-track-player'
 import { colors } from '@/constants/tokens'
+import TrackPlayer, { useIsPlaying } from '@/lib/expo-track-player'
 
 type PlayerControlsProps = {
 	style?: ViewStyle

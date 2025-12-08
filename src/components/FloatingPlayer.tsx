@@ -1,10 +1,10 @@
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import { StyleSheet, TouchableOpacity, View, ViewProps } from 'react-native'
-import { useActiveTrack } from '@/lib/expo-track-player'
 import { PlayPauseButton, SkipToNextButton } from '@/components/PlayerControls'
 import { unknownTrackImageUri } from '@/constants/images'
 import { useLastActiveTrack } from '@/hooks/useLastActiveTrack'
+import { useActiveTrack } from '@/lib/expo-track-player'
 import { defaultStyles } from '@/styles'
 import { MovingText } from './MovingText'
 

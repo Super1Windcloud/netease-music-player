@@ -1,12 +1,11 @@
 import { Entypo, Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native'
-import { ActivityIndicator } from 'react-native'
-import { Track, useActiveTrack, useIsPlaying } from '@/lib/expo-track-player'
+import { ActivityIndicator, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 import { TrackShortcutsMenu } from '@/components/TrackShortcutsMenu'
 import { StopPropagation } from '@/components/utils/StopPropagation'
 import { unknownTrackImageUri } from '@/constants/images'
 import { colors, fontSize } from '@/constants/tokens'
+import { Track, useActiveTrack, useIsPlaying } from '@/lib/expo-track-player'
 import { defaultStyles } from '@/styles'
 
 export type TracksListItemProps = {

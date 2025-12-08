@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, ViewProps } from 'react-native'
 import { Slider } from 'react-native-awesome-slider'
 import { useSharedValue } from 'react-native-reanimated'
-import TrackPlayer, { useProgress } from '@/lib/expo-track-player'
 import { colors, fontSize } from '@/constants/tokens'
 import { formatSecondsToMinutes } from '@/helpers/miscellaneous'
+import TrackPlayer, { useProgress } from '@/lib/expo-track-player'
 import { defaultStyles, utilsStyles } from '@/styles'
 
 export const PlayerProgressBar = ({ style }: ViewProps) => {

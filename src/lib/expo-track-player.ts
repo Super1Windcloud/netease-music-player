@@ -1,5 +1,5 @@
-import { useEffect, useSyncExternalStore } from 'react'
 import { Audio, AVPlaybackStatusSuccess } from 'expo-av'
+import { useEffect, useSyncExternalStore } from 'react'
 
 export type Track = {
 	id?: string | number
@@ -356,8 +356,7 @@ export const skipToNext = async () => {
 
 export const skipToPrevious = async () => {
 	if (!state.queue.length || state.currentIndex == null) return
-	const nextIndex =
-		state.currentIndex - 1 < 0 ? state.queue.length - 1 : state.currentIndex - 1
+	const nextIndex = state.currentIndex - 1 < 0 ? state.queue.length - 1 : state.currentIndex - 1
 	await skipToIndex(nextIndex)
 }
 
@@ -404,7 +403,7 @@ export const getActiveTrack = async () => {
 
 export const getActiveTrackIndex = async () => state.currentIndex
 
-const usePlayerStore = <T,>(selector: (state: PlayerState) => T) =>
+const usePlayerStore = <T>(selector: (state: PlayerState) => T) =>
 	useSyncExternalStore(subscribeState, () => selector(getStateSnapshot()))
 
 export const useActiveTrack = () =>
