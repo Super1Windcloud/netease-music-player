@@ -2,13 +2,16 @@
 	"name": "netease-music-player",
 	"version": "1.0.0",
 	"main": "expo-router/entry",
+	"author": "SuperWindCloud",
+	"homepage": "https://github.com/super1windcloud/netease-music-player",
 	"scripts": {
 		"start": "expo start",
 		"android": "expo run:android",
 		"ios": "expo run:ios",
 		"lint": "eslint .",
 		"taze": "npx taze latest -w",
-		"prepare": "husky"
+		"prepare": "husky",
+		"migrate": "biome migrate eslint --write && biome migrate prettier --write"
 	},
 	"dependencies": {
 		"@react-native-menu/menu": "^2.0.0",
