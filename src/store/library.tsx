@@ -47,10 +47,7 @@ export const useFavorites = () => {
 	const tracks = useLibraryStore((state) => state.tracks)
 	const toggleTrackFavorite = useLibraryStore((state) => state.toggleTrackFavorite)
 
-	const favorites = useMemo(
-		() => tracks.filter((track) => track.rating === 1),
-		[tracks],
-	)
+	const favorites = useMemo(() => tracks.filter((track) => track.rating === 1), [tracks])
 
 	return {
 		favorites,
