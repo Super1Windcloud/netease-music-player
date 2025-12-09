@@ -403,8 +403,10 @@ export const getActiveTrack = async () => {
 
 export const getActiveTrackIndex = async () => state.currentIndex
 
-const usePlayerStore = <T>(selector: (state: PlayerState) => T) =>
-	useSyncExternalStore(subscribeState, () => selector(getStateSnapshot()))
+const usePlayerStore = <T>(selector: (state: PlayerState) => T) => {
+	const snapshot = useSyncExternalStore(subscribeState, getStateSnapshot, getStateSnapshot)
+	return selector(snapshot)
+}
 
 export const useActiveTrack = () =>
 	usePlayerStore((playerState) => {

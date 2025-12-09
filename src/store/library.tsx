@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { create } from 'zustand'
 import library from '@/assets/data/library.json'
 import { unknownTrackImageUri } from '@/constants/images'
@@ -43,8 +44,13 @@ export const useLibraryStore = create<LibraryState>()((set) => ({
 export const useTracks = () => useLibraryStore((state) => state.tracks)
 
 export const useFavorites = () => {
-	const favorites = useLibraryStore((state) => state.tracks.filter((track) => track.rating === 1))
+	const tracks = useLibraryStore((state) => state.tracks)
 	const toggleTrackFavorite = useLibraryStore((state) => state.toggleTrackFavorite)
+
+	const favorites = useMemo(
+		() => tracks.filter((track) => track.rating === 1),
+		[tracks],
+	)
 
 	return {
 		favorites,
@@ -52,9 +58,11 @@ export const useFavorites = () => {
 	}
 }
 
-export const useArtists = () =>
-	useLibraryStore((state) => {
-		return state.tracks.reduce((acc, track) => {
+export const useArtists = () => {
+	const tracks = useLibraryStore((state) => state.tracks)
+
+	return useMemo(() => {
+		return tracks.reduce((acc, track) => {
 			const existingArtist = acc.find((artist) => artist.name === track.artist)
 
 			if (existingArtist) {
@@ -68,11 +76,15 @@ export const useArtists = () =>
 
 			return acc
 		}, [] as Artist[])
-	})
+	}, [tracks])
+}
 
 export const usePlaylists = () => {
-	const playlists = useLibraryStore((state) => {
-		return state.tracks.reduce((acc, track) => {
+	const tracks = useLibraryStore((state) => state.tracks)
+	const addToPlaylist = useLibraryStore((state) => state.addToPlaylist)
+
+	const playlists = useMemo(() => {
+		return tracks.reduce((acc, track) => {
 			track.playlist?.forEach((playlistName) => {
 				const existingPlaylist = acc.find((playlist) => playlist.name === playlistName)
 
@@ -89,9 +101,7 @@ export const usePlaylists = () => {
 
 			return acc
 		}, [] as Playlist[])
-	})
-
-	const addToPlaylist = useLibraryStore((state) => state.addToPlaylist)
+	}, [tracks])
 
 	return { playlists, addToPlaylist }
 }
