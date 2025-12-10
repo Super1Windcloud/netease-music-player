@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
 	ActivityIndicator,
 	ScrollView,
@@ -14,8 +14,8 @@ import { screenPadding } from '@/constants/tokens'
 import { formatSecondsToMinutes, generateTracksListId } from '@/helpers/miscellaneous'
 import { useNavigationSearch } from '@/hooks/useNavigationSearch'
 import { useStrings } from '@/hooks/useStrings'
-import { SongSearchResult, searchSongs } from '@/lib/appleSearch'
-import TrackPlayer, { Track } from '@/lib/expo-track-player'
+import { type SongSearchResult, searchSongs } from '@/lib/appleSearch'
+import TrackPlayer, { type Track } from '@/lib/expo-track-player'
 import { useQueue } from '@/store/queue'
 import { useThemeStyles } from '@/styles'
 
@@ -187,75 +187,73 @@ const ExploreScreen = () => {
 				)}
 
 				{hasAnyResult ? (
-					<>
-						<Section title={t.explore_songs_section}>
-							{state.songs.map((song) => (
-								<TouchableOpacity
-									key={song.id}
-									style={themedStyles.card}
-									activeOpacity={0.85}
-									onPress={() => handlePlaySong(song.id)}
-								>
-									<Image
-										source={{
-											uri: song.artworkUrl ?? unknownTrackImageUri,
-										}}
-										contentFit="cover"
-										style={themedStyles.artwork}
-									/>
+					<Section title={t.explore_songs_section}>
+						{state.songs.map((song) => (
+							<TouchableOpacity
+								key={song.id}
+								style={themedStyles.card}
+								activeOpacity={0.85}
+								onPress={() => handlePlaySong(song.id)}
+							>
+								<Image
+									source={{
+										uri: song.artworkUrl ?? unknownTrackImageUri,
+									}}
+									contentFit="cover"
+									style={themedStyles.artwork}
+								/>
 
-									<View style={{ flex: 1 }}>
-										<Text numberOfLines={1} style={themedStyles.primaryText}>
-											{song.name}
-										</Text>
-										<Text numberOfLines={1} style={themedStyles.secondaryText}>
-											{song.artistName}
-										</Text>
-										<Text numberOfLines={1} style={themedStyles.secondaryText}>
-											{song.albumName ?? t.explore_unknown_album}
-										</Text>
+								<View style={{ flex: 1 }}>
+									<Text numberOfLines={1} style={themedStyles.primaryText}>
+										{song.name}
+									</Text>
+									<Text numberOfLines={1} style={themedStyles.secondaryText}>
+										{song.artistName}
+									</Text>
+									<Text numberOfLines={1} style={themedStyles.secondaryText}>
+										{song.albumName ?? t.explore_unknown_album}
+									</Text>
 
-										<View style={themedStyles.metaRow}>
-											{song.durationMs && (
-												<View style={themedStyles.metaItem}>
-													<Ionicons
-														name="time-outline"
-														color={colors.textMuted}
-														size={14}
-														style={{ marginRight: 4 }}
-													/>
-													<Text style={themedStyles.metaText}>
-														{formatSecondsToMinutes(song.durationMs / 1000)}
-													</Text>
-												</View>
-											)}
-											{formatPrice(song.price, song.currency) && (
-												<View style={themedStyles.metaItem}>
-													<Ionicons
-														name="pricetag-outline"
-														color={colors.textMuted}
-														size={14}
-														style={{ marginRight: 4 }}
-													/>
-													<Text style={themedStyles.metaText}>
-														{formatPrice(song.price, song.currency)}
-													</Text>
-												</View>
-											)}
-										</View>
+									<View style={themedStyles.metaRow}>
+										{song.durationMs && (
+											<View style={themedStyles.metaItem}>
+												<Ionicons
+													name="time-outline"
+													color={colors.textMuted}
+													size={14}
+													style={{ marginRight: 4 }}
+												/>
+												<Text style={themedStyles.metaText}>
+													{formatSecondsToMinutes(song.durationMs / 1000)}
+												</Text>
+											</View>
+										)}
+										{formatPrice(song.price, song.currency) && (
+											<View style={themedStyles.metaItem}>
+												<Ionicons
+													name="pricetag-outline"
+													color={colors.textMuted}
+													size={14}
+													style={{ marginRight: 4 }}
+												/>
+												<Text style={themedStyles.metaText}>
+													{formatPrice(song.price, song.currency)}
+												</Text>
+											</View>
+										)}
 									</View>
+								</View>
 
-									{song.previewUrl && (
-										<Ionicons name="play-circle" size={26} color={colors.primary} />
-									)}
-								</TouchableOpacity>
-							))}
+								{song.previewUrl && (
+									<Ionicons name="play-circle" size={26} color={colors.primary} />
+								)}
+							</TouchableOpacity>
+						))}
 
-							{!state.isLoading && state.songs.length === 0 && (
-								<Text style={utilsStyles.emptyContentText}>{t.explore_no_songs}</Text>
-							)}
-						</Section>
-					</>
+						{!state.isLoading && state.songs.length === 0 && (
+							<Text style={utilsStyles.emptyContentText}>{t.explore_no_songs}</Text>
+						)}
+					</Section>
 				) : (
 					!state.isLoading &&
 					search.trim() && <Text style={utilsStyles.emptyContentText}>{t.explore_no_results}</Text>

@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { ActivityIndicator, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 import { unknownTrackImageUri } from '@/constants/images'
 import { fontSize } from '@/constants/tokens'
-import { Track, useActiveTrack, useIsPlaying } from '@/lib/expo-track-player'
+import { type Track, useActiveTrack, useIsPlaying } from '@/lib/expo-track-player'
 import { useThemeStyles } from '@/styles'
 
 export type TracksListItemProps = {

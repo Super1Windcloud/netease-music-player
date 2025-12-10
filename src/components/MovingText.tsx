@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import Animated, {
 	cancelAnimation,
 	Easing,
-	StyleProps,
+	type StyleProps,
 	useAnimatedStyle,
 	useSharedValue,
 	withDelay,

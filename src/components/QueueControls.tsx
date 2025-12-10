@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons'
 import { useMemo } from 'react'
-import { StyleSheet, Text, View, ViewProps } from 'react-native'
+import { StyleSheet, Text, View, type ViewProps } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useStrings } from '@/hooks/useStrings'
-import TrackPlayer, { Track } from '@/lib/expo-track-player'
+import TrackPlayer, { type Track } from '@/lib/expo-track-player'
 import { useThemeStyles } from '@/styles'
 
 type QueueControlsProps = {

@@ -1,6 +1,6 @@
 import { useNavigation } from 'expo-router'
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { SearchBarProps } from 'react-native-screens'
+import type { SearchBarProps } from 'react-native-screens'
 import { useTheme } from '@/hooks/useTheme'
 
 const shallowEqual = (a?: SearchBarProps, b?: SearchBarProps) => {
@@ -54,7 +54,7 @@ export const useNavigationSearch = ({
 		navigation.setOptions({
 			headerSearchBarOptions: nextOptions,
 		})
-	}, [navigation, searchBarOptions, handleOnChangeText])
+	}, [navigation, searchBarOptions, handleOnChangeText, defaultSearchOptions])
 
 	return search
 }

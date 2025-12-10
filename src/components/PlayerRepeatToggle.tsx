@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { ComponentProps } from 'react'
+import type { ComponentProps } from 'react'
 import { match } from 'ts-pattern'
 import { useTheme } from '@/hooks/useTheme'
 import { useTrackPlayerRepeatMode } from '@/hooks/useTrackPlayerRepeatMode'

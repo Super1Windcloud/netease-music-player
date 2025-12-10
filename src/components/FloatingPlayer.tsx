@@ -1,7 +1,7 @@
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
-import { StyleSheet, TouchableOpacity, View, ViewProps } from 'react-native'
+import { StyleSheet, TouchableOpacity, View, type ViewProps } from 'react-native'
 import { PlayPauseButton, SkipToNextButton } from '@/components/PlayerControls'
 import { unknownTrackImageUri } from '@/constants/images'
 import { useLastActiveTrack } from '@/hooks/useLastActiveTrack'
@@ -68,28 +68,26 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 			activeOpacity={0.9}
 			style={[themedStyles.container, style]}
 		>
-			<>
-				<Image
-					source={{
-						uri: displayedTrack.artwork ?? unknownTrackImageUri,
-					}}
-					contentFit="cover"
-					style={themedStyles.trackArtworkImage}
+			<Image
+				source={{
+					uri: displayedTrack.artwork ?? unknownTrackImageUri,
+				}}
+				contentFit="cover"
+				style={themedStyles.trackArtworkImage}
+			/>
+
+			<View style={themedStyles.trackTitleContainer}>
+				<MovingText
+					style={themedStyles.trackTitle}
+					text={displayedTrack.title ?? ''}
+					animationThreshold={25}
 				/>
+			</View>
 
-				<View style={themedStyles.trackTitleContainer}>
-					<MovingText
-						style={themedStyles.trackTitle}
-						text={displayedTrack.title ?? ''}
-						animationThreshold={25}
-					/>
-				</View>
-
-				<View style={themedStyles.trackControlsContainer}>
-					<PlayPauseButton iconSize={24} />
-					<SkipToNextButton iconSize={22} />
-				</View>
-			</>
+			<View style={themedStyles.trackControlsContainer}>
+				<PlayPauseButton iconSize={24} />
+				<SkipToNextButton iconSize={22} />
+			</View>
 		</TouchableOpacity>
 	)
 }

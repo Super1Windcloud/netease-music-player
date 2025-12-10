@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons'
-import { ReactNode, useMemo } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import { fontSize, screenPadding } from '@/constants/tokens'
 import { useNavigationSearch } from '@/hooks/useNavigationSearch'
@@ -80,8 +80,6 @@ const SettingsScreen = () => {
 				<SettingsSection
 					title={t.settings_language}
 					description={t.settings_language_description}
-					colors={colors}
-					defaultStyles={defaultStyles}
 					themedStyles={themedStyles}
 				>
 					{filteredLanguageOptions.map((option) => (
@@ -92,7 +90,6 @@ const SettingsScreen = () => {
 							selected={language === option.value}
 							onPress={() => setLanguage(option.value)}
 							colors={colors}
-							defaultStyles={defaultStyles}
 							utilsStyles={utilsStyles}
 							themedStyles={themedStyles}
 						/>
@@ -104,8 +101,6 @@ const SettingsScreen = () => {
 				<SettingsSection
 					title={t.settings_theme}
 					description={t.settings_theme_description}
-					colors={colors}
-					defaultStyles={defaultStyles}
 					themedStyles={themedStyles}
 				>
 					{filteredThemeOptions.map((option) => (
@@ -116,7 +111,6 @@ const SettingsScreen = () => {
 							selected={theme === option.value}
 							onPress={() => setTheme(option.value)}
 							colors={colors}
-							defaultStyles={defaultStyles}
 							utilsStyles={utilsStyles}
 							themedStyles={themedStyles}
 						/>
@@ -157,15 +151,11 @@ const SettingsSection = ({
 	title,
 	description,
 	children,
-	colors,
-	defaultStyles,
 	themedStyles,
 }: {
 	title: string
 	description?: string
 	children: ReactNode
-	colors: ReturnType<typeof useTheme>['colors']
-	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles']
 	themedStyles: ReturnType<typeof styles>
 }) => {
 	return (
@@ -184,7 +174,6 @@ const SettingRow = ({
 	selected,
 	onPress,
 	colors,
-	defaultStyles,
 	utilsStyles,
 	themedStyles,
 }: {
@@ -193,7 +182,6 @@ const SettingRow = ({
 	selected: boolean
 	onPress: () => void
 	colors: ReturnType<typeof useTheme>['colors']
-	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles']
 	utilsStyles: ReturnType<typeof useThemeStyles>['utilsStyles']
 	themedStyles: ReturnType<typeof styles>
 }) => {

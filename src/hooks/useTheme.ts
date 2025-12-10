@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useColorScheme } from 'react-native'
-import { ThemeColors, ThemeName, themeColors } from '@/constants/tokens'
+import { type ThemeColors, type ThemeName, themeColors } from '@/constants/tokens'
 import { useThemePreference } from '@/store/preferences'
 
 export const useTheme = () => {

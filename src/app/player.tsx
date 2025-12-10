@@ -119,7 +119,7 @@ const DismissPlayerSymbol = () => {
 }
 
 const styles = (
-	colors: ReturnType<typeof useThemeStyles>['colors'],
+	_colors: ReturnType<typeof useThemeStyles>['colors'],
 	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
 ) =>
 	StyleSheet.create({

@@ -85,7 +85,9 @@ const stateListeners = new Set<() => void>()
 const eventListeners: Partial<Record<Event, Set<(event: PlayerEvent) => void>>> = {}
 
 const notifyStateListeners = () => {
-	stateListeners.forEach((listener) => listener())
+	stateListeners.forEach((listener) => {
+		listener()
+	})
 }
 
 const subscribeState = (listener: () => void) => {
@@ -104,11 +106,13 @@ const getEventListeners = (event: Event) => {
 	if (!eventListeners[event]) {
 		eventListeners[event] = new Set()
 	}
-	return eventListeners[event]!
+	return eventListeners[event] as Set<(event: PlayerEvent) => void>
 }
 
 const emitEvent = (event: PlayerEvent) => {
-	getEventListeners(event.type).forEach((listener) => listener(event))
+	getEventListeners(event.type).forEach((listener) => {
+		listener(event)
+	})
 }
 
 const ensureAudioMode = async () => {
@@ -257,7 +261,9 @@ export const useTrackPlayerEvents = (events: Event[], callback: (event: PlayerEv
 		const removers = events.map((event) => addEventListener(event, callback))
 
 		return () => {
-			removers.forEach((remover) => remover.remove())
+			removers.forEach((remover) => {
+				remover.remove()
+			})
 		}
 	}, [events, callback])
 }

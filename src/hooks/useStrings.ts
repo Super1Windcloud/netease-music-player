@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Locale, strings } from '@/constants/strings'
+import { type Locale, strings } from '@/constants/strings'
 import { useLanguagePreference } from '@/store/preferences'
 
 const detectSystemLocale = (): Locale => {

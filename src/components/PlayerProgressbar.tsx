@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { StyleSheet, Text, View, ViewProps } from 'react-native'
+import { StyleSheet, Text, View, type ViewProps } from 'react-native'
 import { Slider } from 'react-native-awesome-slider'
 import { useSharedValue } from 'react-native-reanimated'
 import { fontSize } from '@/constants/tokens'
@@ -37,7 +37,9 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 					minimumTrackTintColor: colors.minimumTrackTintColor,
 					maximumTrackTintColor: colors.maximumTrackTintColor,
 				}}
-				onSlidingStart={() => (isSliding.value = true)}
+				onSlidingStart={() => {
+					isSliding.value = true
+				}}
 				onValueChange={async (value) => {
 					await TrackPlayer.seekTo(value * duration)
 				}}

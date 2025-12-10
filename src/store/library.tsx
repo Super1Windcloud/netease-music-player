@@ -3,8 +3,8 @@ import { useEffect, useMemo } from 'react'
 import { create } from 'zustand'
 import library from '@/assets/data/library.json'
 import { unknownTrackImageUri } from '@/constants/images'
-import { Album } from '@/helpers/types'
-import { Track } from '@/lib/expo-track-player'
+import type { Album } from '@/helpers/types'
+import type { Track } from '@/lib/expo-track-player'
 
 interface LibraryState {
 	tracks: Track[]
@@ -14,7 +14,7 @@ interface LibraryState {
 }
 
 const fallbackTracks: Track[] = library.map((track, index) => {
-	const { playlist: _playlist, ...trackFields } = track as Record<string, any>
+	const { playlist: _playlist, ...trackFields } = track as Partial<Track> & { playlist?: unknown }
 
 	return {
 		...trackFields,

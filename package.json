@@ -9,7 +9,6 @@
 		"startc": "expo start -c",
 		"android": "expo run:android",
 		"ios": "expo run:ios",
-		"lint": "eslint src",
 		"taze": "npx taze major -w",
 		"prepare": "husky",
 		"migrate": "biome migrate eslint --write && biome migrate prettier --write",
@@ -47,11 +46,6 @@
 	"devDependencies": {
 		"@babel/core": "^7.28.5",
 		"@types/react": "~19.1.10",
-		"@typescript-eslint/eslint-plugin": "^8.48.1",
-		"@typescript-eslint/parser": "^8.48.1",
-		"eslint": "^9.39.1",
-		"eslint-plugin-react": "^7.37.5",
-		"eslint-plugin-react-hooks": "^7.0.1",
 		"husky": "^9.1.7",
 		"prettier": "^3.7.4",
 		"typescript": "^5.9.3"

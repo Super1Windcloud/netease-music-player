@@ -1,5 +1,5 @@
 import { FontAwesome6 } from '@expo/vector-icons'
-import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { StyleSheet, TouchableOpacity, View, type ViewStyle } from 'react-native'
 import { useTheme } from '@/hooks/useTheme'
 import TrackPlayer, { useIsPlaying } from '@/lib/expo-track-player'
 
