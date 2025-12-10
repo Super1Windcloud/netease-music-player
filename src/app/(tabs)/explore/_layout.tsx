@@ -4,7 +4,7 @@ import { useStackScreenWithSearchBar } from '@/constants/layout'
 import { useThemeStyles } from '@/styles'
 import { useStrings } from '@/hooks/useStrings'
 
-const SongsScreenLayout = () => {
+const ExploreLayout = () => {
 	const { t } = useStrings()
 	const { defaultStyles } = useThemeStyles()
 	const stackOptions = useStackScreenWithSearchBar()
@@ -16,7 +16,7 @@ const SongsScreenLayout = () => {
 					name="index"
 					options={{
 						...stackOptions,
-						headerTitle: t.tabs_localMusic,
+						headerTitle: t.tabs_explore,
 					}}
 				/>
 			</Stack>
@@ -24,4 +24,4 @@ const SongsScreenLayout = () => {
 	)
 }
 
-export default SongsScreenLayout
+export default ExploreLayout

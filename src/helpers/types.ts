@@ -1,14 +1,7 @@
 import { Track } from '@/lib/expo-track-player'
 
-export type Playlist = {
+export type Album = {
 	name: string
-	tracks: Track[]
-	artworkPreview: string
-}
-
-export type Artist = {
-	name: string
+	artworkPreview?: string
 	tracks: Track[]
 }
-
-export type TrackWithPlaylist = Track & { playlist?: string[] }

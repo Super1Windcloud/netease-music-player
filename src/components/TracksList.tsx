@@ -3,9 +3,10 @@ import { useRef } from 'react'
 import { FlatList, FlatListProps, Text, View } from 'react-native'
 import { TracksListItem } from '@/components/TracksListItem'
 import { unknownTrackImageUri } from '@/constants/images'
+import { useStrings } from '@/hooks/useStrings'
 import TrackPlayer, { Track } from '@/lib/expo-track-player'
 import { useQueue } from '@/store/queue'
-import { utilsStyles } from '@/styles'
+import { useThemeStyles } from '@/styles'
 import { QueueControls } from './QueueControls'
 
 export type TracksListProps = Partial<FlatListProps<Track>> & {
@@ -14,16 +15,19 @@ export type TracksListProps = Partial<FlatListProps<Track>> & {
 	hideQueueControls?: boolean
 }
 
-const ItemDivider = () => (
-	<View style={{ ...utilsStyles.itemSeparator, marginVertical: 9, marginLeft: 60 }} />
-)
-
 export const TracksList = ({
 	id,
 	tracks,
 	hideQueueControls = false,
 	...flatlistProps
 }: TracksListProps) => {
+	const { utilsStyles } = useThemeStyles()
+	const { t } = useStrings()
+
+	const ItemDivider = () => (
+		<View style={{ ...utilsStyles.itemSeparator, marginVertical: 9, marginLeft: 60 }} />
+	)
+
 	const queueOffset = useRef(0)
 	const { activeQueueId, setActiveQueueId } = useQueue()
 
@@ -73,7 +77,7 @@ export const TracksList = ({
 			ItemSeparatorComponent={ItemDivider}
 			ListEmptyComponent={
 				<View>
-					<Text style={utilsStyles.emptyContentText}>No songs found</Text>
+					<Text style={utilsStyles.emptyContentText}>{t.explore_no_songs}</Text>
 
 					<Image
 						source={{ uri: unknownTrackImageUri, priority: 'normal' }}

@@ -1,13 +1,16 @@
+import { useMemo } from 'react'
 import { StyleSheet, Text, View, ViewProps } from 'react-native'
 import { Slider } from 'react-native-awesome-slider'
 import { useSharedValue } from 'react-native-reanimated'
-import { colors, fontSize } from '@/constants/tokens'
+import { fontSize } from '@/constants/tokens'
 import { formatSecondsToMinutes } from '@/helpers/miscellaneous'
 import TrackPlayer, { useProgress } from '@/lib/expo-track-player'
-import { defaultStyles, utilsStyles } from '@/styles'
+import { useThemeStyles } from '@/styles'
 
 export const PlayerProgressBar = ({ style }: ViewProps) => {
 	const { duration, position } = useProgress(250)
+	const { colors, defaultStyles, utilsStyles } = useThemeStyles()
+	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles])
 
 	const isSliding = useSharedValue(false)
 	const progress = useSharedValue(0)
@@ -48,10 +51,10 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 				}}
 			/>
 
-			<View style={styles.timeRow}>
-				<Text style={styles.timeText}>{trackElapsedTime}</Text>
+			<View style={themedStyles.timeRow}>
+				<Text style={themedStyles.timeText}>{trackElapsedTime}</Text>
 
-				<Text style={styles.timeText}>
+				<Text style={themedStyles.timeText}>
 					{'-'} {trackRemainingTime}
 				</Text>
 			</View>
@@ -59,19 +62,23 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 	)
 }
 
-const styles = StyleSheet.create({
-	timeRow: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'baseline',
-		marginTop: 20,
-	},
-	timeText: {
-		...defaultStyles.text,
-		color: colors.text,
-		opacity: 0.75,
-		fontSize: fontSize.xs,
-		letterSpacing: 0.7,
-		fontWeight: '500',
-	},
-})
+const styles = (
+	colors: ReturnType<typeof useThemeStyles>['colors'],
+	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
+) =>
+	StyleSheet.create({
+		timeRow: {
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			alignItems: 'baseline',
+			marginTop: 20,
+		},
+		timeText: {
+			...defaultStyles.text,
+			color: colors.text,
+			opacity: 0.75,
+			fontSize: fontSize.xs,
+			letterSpacing: 0.7,
+			fontWeight: '500',
+		},
+	})

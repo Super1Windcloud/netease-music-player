@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { ComponentProps } from 'react'
 import { match } from 'ts-pattern'
-import { colors } from '@/constants/tokens'
+import { useTheme } from '@/hooks/useTheme'
 import { useTrackPlayerRepeatMode } from '@/hooks/useTrackPlayerRepeatMode'
 import { RepeatMode } from '@/lib/expo-track-player'
 
@@ -11,6 +11,7 @@ type IconName = ComponentProps<typeof MaterialCommunityIcons>['name']
 const repeatOrder = [RepeatMode.Off, RepeatMode.Track, RepeatMode.Queue] as const
 
 export const PlayerRepeatToggle = ({ ...iconProps }: IconProps) => {
+	const { colors } = useTheme()
 	const { repeatMode, changeRepeatMode } = useTrackPlayerRepeatMode()
 
 	const toggleRepeatMode = () => {

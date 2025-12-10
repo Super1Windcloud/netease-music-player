@@ -1,8 +1,8 @@
 import {
-	createAudioPlayer,
-	setAudioModeAsync,
 	type AudioPlayer,
 	type AudioStatus,
+	createAudioPlayer,
+	setAudioModeAsync,
 } from 'expo-audio'
 import { useEffect, useSyncExternalStore } from 'react'
 
@@ -11,9 +11,9 @@ export type Track = {
 	url: string
 	title?: string
 	artist?: string
+	album?: string
 	artwork?: string
 	rating?: number
-	playlist?: string[]
 }
 
 export enum RepeatMode {

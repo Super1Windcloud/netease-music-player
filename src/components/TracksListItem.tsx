@@ -1,12 +1,11 @@
-import { Entypo, Ionicons } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
+import { useMemo } from 'react'
 import { ActivityIndicator, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
-import { TrackShortcutsMenu } from '@/components/TrackShortcutsMenu'
-import { StopPropagation } from '@/components/utils/StopPropagation'
 import { unknownTrackImageUri } from '@/constants/images'
-import { colors, fontSize } from '@/constants/tokens'
+import { fontSize } from '@/constants/tokens'
 import { Track, useActiveTrack, useIsPlaying } from '@/lib/expo-track-player'
-import { defaultStyles } from '@/styles'
+import { useThemeStyles } from '@/styles'
 
 export type TracksListItemProps = {
 	track: Track
@@ -18,12 +17,14 @@ export const TracksListItem = ({
 	onTrackSelect: handleTrackSelect,
 }: TracksListItemProps) => {
 	const { playing } = useIsPlaying()
+	const { colors, defaultStyles } = useThemeStyles()
+	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles])
 
 	const isActiveTrack = useActiveTrack()?.url === track.url
 
 	return (
 		<TouchableHighlight onPress={() => handleTrackSelect(track)}>
-			<View style={styles.trackItemContainer}>
+			<View style={themedStyles.trackItemContainer}>
 				<View>
 					<Image
 						source={{
@@ -32,7 +33,7 @@ export const TracksListItem = ({
 						}}
 						contentFit="cover"
 						style={{
-							...styles.trackArtworkImage,
+							...themedStyles.trackArtworkImage,
 							opacity: isActiveTrack ? 0.6 : 1,
 						}}
 					/>
@@ -40,13 +41,13 @@ export const TracksListItem = ({
 					{isActiveTrack &&
 						(playing ? (
 							<ActivityIndicator
-								style={styles.trackPlayingIconIndicator}
+								style={themedStyles.trackPlayingIconIndicator}
 								color={colors.icon}
 								size="small"
 							/>
 						) : (
 							<Ionicons
-								style={styles.trackPausedIndicator}
+								style={themedStyles.trackPausedIndicator}
 								name="play"
 								size={24}
 								color={colors.icon}
@@ -58,7 +59,7 @@ export const TracksListItem = ({
 					style={{
 						flex: 1,
 						flexDirection: 'row',
-						justifyContent: 'space-between',
+						justifyContent: 'flex-start',
 						alignItems: 'center',
 					}}
 				>
@@ -67,7 +68,7 @@ export const TracksListItem = ({
 						<Text
 							numberOfLines={1}
 							style={{
-								...styles.trackTitleText,
+								...themedStyles.trackTitleText,
 								color: isActiveTrack ? colors.primary : colors.text,
 							}}
 						>
@@ -75,57 +76,55 @@ export const TracksListItem = ({
 						</Text>
 
 						{track.artist && (
-							<Text numberOfLines={1} style={styles.trackArtistText}>
+							<Text numberOfLines={1} style={themedStyles.trackArtistText}>
 								{track.artist}
 							</Text>
 						)}
 					</View>
-
-					<StopPropagation>
-						<TrackShortcutsMenu track={track}>
-							<Entypo name="dots-three-horizontal" size={18} color={colors.icon} />
-						</TrackShortcutsMenu>
-					</StopPropagation>
 				</View>
 			</View>
 		</TouchableHighlight>
 	)
 }
 
-const styles = StyleSheet.create({
-	trackItemContainer: {
-		flexDirection: 'row',
-		columnGap: 14,
-		alignItems: 'center',
-		paddingRight: 20,
-	},
-	trackPlayingIconIndicator: {
-		position: 'absolute',
-		top: 18,
-		left: 16,
-		width: 16,
-		height: 16,
-	},
-	trackPausedIndicator: {
-		position: 'absolute',
-		top: 14,
-		left: 14,
-	},
-	trackArtworkImage: {
-		borderRadius: 8,
-		width: 50,
-		height: 50,
-	},
-	trackTitleText: {
-		...defaultStyles.text,
-		fontSize: fontSize.sm,
-		fontWeight: '600',
-		maxWidth: '90%',
-	},
-	trackArtistText: {
-		...defaultStyles.text,
-		color: colors.textMuted,
-		fontSize: 14,
-		marginTop: 4,
-	},
-})
+const styles = (
+	colors: ReturnType<typeof useThemeStyles>['colors'],
+	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
+) =>
+	StyleSheet.create({
+		trackItemContainer: {
+			flexDirection: 'row',
+			columnGap: 14,
+			alignItems: 'center',
+			paddingRight: 20,
+		},
+		trackPlayingIconIndicator: {
+			position: 'absolute',
+			top: 18,
+			left: 16,
+			width: 16,
+			height: 16,
+		},
+		trackPausedIndicator: {
+			position: 'absolute',
+			top: 14,
+			left: 14,
+		},
+		trackArtworkImage: {
+			borderRadius: 8,
+			width: 50,
+			height: 50,
+		},
+		trackTitleText: {
+			...defaultStyles.text,
+			fontSize: fontSize.sm,
+			fontWeight: '600',
+			maxWidth: '90%',
+		},
+		trackArtistText: {
+			...defaultStyles.text,
+			color: colors.textMuted,
+			fontSize: 14,
+			marginTop: 4,
+		},
+	})

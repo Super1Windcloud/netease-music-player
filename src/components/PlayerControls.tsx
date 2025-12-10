@@ -1,6 +1,6 @@
 import { FontAwesome6 } from '@expo/vector-icons'
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native'
-import { colors } from '@/constants/tokens'
+import { useTheme } from '@/hooks/useTheme'
 import TrackPlayer, { useIsPlaying } from '@/lib/expo-track-player'
 
 type PlayerControlsProps = {
@@ -28,6 +28,7 @@ export const PlayerControls = ({ style }: PlayerControlsProps) => {
 
 export const PlayPauseButton = ({ style, iconSize = 48 }: PlayerButtonProps) => {
 	const { playing } = useIsPlaying()
+	const { colors } = useTheme()
 
 	return (
 		<View style={[{ height: iconSize }, style]}>
@@ -42,6 +43,7 @@ export const PlayPauseButton = ({ style, iconSize = 48 }: PlayerButtonProps) => 
 }
 
 export const SkipToNextButton = ({ iconSize = 30 }: PlayerButtonProps) => {
+	const { colors } = useTheme()
 	return (
 		<TouchableOpacity activeOpacity={0.7} onPress={() => TrackPlayer.skipToNext()}>
 			<FontAwesome6 name="forward" size={iconSize} color={colors.text} />
@@ -50,6 +52,7 @@ export const SkipToNextButton = ({ iconSize = 30 }: PlayerButtonProps) => {
 }
 
 export const SkipToPreviousButton = ({ iconSize = 30 }: PlayerButtonProps) => {
+	const { colors } = useTheme()
 	return (
 		<TouchableOpacity activeOpacity={0.7} onPress={() => TrackPlayer.skipToPrevious()}>
 			<FontAwesome6 name={'backward'} size={iconSize} color={colors.text} />
