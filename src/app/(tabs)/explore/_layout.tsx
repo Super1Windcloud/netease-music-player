@@ -1,8 +1,8 @@
 import { Stack } from 'expo-router'
 import { View } from 'react-native'
 import { useStackScreenWithSearchBar } from '@/constants/layout'
-import { useThemeStyles } from '@/styles'
 import { useStrings } from '@/hooks/useStrings'
+import { useThemeStyles } from '@/styles'
 
 const ExploreLayout = () => {
 	const { t } = useStrings()

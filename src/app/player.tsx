@@ -11,8 +11,8 @@ import { PlayerVolumeBar } from '@/components/PlayerVolumeBar'
 import { unknownTrackImageUri } from '@/constants/images'
 import { fontSize, screenPadding } from '@/constants/tokens'
 import { usePlayerBackground } from '@/hooks/usePlayerBackground'
-import { useThemeStyles } from '@/styles'
 import { useActiveTrack } from '@/lib/expo-track-player'
+import { useThemeStyles } from '@/styles'
 
 const PlayerScreen = () => {
 	const activeTrack = useActiveTrack()
@@ -66,10 +66,7 @@ const PlayerScreen = () => {
 
 								{/* Track artist */}
 								{activeTrack.artist && (
-									<Text
-										numberOfLines={1}
-										style={[themedStyles.trackArtistText, { marginTop: 6 }]}
-									>
+									<Text numberOfLines={1} style={[themedStyles.trackArtistText, { marginTop: 6 }]}>
 										{activeTrack.artist}
 									</Text>
 								)}

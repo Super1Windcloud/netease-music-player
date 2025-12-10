@@ -1,5 +1,5 @@
-import { useColorScheme } from 'react-native'
 import { useMemo } from 'react'
+import { useColorScheme } from 'react-native'
 import { ThemeColors, ThemeName, themeColors } from '@/constants/tokens'
 import { useThemePreference } from '@/store/preferences'
 

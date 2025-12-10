@@ -106,10 +106,7 @@ const ExploreScreen = () => {
 		return () => abortController.abort()
 	}, [search])
 
-	const queueId = useMemo(
-		() => generateTracksListId('explore', search.trim()),
-		[search],
-	)
+	const queueId = useMemo(() => generateTracksListId('explore', search.trim()), [search])
 
 	const playableTracks = useMemo(
 		() => state.songs.map(mapSongToTrack).filter(Boolean) as Track[],

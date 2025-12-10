@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons'
 import { ReactNode, useMemo } from 'react'
-import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import { fontSize, screenPadding } from '@/constants/tokens'
 import { useNavigationSearch } from '@/hooks/useNavigationSearch'
 import { useStrings } from '@/hooks/useStrings'
@@ -55,9 +55,23 @@ const SettingsScreen = () => {
 	const showThemeSection = search.length === 0 || filteredThemeOptions.length > 0
 
 	return (
-		<View style={[defaultStyles.container, { paddingHorizontal: screenPadding.horizontal }]}>
+		<ScrollView
+			style={defaultStyles.container}
+			contentInsetAdjustmentBehavior="automatic"
+			contentContainerStyle={{
+				paddingHorizontal: screenPadding.horizontal,
+				paddingBottom: 32,
+				paddingTop: 12,
+			}}
+		>
 			{noResults && (
-				<Text style={{ ...defaultStyles.text, color: colors.textMuted, marginTop: 20 }}>
+				<Text
+					style={{
+						...defaultStyles.text,
+						color: colors.textMuted,
+						marginTop: 20,
+					}}
+				>
 					{t.settings_no_results}
 				</Text>
 			)}
@@ -122,7 +136,7 @@ const SettingsScreen = () => {
 					</View>
 				</SettingsSection>
 			)}
-		</View>
+		</ScrollView>
 	)
 }
 
