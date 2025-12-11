@@ -30,7 +30,7 @@ export const TracksListItem = ({
 						source={{
 							uri: track.artwork ?? unknownTrackImageUri,
 						}}
-						priority={"normal"}
+						priority={'normal'}
 						contentFit="cover"
 						style={{
 							...themedStyles.trackArtworkImage,

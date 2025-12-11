@@ -2,7 +2,6 @@ import { useNavigation } from 'expo-router'
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { SearchBarProps } from 'react-native-screens'
 import { useTheme } from '@/hooks/useTheme'
-import { text } from 'node:stream/consumers'
 
 const shallowEqual = (a?: SearchBarProps, b?: SearchBarProps) => {
 	if (a === b) return true

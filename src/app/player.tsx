@@ -19,6 +19,10 @@ const PlayerScreen = () => {
 	const { imageColors } = usePlayerBackground(activeTrack?.artwork ?? unknownTrackImageUri)
 	const { colors, defaultStyles, utilsStyles } = useThemeStyles()
 	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles])
+	const gradientColors = useMemo<[string, string]>(
+		() => [imageColors?.background ?? colors.background, imageColors?.primary ?? colors.primary],
+		[colors.background, colors.primary, imageColors?.background, imageColors?.primary],
+	)
 
 	const { top, bottom } = useSafeAreaInsets()
 
@@ -31,10 +35,7 @@ const PlayerScreen = () => {
 	}
 
 	return (
-		<LinearGradient
-			style={{ flex: 1 }}
-			colors={imageColors ? [imageColors.background, imageColors.primary] : [colors.background]}
-		>
+		<LinearGradient style={{ flex: 1 }} colors={gradientColors}>
 			<View style={themedStyles.overlayContainer}>
 				<DismissPlayerSymbol />
 
@@ -44,7 +45,7 @@ const PlayerScreen = () => {
 							source={{
 								uri: activeTrack.artwork ?? unknownTrackImageUri,
 							}}
-							priority={"high"}
+							priority={'high'}
 							contentFit="cover"
 							style={themedStyles.artworkImage}
 						/>
