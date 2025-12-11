@@ -11,7 +11,7 @@ import TrackPlayer from '@/lib/expo-track-player'
 
 SplashScreen.preventAutoHideAsync()
 
-TrackPlayer.registerPlaybackService(() => playbackService)
+TrackPlayer.registerPlaybackService(playbackService)
 
 const App = () => {
 	const { theme } = useTheme()

@@ -52,7 +52,6 @@ const SongsScreen = () => {
 						{error}
 					</Text>
 				)}
-
 				<TracksList
 					id={generateTracksListId('songs', search)}
 					tracks={filteredTracks}

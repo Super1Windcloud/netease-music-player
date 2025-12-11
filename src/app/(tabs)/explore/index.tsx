@@ -101,7 +101,7 @@ const ExploreScreen = () => {
 			}
 		}
 
-		fetchResults()
+		fetchResults().then()
 
 		return () => abortController.abort()
 	}, [search])
@@ -142,7 +142,7 @@ const ExploreScreen = () => {
 						: trackIndex - queueOffset.current
 
 				await TrackPlayer.skip(nextTrackIndex)
-				TrackPlayer.play()
+				await TrackPlayer.play()
 			}
 		},
 		[activeQueueId, playableTracks, queueId, setActiveQueueId],

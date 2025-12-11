@@ -43,8 +43,8 @@ const PlayerScreen = () => {
 						<Image
 							source={{
 								uri: activeTrack.artwork ?? unknownTrackImageUri,
-								priority: 'high',
 							}}
+							priority={"high"}
 							contentFit="cover"
 							style={themedStyles.artworkImage}
 						/>

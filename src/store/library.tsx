@@ -13,17 +13,22 @@ interface LibraryState {
 	loadFromDevice: () => Promise<void>
 }
 
-const fallbackTracks: Track[] = library.map((track, index) => {
+const fallbackTracks: Track[] = library.reduce<Track[]>((acc, track, index) => {
 	const { playlist: _playlist, ...trackFields } = track as Partial<Track> & { playlist?: unknown }
 
-	return {
+	if (!trackFields.url) return acc
+
+	acc.push({
 		...trackFields,
+		url: trackFields.url,
 		id: trackFields.id ?? trackFields.url ?? index,
 		artist: trackFields.artist ?? 'Unknown artist',
 		album: trackFields.album ?? 'Unknown album',
 		rating: trackFields.rating ?? 0,
-	}
-})
+	})
+
+	return acc
+}, [])
 
 const removeFileExtension = (name?: string) => {
 	if (!name) return 'Unknown title'
@@ -126,7 +131,7 @@ export const useEnsureLibraryLoaded = () => {
 	const loadFromDevice = useLibraryStore((state) => state.loadFromDevice)
 
 	useEffect(() => {
-		loadFromDevice()
+		loadFromDevice().then()
 	}, [loadFromDevice])
 }
 

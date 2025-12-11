@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
+import { type StyleProp, type TextStyle } from 'react-native'
 import Animated, {
 	cancelAnimation,
 	Easing,
-	type StyleProps,
 	useAnimatedStyle,
 	useSharedValue,
 	withDelay,
@@ -13,7 +13,7 @@ import Animated, {
 export type MovingTextProps = {
 	text: string
 	animationThreshold: number
-	style?: StyleProps
+	style?: StyleProp<TextStyle>
 }
 
 export const MovingText = ({ text, animationThreshold, style }: MovingTextProps) => {
@@ -43,7 +43,7 @@ export const MovingText = ({ text, animationThreshold, style }: MovingTextProps)
 		}
 	}, [translateX, shouldAnimate, textWidth])
 
-	const animatedStyle = useAnimatedStyle(() => {
+	const animatedStyle = useAnimatedStyle<TextStyle>(() => {
 		return {
 			transform: [{ translateX: translateX.value }],
 		}

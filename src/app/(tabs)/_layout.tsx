@@ -45,7 +45,7 @@ const TabsNavigation = () => {
 					name="(songs)"
 					options={{
 						title: t.tabs_localMusic,
-						tabBarIcon: ({ color }) => (
+						tabBarIcon: ({ color }: Record<string, string>) => (
 							<Ionicons name="musical-notes-sharp" size={24} color={color} />
 						),
 					}}
@@ -54,14 +54,18 @@ const TabsNavigation = () => {
 					name="explore"
 					options={{
 						title: t.tabs_explore,
-						tabBarIcon: ({ color }) => <Ionicons name="search" size={22} color={color} />,
+						tabBarIcon: ({ color }: Record<string, string>) => (
+							<Ionicons name="search" size={22} color={color} />
+						),
 					}}
 				/>
 				<Tabs.Screen
 					name="settings"
 					options={{
 						title: t.tabs_settings,
-						tabBarIcon: ({ color }) => <Ionicons name="settings-sharp" size={22} color={color} />,
+						tabBarIcon: ({ color }: Record<string, string>) => (
+							<Ionicons name="settings-sharp" size={22} color={color} />
+						),
 					}}
 				/>
 			</Tabs>

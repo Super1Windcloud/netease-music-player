@@ -3,8 +3,8 @@
 	"compilerOptions": {
 		"strict": true,
 		"target": "ES6",
-		"module": "commonjs",
-		"moduleResolution": "Node",
+		"module": "NodeNext",
+		"moduleResolution": "nodenext",
 		"jsx": "react-native",
 		"lib": ["dom", "esnext"],
 		"noEmit": true,

@@ -80,7 +80,8 @@ export const TracksList = ({
 					<Text style={utilsStyles.emptyContentText}>{t.explore_no_songs}</Text>
 
 					<Image
-						source={{ uri: unknownTrackImageUri, priority: 'normal' }}
+						priority="normal"
+						source={{ uri: unknownTrackImageUri }}
 						contentFit="cover"
 						style={utilsStyles.emptyContentImage}
 					/>

@@ -13,7 +13,8 @@
 		"prepare": "husky",
 		"migrate": "biome migrate eslint --write && biome migrate prettier --write",
 		"fix": "biome check --write",
-		"align": "expo install --fix"
+		"align": "expo install --fix",
+		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@react-native-menu/menu": "^2.0.0",
