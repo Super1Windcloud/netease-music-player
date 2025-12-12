@@ -127,6 +127,12 @@ const getOptimalImage = (images: { small: string; thumbnail: string; large: stri
 	return images.large || images.small || images.thumbnail;
 };
 
+const getRandomOffset = (max: number = 60, step: number = 10): number => {
+	// Randomize the offset to reduce repeated results across refreshes
+	const steps = Math.max(1, Math.floor(max / step))
+	return Math.floor(Math.random() * steps) * step
+}
+
 const searchTracks = async (
 	query: string,
 	offset: number = 0,
@@ -230,7 +236,7 @@ const getStreamUrl = async (trackId: string): Promise<string> => {
 
 const getPopularTracks = async (): Promise<Track[]> => {
 	try {
-		const response = await search({ q: "popular", type: "track" });
+		const response = await search({ q: "popular", type: "track", offset: getRandomOffset() });
 		return response.tracks.slice(0, 10);
 	} catch (error) {
 		console.error("Error fetching popular tracks:", error);
@@ -240,7 +246,7 @@ const getPopularTracks = async (): Promise<Track[]> => {
 
 const getRecentlyPlayed = async (): Promise<Track[]> => {
 	try {
-		const response = await search({ q: "latest", type: "track" });
+		const response = await search({ q: "latest", type: "track", offset: getRandomOffset() });
 		return response.tracks.slice(0, 10);
 	} catch (error) {
 		console.error("Error fetching recent tracks:", error);
@@ -250,7 +256,11 @@ const getRecentlyPlayed = async (): Promise<Track[]> => {
 
 const getMadeForYou = async (): Promise<Track[]> => {
 	try {
-		const response = await search({ q: "recommended", type: "track" });
+		const response = await search({
+			q: "recommended",
+			type: "track",
+			offset: getRandomOffset(),
+		});
 		return response.tracks.slice(0, 10);
 	} catch (error) {
 		console.error("Error fetching made for you tracks:", error);
