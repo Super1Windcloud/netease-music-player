@@ -35,7 +35,7 @@ export const useThemeStyles = () => {
 				},
 				itemSeparator: {
 					borderColor: colors.textMuted,
-					borderWidth: StyleSheet.hairlineWidth,
+					borderWidth: 0,
 					opacity: 0.3,
 				},
 				mutedText: {

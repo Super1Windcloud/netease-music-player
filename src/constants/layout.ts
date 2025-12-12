@@ -7,6 +7,7 @@ export const useStackScreenWithSearchBar = (): NativeStackNavigationOptions => {
 
 	return useMemo(
 		() => ({
+			headerShown: false,
 			headerLargeTitle: true,
 			headerLargeStyle: {
 				backgroundColor: colors.background,

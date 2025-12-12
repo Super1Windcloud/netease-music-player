@@ -10,10 +10,11 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { GlowingSearchBar } from "@/components/GlowingSearchBar";
 import { unknownTrackImageUri } from "@/constants/images";
 import { screenPadding } from "@/constants/tokens";
 import { formatSecondsToMinutes, generateTracksListId } from "@/helpers/miscellaneous";
-import { useNavigationSearch } from "@/hooks/useNavigationSearch";
 import { useStrings } from "@/hooks/useStrings";
 import { useTheme } from "@/hooks/useTheme";
 import { type SongSearchResult, searchSongs } from "@/lib/appleSearch";
@@ -68,12 +69,7 @@ const ExploreScreen = () => {
 		[colors.background, theme],
 	);
 
-	const search = useNavigationSearch({
-		searchBarOptions: {
-			placeholder: t.explore_search_placeholder,
-			autoFocus: false,
-		},
-	});
+	const [search, setSearch] = useState("");
 
 	const { activeQueueId, setActiveQueueId } = useQueue();
 	const [state, setState] = useState<ExploreState>(initialState);
@@ -175,110 +171,122 @@ const ExploreScreen = () => {
 		<View style={{ flex: 1 }}>
 			<LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFillObject} />
 
-			<ScrollView
-				style={[defaultStyles.container, { backgroundColor: "transparent" }]}
-				contentContainerStyle={{
-					paddingBottom: 120,
-					paddingTop: 10,
-					paddingHorizontal: screenPadding.horizontal,
-				}}
-				contentInsetAdjustmentBehavior="automatic"
-			>
-				{!search.trim() && (
-					<View style={themedStyles.placeholderContainer}>
-						<Text style={themedStyles.placeholderTitle}>{t.explore_placeholder_title}</Text>
-						<Text style={themedStyles.placeholderText}>{t.explore_placeholder_body}</Text>
-					</View>
-				)}
-
-				{state.error && (
-					<Text style={{ ...defaultStyles.text, color: colors.textMuted, marginBottom: 12 }}>
-						{state.error}
-					</Text>
-				)}
-
-				{state.isLoading && (
-					<View style={[utilsStyles.centeredRow, { marginVertical: 12 }]}>
-						<ActivityIndicator color={colors.primary} />
-						<Text style={{ ...defaultStyles.text, marginLeft: 8, color: colors.textMuted }}>
-							{t.explore_searching}
-						</Text>
-					</View>
-				)}
-
-				{hasAnyResult ? (
-					<Section title={t.explore_songs_section}>
-						{state.songs.map((song) => (
-							<TouchableOpacity
-								key={song.id}
-								style={themedStyles.card}
-								activeOpacity={0.85}
-								onPress={() => handlePlaySong(song.id)}
-							>
-								<Image
-									source={{
-										uri: song.artworkUrl ?? unknownTrackImageUri,
-									}}
-									contentFit="cover"
-									style={themedStyles.artwork}
-								/>
-
-								<View style={{ flex: 1 }}>
-									<Text numberOfLines={1} style={themedStyles.primaryText}>
-										{song.name}
-									</Text>
-									<Text numberOfLines={1} style={themedStyles.secondaryText}>
-										{song.artistName}
-									</Text>
-									<Text numberOfLines={1} style={themedStyles.secondaryText}>
-										{song.albumName ?? t.explore_unknown_album}
-									</Text>
-
-									<View style={themedStyles.metaRow}>
-										{song.durationMs && (
-											<View style={themedStyles.metaItem}>
-												<Ionicons
-													name="time-outline"
-													color={colors.textMuted}
-													size={14}
-													style={{ marginRight: 4 }}
-												/>
-												<Text style={themedStyles.metaText}>
-													{formatSecondsToMinutes(song.durationMs / 1000)}
-												</Text>
-											</View>
-										)}
-										{formatPrice(song.price, song.currency) && (
-											<View style={themedStyles.metaItem}>
-												<Ionicons
-													name="pricetag-outline"
-													color={colors.textMuted}
-													size={14}
-													style={{ marginRight: 4 }}
-												/>
-												<Text style={themedStyles.metaText}>
-													{formatPrice(song.price, song.currency)}
-												</Text>
-											</View>
-										)}
-									</View>
-								</View>
-
-								{song.previewUrl && (
-									<Ionicons name="play-circle" size={26} color={colors.primary} />
-								)}
-							</TouchableOpacity>
-						))}
-
-						{!state.isLoading && state.songs.length === 0 && (
-							<Text style={utilsStyles.emptyContentText}>{t.explore_no_songs}</Text>
+			<SafeAreaView edges={["top"]} style={{ flex: 1 }}>
+				<View
+					style={[
+						defaultStyles.container,
+						{
+							backgroundColor: "transparent",
+							paddingHorizontal: screenPadding.horizontal,
+							paddingTop: 10,
+							paddingBottom: 120,
+						},
+					]}
+				>
+					<GlowingSearchBar
+						value={search}
+						onChangeText={setSearch}
+						placeholder={t.explore_search_placeholder}
+						style={{ marginBottom: 14 }}
+					/>
+					<ScrollView contentInsetAdjustmentBehavior="automatic" style={{ flex: 1 }}>
+						{!search.trim() && (
+							<View style={themedStyles.placeholderContainer}>
+								<Text style={themedStyles.placeholderTitle}>{t.explore_placeholder_title}</Text>
+								<Text style={themedStyles.placeholderText}>{t.explore_placeholder_body}</Text>
+							</View>
 						)}
-					</Section>
-				) : (
-					!state.isLoading &&
-					search.trim() && <Text style={utilsStyles.emptyContentText}>{t.explore_no_results}</Text>
-				)}
-			</ScrollView>
+
+						{state.error && (
+							<Text style={{ ...defaultStyles.text, color: colors.textMuted, marginBottom: 12 }}>
+								{state.error}
+							</Text>
+						)}
+
+						{state.isLoading && (
+							<View style={[utilsStyles.centeredRow, { marginVertical: 12 }]}>
+								<ActivityIndicator color={colors.primary} />
+								<Text style={{ ...defaultStyles.text, marginLeft: 8, color: colors.textMuted }}>
+									{t.explore_searching}
+								</Text>
+							</View>
+						)}
+
+						{hasAnyResult ? (
+							<Section title={t.explore_songs_section}>
+								{state.songs.map((song) => (
+									<TouchableOpacity
+										key={song.id}
+										style={themedStyles.card}
+										activeOpacity={0.85}
+										onPress={() => handlePlaySong(song.id)}
+									>
+										<Image
+											source={{
+												uri: song.artworkUrl ?? unknownTrackImageUri,
+											}}
+											contentFit="cover"
+											style={themedStyles.artwork}
+										/>
+
+										<View style={{ flex: 1 }}>
+											<Text numberOfLines={1} style={themedStyles.primaryText}>
+												{song.name}
+											</Text>
+											<Text numberOfLines={1} style={themedStyles.secondaryText}>
+												{song.artistName}
+											</Text>
+											<Text numberOfLines={1} style={themedStyles.secondaryText}>
+												{song.albumName ?? t.explore_unknown_album}
+											</Text>
+
+											<View style={themedStyles.metaRow}>
+												{song.durationMs && (
+													<View style={themedStyles.metaItem}>
+														<Ionicons
+															name="time-outline"
+															color={colors.textMuted}
+															size={14}
+															style={{ marginRight: 4 }}
+														/>
+														<Text style={themedStyles.metaText}>
+															{formatSecondsToMinutes(song.durationMs / 1000)}
+														</Text>
+													</View>
+												)}
+												{formatPrice(song.price, song.currency) && (
+													<View style={themedStyles.metaItem}>
+														<Ionicons
+															name="pricetag-outline"
+															color={colors.textMuted}
+															size={14}
+															style={{ marginRight: 4 }}
+														/>
+														<Text style={themedStyles.metaText}>
+															{formatPrice(song.price, song.currency)}
+														</Text>
+													</View>
+												)}
+											</View>
+										</View>
+
+										{song.previewUrl && (
+											<Ionicons name="play-circle" size={26} color={colors.primary} />
+										)}
+									</TouchableOpacity>
+								))}
+
+								{!state.isLoading && state.songs.length === 0 && (
+									<Text style={utilsStyles.emptyContentText}>{t.explore_no_songs}</Text>
+								)}
+							</Section>
+						) : (
+							!state.isLoading &&
+							search.trim() && <Text style={utilsStyles.emptyContentText}>{t.explore_no_results}</Text>
+						)}
+					</ScrollView>
+				</View>
+			</SafeAreaView>
 		</View>
 	);
 };

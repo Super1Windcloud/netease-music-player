@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { type ReactNode, useMemo } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import {
 	Linking,
 	ScrollView,
@@ -10,8 +10,9 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { GlowingSearchBar } from "@/components/GlowingSearchBar";
 import { type AccentColorName, accentColors, fontSize, screenPadding } from "@/constants/tokens";
-import { useNavigationSearch } from "@/hooks/useNavigationSearch";
 import { useStrings } from "@/hooks/useStrings";
 import { useTheme } from "@/hooks/useTheme";
 import {
@@ -32,15 +33,12 @@ const SettingsScreen = () => {
 	const { colors, theme } = useTheme();
 	const { defaultStyles, utilsStyles } = useThemeStyles();
 	const { t } = useStrings();
+	const insets = useSafeAreaInsets();
 	const themedStyles = useMemo(
 		() => styles(colors, defaultStyles, utilsStyles),
 		[colors, defaultStyles, utilsStyles],
 	);
-	const search = useNavigationSearch({
-		searchBarOptions: {
-			placeholder: t.settings_search_placeholder,
-		},
-	});
+	const [search, setSearch] = useState("");
 
 	const { value: language, setLanguage } = useLanguagePreference();
 	const { value: themePreference, setTheme: setThemePreference } = useThemePreference();
@@ -130,126 +128,141 @@ const SettingsScreen = () => {
 		<View style={{ flex: 1 }}>
 			<LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFillObject} />
 
-			<ScrollView
-				style={[defaultStyles.container, { backgroundColor: "transparent" }]}
-				contentInsetAdjustmentBehavior="automatic"
-				contentContainerStyle={{
-					paddingHorizontal: screenPadding.horizontal,
-					paddingBottom: 32,
-					paddingTop: 12,
-				}}
+			<View
+				style={[
+					defaultStyles.container,
+					{
+						backgroundColor: "transparent",
+						paddingHorizontal: screenPadding.horizontal,
+						paddingTop: insets.top + 12,
+						paddingBottom: 32,
+					},
+				]}
 			>
-				{noResults && (
-					<Text
-						style={{
-							...defaultStyles.text,
-							color: colors.textMuted,
-							marginTop: 20,
-						}}
-					>
-						{t.settings_no_results}
-					</Text>
-				)}
+				<GlowingSearchBar
+					value={search}
+					onChangeText={setSearch}
+					placeholder={t.settings_search_placeholder}
+					style={{ marginBottom: 12 }}
+				/>
 
-				{showLanguageSection && (
-					<SettingsSection
-						title={t.settings_language}
-						description={t.settings_language_description}
-						themedStyles={themedStyles}
-					>
-						{filteredLanguageOptions.map((option) => (
-							<SettingRow
-								key={option.value}
-								label={option.label}
-								helper={option.helper}
-								selected={language === option.value}
-								onPress={() => setLanguage(option.value)}
-								colors={colors}
-								utilsStyles={utilsStyles}
-								themedStyles={themedStyles}
-							/>
-						))}
-					</SettingsSection>
-				)}
+				<ScrollView
+					contentInsetAdjustmentBehavior="automatic"
+					style={{ flex: 1 }}
+					contentContainerStyle={{ paddingBottom: 32 }}
+				>
+					{noResults && (
+						<Text
+							style={{
+								...defaultStyles.text,
+								color: colors.textMuted,
+								marginTop: 20,
+							}}
+						>
+							{t.settings_no_results}
+						</Text>
+					)}
 
-				{showThemeSection && (
-					<SettingsSection
-						title={t.settings_theme}
-						description={t.settings_theme_description}
-						themedStyles={themedStyles}
-					>
-						{filteredThemeOptions.map((option) => (
-							<SettingRow
-								key={option.value}
-								label={option.label}
-								helper={option.helper}
-								selected={themePreference === option.value}
-								onPress={() => setThemePreference(option.value)}
-								colors={colors}
-								utilsStyles={utilsStyles}
-								themedStyles={themedStyles}
-							/>
-						))}
+					{showLanguageSection && (
+						<SettingsSection
+							title={t.settings_language}
+							description={t.settings_language_description}
+							themedStyles={themedStyles}
+						>
+							{filteredLanguageOptions.map((option) => (
+								<SettingRow
+									key={option.value}
+									label={option.label}
+									helper={option.helper}
+									selected={language === option.value}
+									onPress={() => setLanguage(option.value)}
+									colors={colors}
+									utilsStyles={utilsStyles}
+									themedStyles={themedStyles}
+								/>
+							))}
+						</SettingsSection>
+					)}
 
-						<View style={[themedStyles.row, { borderBottomWidth: 0 }]}>
-							<View>
-								<Text style={themedStyles.rowTitle}>{t.settings_dark_mode}</Text>
-								<Text style={themedStyles.rowSubtitle}>{t.settings_dark_mode_helper}</Text>
+					{showThemeSection && (
+						<SettingsSection
+							title={t.settings_theme}
+							description={t.settings_theme_description}
+							themedStyles={themedStyles}
+						>
+							{filteredThemeOptions.map((option) => (
+								<SettingRow
+									key={option.value}
+									label={option.label}
+									helper={option.helper}
+									selected={themePreference === option.value}
+									onPress={() => setThemePreference(option.value)}
+									colors={colors}
+									utilsStyles={utilsStyles}
+									themedStyles={themedStyles}
+								/>
+							))}
+
+							<View style={[themedStyles.row, { borderBottomWidth: 0 }]}>
+								<View>
+									<Text style={themedStyles.rowTitle}>{t.settings_dark_mode}</Text>
+									<Text style={themedStyles.rowSubtitle}>{t.settings_dark_mode_helper}</Text>
+								</View>
+								<Switch
+									value={themePreference === "dark"}
+									onValueChange={(value) => setThemePreference(value ? "dark" : "light")}
+									trackColor={{ false: colors.border, true: colors.primary }}
+									thumbColor={colors.icon}
+								/>
 							</View>
-							<Switch
-								value={themePreference === "dark"}
-								onValueChange={(value) => setThemePreference(value ? "dark" : "light")}
-								trackColor={{ false: colors.border, true: colors.primary }}
-								thumbColor={colors.icon}
-							/>
-						</View>
-					</SettingsSection>
-				)}
+						</SettingsSection>
+					)}
 
-				{showAccentSection && (
-					<SettingsSection
-						title={t.settings_accent}
-						description={t.settings_accent_description}
-						themedStyles={themedStyles}
-					>
-						{filteredAccentOptions.map((option) => (
-							<SettingRow
-								key={option.value}
-								label={option.label}
-								helper={option.helper}
-								selected={accentPreference === option.value}
-								onPress={() => setAccentColor(option.value)}
-								colors={colors}
-								utilsStyles={utilsStyles}
-								themedStyles={themedStyles}
-								swatchColor={option.color}
-							/>
-						))}
-					</SettingsSection>
-				)}
+					{showAccentSection && (
+						<SettingsSection
+							title={t.settings_accent}
+							description={t.settings_accent_description}
+							themedStyles={themedStyles}
+						>
+							{filteredAccentOptions.map((option) => (
+								<SettingRow
+									key={option.value}
+									label={option.label}
+									helper={option.helper}
+									selected={accentPreference === option.value}
+									onPress={() => setAccentColor(option.value)}
+									colors={colors}
+									utilsStyles={utilsStyles}
+									themedStyles={themedStyles}
+									swatchColor={option.color}
+								/>
+							))}
+						</SettingsSection>
+					)}
 
-				{showAboutSection && (
-					<SettingsSection
-						title={t.settings_about}
-						description={t.settings_about_description}
-						themedStyles={themedStyles}
-						bottomPadding={70}
-					>
-						{filteredAboutOptions.map((option) => (
-							<SettingRow
-								key={option.value}
-								label={option.label}
-								helper={option.helper}
-								selected={false}
-								onPress={openGithubProfile}
-								colors={colors}
-								utilsStyles={utilsStyles}
-								themedStyles={themedStyles}
-							/>
-						))}
-					</SettingsSection>
-				)}
-			</ScrollView>
+					{showAboutSection && (
+						<SettingsSection
+							title={t.settings_about}
+							description={t.settings_about_description}
+							themedStyles={themedStyles}
+							bottomPadding={70}
+						>
+							{filteredAboutOptions.map((option) => (
+								<SettingRow
+									key={option.value}
+									label={option.label}
+									helper={option.helper}
+									selected={false}
+									onPress={openGithubProfile}
+									colors={colors}
+									utilsStyles={utilsStyles}
+									themedStyles={themedStyles}
+								/>
+							))}
+						</SettingsSection>
+					)}
+				</ScrollView>
+			</View>
 		</View>
 	);
 };

@@ -60,7 +60,7 @@ export const TracksList = ({
 					: trackIndex - queueOffset.current;
 
 			await TrackPlayer.skip(nextTrackIndex);
-			TrackPlayer.play();
+			await TrackPlayer.play();
 		}
 	};
 
