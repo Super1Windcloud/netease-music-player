@@ -302,15 +302,6 @@ const HomeScreen = () => {
 							<Text style={themedStyles.sectionSubtitle}>{config.subtitle}</Text>
 						</View>
 					</View>
-					<TouchableOpacity
-						onPress={() => loadSection(key)}
-						disabled={section.loading}
-						style={themedStyles.sectionAction}
-						activeOpacity={0.8}
-					>
-						<Ionicons name="refresh" size={16} color={colors.text} />
-						{/*<Text style={themedStyles.sectionActionText}>{t.home_refresh}</Text>*/}
-					</TouchableOpacity>
 				</View>
 
 				{section.error && (
@@ -535,11 +526,11 @@ const styles = (
 		section: {
 			marginTop: 14,
 		},
-		sectionHeader: {
-			flexDirection: "row",
-			alignItems: "center",
-			justifyContent: "space-between",
-		},
+	sectionHeader: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "flex-start",
+	},
 		sectionTitleRow: {
 			flexDirection: "row",
 			alignItems: "center",
