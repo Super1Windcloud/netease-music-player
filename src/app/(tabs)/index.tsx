@@ -20,6 +20,7 @@ import TrackPlayer, { type Track as PlayerTrack } from "@/lib/expo-track-player"
 import { useQueue } from "@/store/queue";
 import { useThemeStyles } from "@/styles";
 import MusicAPI, { type Track as ApiTrack } from "../../../scripts/music";
+import Ball from '@/components/utils/Ball'
 
 type SectionKey = "recommend" | "favorites" | "recently";
 
@@ -336,7 +337,10 @@ const HomeScreen = () => {
 				}
 			>
 				<View style={[utilsStyles.glassCard, themedStyles.heroCard, { marginBottom: 16 }]}>
-					<LinearGradient colors={["#0a84ff", "#7eb5ff"] as const} style={themedStyles.heroGradient}>
+					<LinearGradient
+						colors={["#0a84ff", "#7eb5ff"] as const}
+						style={themedStyles.heroGradient}
+					>
 						<BlurView tint="dark" intensity={65} style={themedStyles.heroBlur} />
 						<View style={themedStyles.heroHeader}>
 							<View style={themedStyles.heroBadge}>
@@ -349,7 +353,9 @@ const HomeScreen = () => {
 						<Text style={themedStyles.heroSubtitle}>{t.home_subtitle}</Text>
 						<View style={themedStyles.heroFooter}>
 							<View style={themedStyles.heroDot} />
-							<Text style={themedStyles.heroFooterText}>{t.musicfeed_loading.replace("...", "")}</Text>
+							<Text style={themedStyles.heroFooterText}>
+								{t.musicfeed_loading.replace("...", "")}
+							</Text>
 						</View>
 					</LinearGradient>
 				</View>
