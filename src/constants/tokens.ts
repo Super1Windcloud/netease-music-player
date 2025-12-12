@@ -1,16 +1,16 @@
-export type ThemeName = 'light' | 'dark'
+export type ThemeName = 'light' | 'dark';
 
 export type ThemeColors = {
-	primary: string
-	background: string
-	text: string
-	textMuted: string
-	icon: string
-	maximumTrackTintColor: string
-	minimumTrackTintColor: string
-	card: string
-	border: string
-}
+	primary: string;
+	background: string;
+	text: string;
+	textMuted: string;
+	icon: string;
+	maximumTrackTintColor: string;
+	minimumTrackTintColor: string;
+	card: string;
+	border: string;
+};
 
 export const themeColors: Record<ThemeName, ThemeColors> = {
 	light: {
@@ -35,15 +35,15 @@ export const themeColors: Record<ThemeName, ThemeColors> = {
 		card: 'rgba(47, 47, 47, 0.5)',
 		border: 'rgba(255,255,255,0.08)',
 	},
-}
+};
 
 export const fontSize = {
 	xs: 12,
 	sm: 16,
 	base: 20,
 	lg: 24,
-}
+};
 
 export const screenPadding = {
 	horizontal: 24,
-}
+};

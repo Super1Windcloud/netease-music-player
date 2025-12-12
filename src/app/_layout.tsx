@@ -1,31 +1,31 @@
-import { SplashScreen, Stack } from 'expo-router'
-import { StatusBar } from 'expo-status-bar'
-import { useCallback } from 'react'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { playbackService } from '@/constants/playbackService'
-import { useLogTrackPlayerState } from '@/hooks/useLogTrackPlayerState'
-import { usePlaybackIntegrations } from '@/hooks/usePlaybackIntegrations'
-import { useSetupTrackPlayer } from '@/hooks/useSetupTrackPlayer'
-import { useTheme } from '@/hooks/useTheme'
-import TrackPlayer from '@/lib/expo-track-player'
+import { SplashScreen, Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useCallback } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { playbackService } from '@/constants/playbackService';
+import { useLogTrackPlayerState } from '@/hooks/useLogTrackPlayerState';
+import { usePlaybackIntegrations } from '@/hooks/usePlaybackIntegrations';
+import { useSetupTrackPlayer } from '@/hooks/useSetupTrackPlayer';
+import { useTheme } from '@/hooks/useTheme';
+import TrackPlayer from '@/lib/expo-track-player';
 
-SplashScreen.preventAutoHideAsync()
+SplashScreen.preventAutoHideAsync();
 
-TrackPlayer.registerPlaybackService(playbackService)
+TrackPlayer.registerPlaybackService(playbackService);
 
 const App = () => {
-	const { theme } = useTheme()
+	const { theme } = useTheme();
 	const handleTrackPlayerLoaded = useCallback(() => {
-		SplashScreen.hideAsync()
-	}, [])
+		SplashScreen.hideAsync();
+	}, []);
 
 	useSetupTrackPlayer({
 		onLoad: handleTrackPlayerLoaded,
-	})
+	});
 
-	useLogTrackPlayerState()
-	usePlaybackIntegrations()
+	useLogTrackPlayerState();
+	usePlaybackIntegrations();
 
 	return (
 		<SafeAreaProvider>
@@ -35,8 +35,8 @@ const App = () => {
 				<StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
 			</GestureHandlerRootView>
 		</SafeAreaProvider>
-	)
-}
+	);
+};
 
 const RootNavigation = () => {
 	return (
@@ -54,7 +54,7 @@ const RootNavigation = () => {
 				}}
 			/>
 		</Stack>
-	)
-}
+	);
+};
 
-export default App
+export default App;

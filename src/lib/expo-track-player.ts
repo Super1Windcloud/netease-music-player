@@ -3,18 +3,18 @@ import {
 	type AudioStatus,
 	createAudioPlayer,
 	setAudioModeAsync,
-} from 'expo-audio'
-import { useEffect, useSyncExternalStore } from 'react'
+} from 'expo-audio';
+import { useEffect, useSyncExternalStore } from 'react';
 
 export type Track = {
-	id?: string | number
-	url: string
-	title?: string
-	artist?: string
-	album?: string
-	artwork?: string
-	rating?: number
-}
+	id?: string | number;
+	url: string;
+	title?: string;
+	artist?: string;
+	album?: string;
+	artwork?: string;
+	rating?: number;
+};
 
 export enum RepeatMode {
 	Off = 'off',
@@ -53,20 +53,20 @@ export enum RatingType {
 	Heart = 'heart',
 }
 
-type PlaybackStateEvent = { type: Event.PlaybackState; state: State }
-type PlaybackErrorEvent = { type: Event.PlaybackError; error: unknown }
-type ActiveTrackChangedEvent = { type: Event.PlaybackActiveTrackChanged; index: number | null }
-type PlayerEvent = PlaybackStateEvent | PlaybackErrorEvent | ActiveTrackChangedEvent
+type PlaybackStateEvent = { type: Event.PlaybackState; state: State };
+type PlaybackErrorEvent = { type: Event.PlaybackError; error: unknown };
+type ActiveTrackChangedEvent = { type: Event.PlaybackActiveTrackChanged; index: number | null };
+type PlayerEvent = PlaybackStateEvent | PlaybackErrorEvent | ActiveTrackChangedEvent;
 
 type PlayerState = {
-	queue: Track[]
-	currentIndex: number | null
-	isPlaying: boolean
-	position: number
-	duration: number
-	volume: number
-	repeatMode: RepeatMode
-}
+	queue: Track[];
+	currentIndex: number | null;
+	isPlaying: boolean;
+	position: number;
+	duration: number;
+	volume: number;
+	repeatMode: RepeatMode;
+};
 
 let state: PlayerState = {
 	queue: [],
@@ -76,44 +76,44 @@ let state: PlayerState = {
 	duration: 0,
 	volume: 0.3,
 	repeatMode: RepeatMode.Queue,
-}
+};
 
-let player: AudioPlayer | null = null
-let statusSubscription: { remove: () => void } | null = null
+let player: AudioPlayer | null = null;
+let statusSubscription: { remove: () => void } | null = null;
 
-const stateListeners = new Set<() => void>()
-const eventListeners: Partial<Record<Event, Set<(event: PlayerEvent) => void>>> = {}
+const stateListeners = new Set<() => void>();
+const eventListeners: Partial<Record<Event, Set<(event: PlayerEvent) => void>>> = {};
 
 const notifyStateListeners = () => {
 	stateListeners.forEach((listener) => {
-		listener()
-	})
-}
+		listener();
+	});
+};
 
 const subscribeState = (listener: () => void) => {
-	stateListeners.add(listener)
-	return () => stateListeners.delete(listener)
-}
+	stateListeners.add(listener);
+	return () => stateListeners.delete(listener);
+};
 
-const getStateSnapshot = () => state
+const getStateSnapshot = () => state;
 
 const setState = (partial: Partial<PlayerState>) => {
-	state = { ...state, ...partial }
-	notifyStateListeners()
-}
+	state = { ...state, ...partial };
+	notifyStateListeners();
+};
 
 const getEventListeners = (event: Event) => {
 	if (!eventListeners[event]) {
-		eventListeners[event] = new Set()
+		eventListeners[event] = new Set();
 	}
-	return eventListeners[event] as Set<(event: PlayerEvent) => void>
-}
+	return eventListeners[event] as Set<(event: PlayerEvent) => void>;
+};
 
 const emitEvent = (event: PlayerEvent) => {
 	getEventListeners(event.type).forEach((listener) => {
-		listener(event)
-	})
-}
+		listener(event);
+	});
+};
 
 const ensureAudioMode = async () => {
 	await setAudioModeAsync({
@@ -122,151 +122,151 @@ const ensureAudioMode = async () => {
 		interruptionMode: 'mixWithOthers',
 		interruptionModeAndroid: 'duckOthers',
 		allowsRecording: false,
-	})
-}
+	});
+};
 
 const updateFromStatus = (status: AudioStatus) => {
-	const duration = status.duration ?? state.duration
-	const position = status.currentTime ?? 0
+	const duration = status.duration ?? state.duration;
+	const position = status.currentTime ?? 0;
 
 	setState({
 		duration,
 		position,
 		isPlaying: status.playing,
-	})
+	});
 
 	emitEvent({
 		type: Event.PlaybackState,
 		state: status.playing ? State.Playing : State.Paused,
-	})
-}
+	});
+};
 
 const handleTrackEnd = async () => {
-	const { repeatMode, queue, currentIndex } = state
+	const { repeatMode, queue, currentIndex } = state;
 
-	if (currentIndex == null) return
+	if (currentIndex == null) return;
 
 	if (repeatMode === RepeatMode.Track) {
-		await player?.seekTo(0)
-		player?.play()
-		return
+		await player?.seekTo(0);
+		player?.play();
+		return;
 	}
 
-	const nextIndex = currentIndex + 1
-	const hasNext = nextIndex < queue.length
+	const nextIndex = currentIndex + 1;
+	const hasNext = nextIndex < queue.length;
 
 	if (hasNext) {
-		await skipToIndex(nextIndex, true)
-		return
+		await skipToIndex(nextIndex, true);
+		return;
 	}
 
 	if (repeatMode === RepeatMode.Queue && queue.length > 0) {
-		await skipToIndex(0, true)
-		return
+		await skipToIndex(0, true);
+		return;
 	}
 
-	setState({ isPlaying: false, position: state.duration })
-}
+	setState({ isPlaying: false, position: state.duration });
+};
 
 const onStatusUpdate = (status: AudioStatus) => {
-	if (!status.isLoaded) return
+	if (!status.isLoaded) return;
 
-	updateFromStatus(status)
+	updateFromStatus(status);
 
 	if (status.didJustFinish) {
-		handleTrackEnd()
+		handleTrackEnd();
 	}
-}
+};
 
 const attachStatusListener = () => {
-	statusSubscription?.remove()
-	if (!player) return
+	statusSubscription?.remove();
+	if (!player) return;
 
-	statusSubscription = player.addListener('playbackStatusUpdate', onStatusUpdate)
-}
+	statusSubscription = player.addListener('playbackStatusUpdate', onStatusUpdate);
+};
 
 const disposePlayer = () => {
-	statusSubscription?.remove()
-	statusSubscription = null
+	statusSubscription?.remove();
+	statusSubscription = null;
 
-	player?.remove()
-	player = null
-}
+	player?.remove();
+	player = null;
+};
 
 const loadTrack = async (index: number) => {
-	const { queue, volume, repeatMode } = state
-	const track = queue[index]
+	const { queue, volume, repeatMode } = state;
+	const track = queue[index];
 
-	if (!track) return
+	if (!track) return;
 
 	if (!player) {
-		player = createAudioPlayer({ uri: track.url }, { keepAudioSessionActive: true })
+		player = createAudioPlayer({ uri: track.url }, { keepAudioSessionActive: true });
 	} else {
-		player.replace({ uri: track.url })
+		player.replace({ uri: track.url });
 	}
 
-	player.volume = volume
-	player.loop = repeatMode === RepeatMode.Track
-	attachStatusListener()
+	player.volume = volume;
+	player.loop = repeatMode === RepeatMode.Track;
+	attachStatusListener();
 
 	setState({
 		currentIndex: index,
 		duration: player.duration ?? 0,
 		position: player.currentTime ?? 0,
-	})
+	});
 
-	emitEvent({ type: Event.PlaybackActiveTrackChanged, index })
-}
+	emitEvent({ type: Event.PlaybackActiveTrackChanged, index });
+};
 
 const skipToIndex = async (index: number, autoPlay?: boolean) => {
-	const { queue, isPlaying } = state
+	const { queue, isPlaying } = state;
 
-	if (index < 0 || index >= queue.length) return
+	if (index < 0 || index >= queue.length) return;
 
-	const shouldPlay = autoPlay ?? isPlaying
+	const shouldPlay = autoPlay ?? isPlaying;
 
-	await loadTrack(index)
+	await loadTrack(index);
 
 	if (shouldPlay) {
-		await play()
+		await play();
 	} else {
-		setState({ isPlaying: false, position: 0 })
+		setState({ isPlaying: false, position: 0 });
 	}
-}
+};
 
 export const setupPlayer = async (_options?: { maxCacheSize?: number }) => {
-	await ensureAudioMode()
-}
+	await ensureAudioMode();
+};
 
 export const updateOptions = async (_options: {
-	ratingType?: RatingType
-	capabilities?: Capability[]
+	ratingType?: RatingType;
+	capabilities?: Capability[];
 }) => {
-	return Promise.resolve()
-}
+	return Promise.resolve();
+};
 
-export const registerPlaybackService = (_factory: () => Promise<void> | void) => undefined
+export const registerPlaybackService = (_factory: () => Promise<void> | void) => undefined;
 
 export const addEventListener = (event: Event, listener: (event: PlayerEvent) => void) => {
-	const listeners = getEventListeners(event)
-	listeners.add(listener)
+	const listeners = getEventListeners(event);
+	listeners.add(listener);
 
 	return {
 		remove: () => listeners.delete(listener),
-	}
-}
+	};
+};
 
 export const useTrackPlayerEvents = (events: Event[], callback: (event: PlayerEvent) => void) => {
 	useEffect(() => {
-		const removers = events.map((event) => addEventListener(event, callback))
+		const removers = events.map((event) => addEventListener(event, callback));
 
 		return () => {
 			removers.forEach((remover) => {
-				remover.remove()
-			})
-		}
-	}, [events, callback])
-}
+				remover.remove();
+			});
+		};
+	}, [events, callback]);
+};
 
 export const setQueue = async (tracks: Track[]) => {
 	setState({
@@ -275,18 +275,18 @@ export const setQueue = async (tracks: Track[]) => {
 		position: 0,
 		duration: 0,
 		isPlaying: false,
-	})
+	});
 
 	if (!tracks.length) {
-		disposePlayer()
-		return
+		disposePlayer();
+		return;
 	}
 
-	await loadTrack(0)
-}
+	await loadTrack(0);
+};
 
 export const reset = async () => {
-	disposePlayer()
+	disposePlayer();
 
 	setState({
 		queue: [],
@@ -294,163 +294,163 @@ export const reset = async () => {
 		isPlaying: false,
 		position: 0,
 		duration: 0,
-	})
-}
+	});
+};
 
 export const add = async (tracks: Track | Track[]) => {
-	const tracksToAdd = Array.isArray(tracks) ? tracks : [tracks]
-	const nextQueue = [...state.queue, ...tracksToAdd]
+	const tracksToAdd = Array.isArray(tracks) ? tracks : [tracks];
+	const nextQueue = [...state.queue, ...tracksToAdd];
 
-	setState({ queue: nextQueue })
+	setState({ queue: nextQueue });
 
 	if (state.currentIndex == null && nextQueue.length > 0) {
-		await loadTrack(0)
+		await loadTrack(0);
 	}
-}
+};
 
-export const getQueue = async () => state.queue
+export const getQueue = async () => state.queue;
 
 export const remove = async (index: number) => {
-	const { queue, currentIndex } = state
+	const { queue, currentIndex } = state;
 
-	if (index < 0 || index >= queue.length) return
+	if (index < 0 || index >= queue.length) return;
 
-	const nextQueue = queue.filter((_, idx) => idx !== index)
-	let nextIndex: number | null = currentIndex
+	const nextQueue = queue.filter((_, idx) => idx !== index);
+	let nextIndex: number | null = currentIndex;
 
 	if (currentIndex != null) {
 		if (index === currentIndex) {
-			nextIndex = nextQueue.length ? Math.min(index, nextQueue.length - 1) : null
+			nextIndex = nextQueue.length ? Math.min(index, nextQueue.length - 1) : null;
 		} else if (index < currentIndex) {
-			nextIndex = currentIndex - 1
+			nextIndex = currentIndex - 1;
 		}
 	}
 
-	setState({ queue: nextQueue, currentIndex: nextIndex })
+	setState({ queue: nextQueue, currentIndex: nextIndex });
 
 	if (index === currentIndex) {
 		if (nextIndex != null) {
-			await loadTrack(nextIndex)
+			await loadTrack(nextIndex);
 		} else {
-			disposePlayer()
+			disposePlayer();
 		}
 	}
-}
+};
 
 export const play = async () => {
-	if (!state.queue.length) return
+	if (!state.queue.length) return;
 
-	await ensureAudioMode()
+	await ensureAudioMode();
 
 	if (state.currentIndex == null) {
-		await loadTrack(0)
+		await loadTrack(0);
 	}
 
-	player?.play()
+	player?.play();
 
-	setState({ isPlaying: true })
-	emitEvent({ type: Event.PlaybackState, state: State.Playing })
-}
+	setState({ isPlaying: true });
+	emitEvent({ type: Event.PlaybackState, state: State.Playing });
+};
 
 export const pause = async () => {
-	player?.pause()
+	player?.pause();
 
-	setState({ isPlaying: false })
-	emitEvent({ type: Event.PlaybackState, state: State.Paused })
-}
+	setState({ isPlaying: false });
+	emitEvent({ type: Event.PlaybackState, state: State.Paused });
+};
 
 export const stop = async () => {
-	player?.pause()
-	await player?.seekTo(0)
+	player?.pause();
+	await player?.seekTo(0);
 
-	setState({ isPlaying: false, position: 0 })
-	emitEvent({ type: Event.PlaybackState, state: State.Stopped })
-}
+	setState({ isPlaying: false, position: 0 });
+	emitEvent({ type: Event.PlaybackState, state: State.Stopped });
+};
 
-export const skip = async (index: number) => skipToIndex(index)
+export const skip = async (index: number) => skipToIndex(index);
 
 export const skipToNext = async () => {
-	if (!state.queue.length || state.currentIndex == null) return
-	const nextIndex = (state.currentIndex + 1) % state.queue.length
-	await skipToIndex(nextIndex)
-}
+	if (!state.queue.length || state.currentIndex == null) return;
+	const nextIndex = (state.currentIndex + 1) % state.queue.length;
+	await skipToIndex(nextIndex);
+};
 
 export const skipToPrevious = async () => {
-	if (!state.queue.length || state.currentIndex == null) return
-	const nextIndex = state.currentIndex - 1 < 0 ? state.queue.length - 1 : state.currentIndex - 1
-	await skipToIndex(nextIndex)
-}
+	if (!state.queue.length || state.currentIndex == null) return;
+	const nextIndex = state.currentIndex - 1 < 0 ? state.queue.length - 1 : state.currentIndex - 1;
+	await skipToIndex(nextIndex);
+};
 
 export const seekTo = async (seconds: number) => {
-	if (!player) return
+	if (!player) return;
 
-	await player.seekTo(seconds)
-	setState({ position: seconds })
-}
+	await player.seekTo(seconds);
+	setState({ position: seconds });
+};
 
 export const setVolume = async (volume: number) => {
-	if (volume < 0 || volume > 1) return
+	if (volume < 0 || volume > 1) return;
 
-	setState({ volume })
+	setState({ volume });
 
 	if (player) {
-		player.volume = volume
+		player.volume = volume;
 	}
-}
+};
 
-export const getVolume = async () => state.volume
+export const getVolume = async () => state.volume;
 
 export const setRepeatMode = async (repeatMode: RepeatMode) => {
-	setState({ repeatMode })
+	setState({ repeatMode });
 
 	if (player) {
-		player.loop = repeatMode === RepeatMode.Track
+		player.loop = repeatMode === RepeatMode.Track;
 	}
-}
+};
 
-export const getRepeatMode = async () => state.repeatMode
+export const getRepeatMode = async () => state.repeatMode;
 
 export const updateMetadataForTrack = async (index: number, metadata: Partial<Track>) => {
-	const { queue } = state
+	const { queue } = state;
 
-	if (index < 0 || index >= queue.length) return
+	if (index < 0 || index >= queue.length) return;
 
-	const nextQueue = queue.map((track, idx) => (idx === index ? { ...track, ...metadata } : track))
+	const nextQueue = queue.map((track, idx) => (idx === index ? { ...track, ...metadata } : track));
 
-	setState({ queue: nextQueue })
-}
+	setState({ queue: nextQueue });
+};
 
 export const getActiveTrack = async () => {
-	const { currentIndex, queue } = state
-	if (currentIndex == null) return null
-	return queue[currentIndex]
-}
+	const { currentIndex, queue } = state;
+	if (currentIndex == null) return null;
+	return queue[currentIndex];
+};
 
-export const getActiveTrackIndex = async () => state.currentIndex
+export const getActiveTrackIndex = async () => state.currentIndex;
 
 const usePlayerStore = <T>(selector: (state: PlayerState) => T) => {
-	const snapshot = useSyncExternalStore(subscribeState, getStateSnapshot, getStateSnapshot)
-	return selector(snapshot)
-}
+	const snapshot = useSyncExternalStore(subscribeState, getStateSnapshot, getStateSnapshot);
+	return selector(snapshot);
+};
 
 export const useActiveTrack = () =>
 	usePlayerStore((playerState) => {
-		const { currentIndex, queue } = playerState
-		if (currentIndex == null) return null
-		return queue[currentIndex] ?? null
-	})
+		const { currentIndex, queue } = playerState;
+		if (currentIndex == null) return null;
+		return queue[currentIndex] ?? null;
+	});
 
 export const useIsPlaying = () =>
 	usePlayerStore((playerState) => ({
 		playing: playerState.isPlaying,
-	}))
+	}));
 
 export const useProgress = (_updateInterval = 1000) =>
 	usePlayerStore((playerState) => ({
 		position: playerState.position,
 		duration: playerState.duration,
 		buffered: playerState.duration,
-	}))
+	}));
 
 const TrackPlayer = {
 	setupPlayer,
@@ -477,6 +477,6 @@ const TrackPlayer = {
 	updateMetadataForTrack,
 	getActiveTrack,
 	getActiveTrackIndex,
-}
+};
 
-export default TrackPlayer
+export default TrackPlayer;

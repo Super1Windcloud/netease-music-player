@@ -1,9 +1,9 @@
-import type { NativeStackNavigationOptions } from '@react-navigation/native-stack'
-import { useMemo } from 'react'
-import { useTheme } from '@/hooks/useTheme'
+import type { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import { useMemo } from 'react';
+import { useTheme } from '@/hooks/useTheme';
 
 export const useStackScreenWithSearchBar = (): NativeStackNavigationOptions => {
-	const { colors } = useTheme()
+	const { colors } = useTheme();
 
 	return useMemo(
 		() => ({
@@ -20,5 +20,5 @@ export const useStackScreenWithSearchBar = (): NativeStackNavigationOptions => {
 			headerShadowVisible: false,
 		}),
 		[colors.background, colors.text],
-	)
-}
+	);
+};

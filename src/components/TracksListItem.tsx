@@ -1,26 +1,26 @@
-import { Ionicons } from '@expo/vector-icons'
-import { Image } from 'expo-image'
-import { useMemo } from 'react'
-import { ActivityIndicator, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
-import { unknownTrackImageUri } from '@/constants/images'
-import { fontSize } from '@/constants/tokens'
-import { type Track, useActiveTrack, useIsPlaying } from '@/lib/expo-track-player'
-import { useThemeStyles } from '@/styles'
+import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import { useMemo } from 'react';
+import { ActivityIndicator, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { unknownTrackImageUri } from '@/constants/images';
+import { fontSize } from '@/constants/tokens';
+import { type Track, useActiveTrack, useIsPlaying } from '@/lib/expo-track-player';
+import { useThemeStyles } from '@/styles';
 
 export type TracksListItemProps = {
-	track: Track
-	onTrackSelect: (track: Track) => void
-}
+	track: Track;
+	onTrackSelect: (track: Track) => void;
+};
 
 export const TracksListItem = ({
 	track,
 	onTrackSelect: handleTrackSelect,
 }: TracksListItemProps) => {
-	const { playing } = useIsPlaying()
-	const { colors, defaultStyles } = useThemeStyles()
-	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles])
+	const { playing } = useIsPlaying();
+	const { colors, defaultStyles } = useThemeStyles();
+	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
 
-	const isActiveTrack = useActiveTrack()?.url === track.url
+	const isActiveTrack = useActiveTrack()?.url === track.url;
 
 	return (
 		<TouchableHighlight onPress={() => handleTrackSelect(track)}>
@@ -84,8 +84,8 @@ export const TracksListItem = ({
 				</View>
 			</View>
 		</TouchableHighlight>
-	)
-}
+	);
+};
 
 const styles = (
 	colors: ReturnType<typeof useThemeStyles>['colors'],
@@ -127,4 +127,4 @@ const styles = (
 			fontSize: 14,
 			marginTop: 4,
 		},
-	})
+	});

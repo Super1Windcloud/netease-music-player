@@ -1,4 +1,4 @@
-export type Locale = 'en' | 'zh'
+export type Locale = 'en' | 'zh';
 
 export const strings: Record<Locale, Record<string, string>> = {
 	en: {
@@ -119,4 +119,4 @@ export const strings: Record<Locale, Record<string, string>> = {
 		home_refresh: '刷新',
 		home_empty: '这里还没有可播的内容',
 	},
-}
+};

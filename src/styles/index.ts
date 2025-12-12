@@ -1,10 +1,10 @@
-import { useMemo } from 'react'
-import { StyleSheet } from 'react-native'
-import { fontSize } from '@/constants/tokens'
-import { useTheme } from '@/hooks/useTheme'
+import { useMemo } from 'react';
+import { StyleSheet } from 'react-native';
+import { fontSize } from '@/constants/tokens';
+import { useTheme } from '@/hooks/useTheme';
 
 export const useThemeStyles = () => {
-	const { colors } = useTheme()
+	const { colors } = useTheme();
 
 	const defaultStyles = useMemo(
 		() =>
@@ -19,7 +19,7 @@ export const useThemeStyles = () => {
 				},
 			}),
 		[colors],
-	)
+	);
 
 	const utilsStyles = useMemo(
 		() =>
@@ -53,7 +53,7 @@ export const useThemeStyles = () => {
 				},
 			}),
 		[colors, defaultStyles.text],
-	)
+	);
 
-	return { colors, defaultStyles, utilsStyles }
-}
+	return { colors, defaultStyles, utilsStyles };
+};

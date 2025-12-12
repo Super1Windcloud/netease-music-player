@@ -1,15 +1,15 @@
-import * as Notifications from 'expo-notifications'
-import type { Track as MusicTrack } from '@/types/music'
+import * as Notifications from 'expo-notifications';
+import type { Track as MusicTrack } from '@/types/music';
 
-const MEDIA_NOTIFICATION_ID = 'media-notification'
+const MEDIA_NOTIFICATION_ID = 'media-notification';
 
 type NotificationTrack =
 	| Pick<MusicTrack, 'id' | 'title' | 'artist'>
 	| {
-			id: string | number
-			title?: string | null
-			artist?: string | null
-	  }
+			id: string | number;
+			title?: string | null;
+			artist?: string | null;
+	  };
 
 Notifications.setNotificationHandler({
 	handleNotification: async (notification) => {
@@ -20,7 +20,7 @@ Notifications.setNotificationHandler({
 				shouldSetBadge: false,
 				shouldShowBanner: true,
 				shouldShowList: true,
-			}
+			};
 		}
 		return {
 			shouldShowAlert: false,
@@ -28,22 +28,22 @@ Notifications.setNotificationHandler({
 			shouldSetBadge: false,
 			shouldShowBanner: false,
 			shouldShowList: false,
-		}
+		};
 	},
-})
+});
 
 const normalizeTrack = (track: NotificationTrack) => {
 	return {
 		id: track.id,
 		title: track.title ?? 'Unknown track',
 		artist: track.artist ?? 'Unknown artist',
-	}
-}
+	};
+};
 
 const showOrUpdateMediaNotification = async (track: NotificationTrack, isPlaying: boolean) => {
 	try {
-		const normalizedTrack = normalizeTrack(track)
-		await Notifications.dismissNotificationAsync(MEDIA_NOTIFICATION_ID).catch(() => {})
+		const normalizedTrack = normalizeTrack(track);
+		await Notifications.dismissNotificationAsync(MEDIA_NOTIFICATION_ID).catch(() => {});
 		await Notifications.scheduleNotificationAsync({
 			identifier: MEDIA_NOTIFICATION_ID,
 			content: {
@@ -61,19 +61,19 @@ const showOrUpdateMediaNotification = async (track: NotificationTrack, isPlaying
 				priority: Notifications.AndroidNotificationPriority.HIGH,
 			},
 			trigger: null,
-		})
+		});
 	} catch (error) {
-		console.error('Failed to show/update media notification:', error)
+		console.error('Failed to show/update media notification:', error);
 	}
-}
+};
 
 const hideMediaNotification = async () => {
 	try {
-		await Notifications.dismissNotificationAsync(MEDIA_NOTIFICATION_ID)
+		await Notifications.dismissNotificationAsync(MEDIA_NOTIFICATION_ID);
 	} catch (error) {
-		console.error('Failed to hide media notification:', error)
+		console.error('Failed to hide media notification:', error);
 	}
-}
+};
 
 const setupNotificationCategories = async () => {
 	try {
@@ -98,25 +98,25 @@ const setupNotificationCategories = async () => {
 				buttonTitle: 'Close',
 				options: { opensAppToForeground: false, isDestructive: true },
 			},
-		])
+		]);
 	} catch (error) {
-		console.error('Failed to set up notification categories:', error)
+		console.error('Failed to set up notification categories:', error);
 	}
-}
+};
 
 const requestPermissions = async () => {
 	try {
-		const { status } = await Notifications.requestPermissionsAsync()
+		const { status } = await Notifications.requestPermissionsAsync();
 		if (status !== 'granted') {
-			console.warn('Notification permissions not granted')
-			return false
+			console.warn('Notification permissions not granted');
+			return false;
 		}
-		return true
+		return true;
 	} catch (error) {
-		console.error('Failed to request notification permissions:', error)
-		return false
+		console.error('Failed to request notification permissions:', error);
+		return false;
 	}
-}
+};
 
 const createNotificationChannel = async () => {
 	try {
@@ -131,26 +131,26 @@ const createNotificationChannel = async () => {
 			showBadge: false,
 			enableLights: true,
 			enableVibrate: true,
-		})
+		});
 	} catch (error) {
-		console.error('Failed to create notification channel:', error)
+		console.error('Failed to create notification channel:', error);
 	}
-}
+};
 
 const initialize = async () => {
 	try {
-		const hasPermission = await requestPermissions()
-		if (!hasPermission) return false
+		const hasPermission = await requestPermissions();
+		if (!hasPermission) return false;
 
-		await setupNotificationCategories()
-		await createNotificationChannel()
+		await setupNotificationCategories();
+		await createNotificationChannel();
 
-		return true
+		return true;
 	} catch (error) {
-		console.error('Failed to initialize notification service:', error)
-		return false
+		console.error('Failed to initialize notification service:', error);
+		return false;
 	}
-}
+};
 
 export const NotificationService = {
 	initialize,
@@ -159,4 +159,4 @@ export const NotificationService = {
 	setupNotificationCategories,
 	requestPermissions,
 	createNotificationChannel,
-}
+};

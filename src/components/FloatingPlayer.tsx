@@ -1,17 +1,17 @@
-import { Image } from 'expo-image'
-import { useRouter } from 'expo-router'
-import { useMemo } from 'react'
-import { StyleSheet, TouchableOpacity, View, type ViewProps } from 'react-native'
-import { PlayPauseButton, SkipToNextButton } from '@/components/PlayerControls'
-import { unknownTrackImageUri } from '@/constants/images'
-import { useLastActiveTrack } from '@/hooks/useLastActiveTrack'
-import { useActiveTrack } from '@/lib/expo-track-player'
-import { useThemeStyles } from '@/styles'
-import { MovingText } from './MovingText'
+import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
+import { useMemo } from 'react';
+import { StyleSheet, TouchableOpacity, View, type ViewProps } from 'react-native';
+import { PlayPauseButton, SkipToNextButton } from '@/components/PlayerControls';
+import { unknownTrackImageUri } from '@/constants/images';
+import { useLastActiveTrack } from '@/hooks/useLastActiveTrack';
+import { useActiveTrack } from '@/lib/expo-track-player';
+import { useThemeStyles } from '@/styles';
+import { MovingText } from './MovingText';
 
 export const FloatingPlayer = ({ style }: ViewProps) => {
-	const router = useRouter()
-	const { colors, defaultStyles } = useThemeStyles()
+	const router = useRouter();
+	const { colors, defaultStyles } = useThemeStyles();
 
 	const themedStyles = useMemo(
 		() =>
@@ -49,18 +49,18 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 				},
 			}),
 		[colors.card, defaultStyles.text],
-	)
+	);
 
-	const activeTrack = useActiveTrack()
-	const lastActiveTrack = useLastActiveTrack()
+	const activeTrack = useActiveTrack();
+	const lastActiveTrack = useLastActiveTrack();
 
-	const displayedTrack = activeTrack ?? lastActiveTrack
+	const displayedTrack = activeTrack ?? lastActiveTrack;
 
 	const handlePress = () => {
-		router.navigate('/player')
-	}
+		router.navigate('/player');
+	};
 
-	if (!displayedTrack) return null
+	if (!displayedTrack) return null;
 
 	return (
 		<TouchableOpacity
@@ -89,5 +89,5 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 				<SkipToNextButton iconSize={22} />
 			</View>
 		</TouchableOpacity>
-	)
-}
+	);
+};

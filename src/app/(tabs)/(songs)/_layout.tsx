@@ -1,13 +1,13 @@
-import { Stack } from 'expo-router'
-import { View } from 'react-native'
-import { useStackScreenWithSearchBar } from '@/constants/layout'
-import { useStrings } from '@/hooks/useStrings'
-import { useThemeStyles } from '@/styles'
+import { Stack } from 'expo-router';
+import { View } from 'react-native';
+import { useStackScreenWithSearchBar } from '@/constants/layout';
+import { useStrings } from '@/hooks/useStrings';
+import { useThemeStyles } from '@/styles';
 
 const SongsScreenLayout = () => {
-	const { t } = useStrings()
-	const { defaultStyles } = useThemeStyles()
-	const stackOptions = useStackScreenWithSearchBar()
+	const { t } = useStrings();
+	const { defaultStyles } = useThemeStyles();
+	const stackOptions = useStackScreenWithSearchBar();
 
 	return (
 		<View style={defaultStyles.container}>
@@ -21,7 +21,7 @@ const SongsScreenLayout = () => {
 				/>
 			</Stack>
 		</View>
-	)
-}
+	);
+};
 
-export default SongsScreenLayout
+export default SongsScreenLayout;

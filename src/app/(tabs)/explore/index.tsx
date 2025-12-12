@@ -1,6 +1,6 @@
-import { Ionicons } from '@expo/vector-icons'
-import { Image } from 'expo-image'
-import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	ActivityIndicator,
 	ScrollView,
@@ -8,36 +8,36 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
-} from 'react-native'
-import { unknownTrackImageUri } from '@/constants/images'
-import { screenPadding } from '@/constants/tokens'
-import { formatSecondsToMinutes, generateTracksListId } from '@/helpers/miscellaneous'
-import { useNavigationSearch } from '@/hooks/useNavigationSearch'
-import { useStrings } from '@/hooks/useStrings'
-import { type SongSearchResult, searchSongs } from '@/lib/appleSearch'
-import TrackPlayer, { type Track } from '@/lib/expo-track-player'
-import { useQueue } from '@/store/queue'
-import { useThemeStyles } from '@/styles'
+} from 'react-native';
+import { unknownTrackImageUri } from '@/constants/images';
+import { screenPadding } from '@/constants/tokens';
+import { formatSecondsToMinutes, generateTracksListId } from '@/helpers/miscellaneous';
+import { useNavigationSearch } from '@/hooks/useNavigationSearch';
+import { useStrings } from '@/hooks/useStrings';
+import { type SongSearchResult, searchSongs } from '@/lib/appleSearch';
+import TrackPlayer, { type Track } from '@/lib/expo-track-player';
+import { useQueue } from '@/store/queue';
+import { useThemeStyles } from '@/styles';
 
 type ExploreState = {
-	songs: SongSearchResult[]
-	isLoading: boolean
-	error?: string
-}
+	songs: SongSearchResult[];
+	isLoading: boolean;
+	error?: string;
+};
 
 const initialState: ExploreState = {
 	songs: [],
 	isLoading: false,
 	error: undefined,
-}
+};
 
 const formatPrice = (price?: number, currency?: string) => {
-	if (price === undefined || price === null) return undefined
-	return `${currency ?? '$'}${price.toFixed(2)}`
-}
+	if (price === undefined || price === null) return undefined;
+	return `${currency ?? '$'}${price.toFixed(2)}`;
+};
 
 const mapSongToTrack = (song: SongSearchResult): Track | null => {
-	if (!song.previewUrl) return null
+	if (!song.previewUrl) return null;
 
 	return {
 		id: song.id,
@@ -46,116 +46,116 @@ const mapSongToTrack = (song: SongSearchResult): Track | null => {
 		artist: song.artistName,
 		album: song.albumName,
 		artwork: song.artworkUrl,
-	}
-}
+	};
+};
 
 const ExploreScreen = () => {
-	const { colors, defaultStyles, utilsStyles } = useThemeStyles()
-	const { t } = useStrings()
-	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles])
+	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
+	const { t } = useStrings();
+	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
 
 	const search = useNavigationSearch({
 		searchBarOptions: {
 			placeholder: t.explore_search_placeholder,
 			autoFocus: false,
 		},
-	})
+	});
 
-	const { activeQueueId, setActiveQueueId } = useQueue()
-	const [state, setState] = useState<ExploreState>(initialState)
-	const queueOffset = useRef(0)
+	const { activeQueueId, setActiveQueueId } = useQueue();
+	const [state, setState] = useState<ExploreState>(initialState);
+	const queueOffset = useRef(0);
 
 	useEffect(() => {
-		const keyword = search.trim()
+		const keyword = search.trim();
 		if (!keyword) {
-			setState(initialState)
-			return
+			setState(initialState);
+			return;
 		}
 
-		const abortController = new AbortController()
+		const abortController = new AbortController();
 
 		setState((prev) => ({
 			...prev,
 			isLoading: true,
 			error: undefined,
-		}))
+		}));
 
 		const fetchResults = async () => {
 			try {
-				const songs = await searchSongs(keyword, abortController.signal)
+				const songs = await searchSongs(keyword, abortController.signal);
 
 				setState({
 					songs: songs.filter((song) => Boolean(song.previewUrl)),
 					isLoading: false,
 					error: undefined,
-				})
+				});
 			} catch (error) {
-				if (abortController.signal.aborted) return
+				if (abortController.signal.aborted) return;
 
-				const message = error instanceof Error ? error.message : 'Something went wrong'
+				const message = error instanceof Error ? error.message : 'Something went wrong';
 				setState((prev) => ({
 					...prev,
 					isLoading: false,
 					error: message,
-				}))
+				}));
 			}
-		}
+		};
 
-		fetchResults().then()
+		fetchResults().then();
 
-		return () => abortController.abort()
-	}, [search])
+		return () => abortController.abort();
+	}, [search]);
 
-	const queueId = useMemo(() => generateTracksListId('explore', search.trim()), [search])
+	const queueId = useMemo(() => generateTracksListId('explore', search.trim()), [search]);
 
 	const playableTracks = useMemo(
 		() => state.songs.map(mapSongToTrack).filter(Boolean) as Track[],
 		[state.songs],
-	)
+	);
 
 	const handlePlaySong = useCallback(
 		async (songId: number) => {
-			const trackIndex = playableTracks.findIndex((track) => track.id === songId)
+			const trackIndex = playableTracks.findIndex((track) => track.id === songId);
 
-			if (trackIndex === -1) return
+			if (trackIndex === -1) return;
 
-			const isChangingQueue = queueId !== activeQueueId
+			const isChangingQueue = queueId !== activeQueueId;
 
 			if (isChangingQueue) {
-				const beforeTracks = playableTracks.slice(0, trackIndex)
-				const afterTracks = playableTracks.slice(trackIndex + 1)
+				const beforeTracks = playableTracks.slice(0, trackIndex);
+				const afterTracks = playableTracks.slice(trackIndex + 1);
 
-				await TrackPlayer.reset()
+				await TrackPlayer.reset();
 
-				await TrackPlayer.add(playableTracks[trackIndex])
-				await TrackPlayer.add(afterTracks)
-				await TrackPlayer.add(beforeTracks)
+				await TrackPlayer.add(playableTracks[trackIndex]);
+				await TrackPlayer.add(afterTracks);
+				await TrackPlayer.add(beforeTracks);
 
-				await TrackPlayer.play()
+				await TrackPlayer.play();
 
-				queueOffset.current = trackIndex
-				setActiveQueueId(queueId)
+				queueOffset.current = trackIndex;
+				setActiveQueueId(queueId);
 			} else {
 				const nextTrackIndex =
 					trackIndex - queueOffset.current < 0
 						? playableTracks.length + trackIndex - queueOffset.current
-						: trackIndex - queueOffset.current
+						: trackIndex - queueOffset.current;
 
-				await TrackPlayer.skip(nextTrackIndex)
-				await TrackPlayer.play()
+				await TrackPlayer.skip(nextTrackIndex);
+				await TrackPlayer.play();
 			}
 		},
 		[activeQueueId, playableTracks, queueId, setActiveQueueId],
-	)
+	);
 
-	const hasAnyResult = playableTracks.length > 0
+	const hasAnyResult = playableTracks.length > 0;
 
 	const Section = ({ title, children }: { title: string; children: ReactNode }) => (
 		<View style={themedStyles.section}>
 			<Text style={themedStyles.sectionTitle}>{title}</Text>
 			{children}
 		</View>
-	)
+	);
 
 	return (
 		<View style={defaultStyles.container}>
@@ -260,8 +260,8 @@ const ExploreScreen = () => {
 				)}
 			</ScrollView>
 		</View>
-	)
-}
+	);
+};
 
 const styles = (
 	colors: ReturnType<typeof useThemeStyles>['colors'],
@@ -331,6 +331,6 @@ const styles = (
 			fontSize: 15,
 			lineHeight: 22,
 		},
-	})
+	});
 
-export default ExploreScreen
+export default ExploreScreen;

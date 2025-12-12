@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import type { StyleProp, TextStyle } from 'react-native'
+import { useEffect } from 'react';
+import type { StyleProp, TextStyle } from 'react-native';
 import Animated, {
 	cancelAnimation,
 	Easing,
@@ -8,22 +8,22 @@ import Animated, {
 	withDelay,
 	withRepeat,
 	withTiming,
-} from 'react-native-reanimated'
+} from 'react-native-reanimated';
 
 export type MovingTextProps = {
-	text: string
-	animationThreshold: number
-	style?: StyleProp<TextStyle>
-}
+	text: string;
+	animationThreshold: number;
+	style?: StyleProp<TextStyle>;
+};
 
 export const MovingText = ({ text, animationThreshold, style }: MovingTextProps) => {
-	const translateX = useSharedValue(0)
-	const shouldAnimate = text.length >= animationThreshold
+	const translateX = useSharedValue(0);
+	const shouldAnimate = text.length >= animationThreshold;
 
-	const textWidth = text.length * 3
+	const textWidth = text.length * 3;
 
 	useEffect(() => {
-		if (!shouldAnimate) return
+		if (!shouldAnimate) return;
 
 		translateX.value = withDelay(
 			1000,
@@ -35,19 +35,19 @@ export const MovingText = ({ text, animationThreshold, style }: MovingTextProps)
 				-1,
 				true,
 			),
-		)
+		);
 
 		return () => {
-			cancelAnimation(translateX)
-			translateX.value = 0
-		}
-	}, [translateX, shouldAnimate, textWidth])
+			cancelAnimation(translateX);
+			translateX.value = 0;
+		};
+	}, [translateX, shouldAnimate, textWidth]);
 
 	const animatedStyle = useAnimatedStyle<TextStyle>(() => {
 		return {
 			transform: [{ translateX: translateX.value }],
-		}
-	})
+		};
+	});
 
 	return (
 		<Animated.Text
@@ -63,5 +63,5 @@ export const MovingText = ({ text, animationThreshold, style }: MovingTextProps)
 		>
 			{text}
 		</Animated.Text>
-	)
-}
+	);
+};

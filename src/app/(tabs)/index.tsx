@@ -1,8 +1,8 @@
-import { Ionicons } from '@expo/vector-icons'
-import { BlurView } from 'expo-blur'
-import { Image } from 'expo-image'
-import { LinearGradient } from 'expo-linear-gradient'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	ActivityIndicator,
 	RefreshControl,
@@ -11,31 +11,31 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
-} from 'react-native'
-import { generateTracksListId } from '@/helpers/miscellaneous'
-import { useStrings } from '@/hooks/useStrings'
-import { useTheme } from '@/hooks/useTheme'
-import TrackPlayer, { type Track as PlayerTrack } from '@/lib/expo-track-player'
-import { useQueue } from '@/store/queue'
-import { useThemeStyles } from '@/styles'
-import MusicAPI, { type Track as ApiTrack } from '../../../scripts/music'
+} from 'react-native';
+import { generateTracksListId } from '@/helpers/miscellaneous';
+import { useStrings } from '@/hooks/useStrings';
+import { useTheme } from '@/hooks/useTheme';
+import TrackPlayer, { type Track as PlayerTrack } from '@/lib/expo-track-player';
+import { useQueue } from '@/store/queue';
+import { useThemeStyles } from '@/styles';
+import MusicAPI, { type Track as ApiTrack } from '../../../scripts/music';
 
-type SectionKey = 'recommend' | 'favorites' | 'recently'
+type SectionKey = 'recommend' | 'favorites' | 'recently';
 
 type SectionState = {
-	tracks: ApiTrack[]
-	loading: boolean
-	error?: string
-}
+	tracks: ApiTrack[];
+	loading: boolean;
+	error?: string;
+};
 
 const mapApiTrackToPlayerTrack = async (track: ApiTrack): Promise<PlayerTrack> => {
-	const fallbackUrl = MusicAPI.getTrackUrl(track)
-	let streamUrl = fallbackUrl
+	const fallbackUrl = MusicAPI.getTrackUrl(track);
+	let streamUrl = fallbackUrl;
 
 	try {
-		streamUrl = await MusicAPI.getStreamUrl(String(track.id))
+		streamUrl = await MusicAPI.getStreamUrl(String(track.id));
 	} catch (error) {
-		console.warn('Falling back to default stream URL', error)
+		console.warn('Falling back to default stream URL', error);
 	}
 
 	return {
@@ -45,26 +45,26 @@ const mapApiTrackToPlayerTrack = async (track: ApiTrack): Promise<PlayerTrack> =
 		artist: track.artist,
 		album: track.albumTitle,
 		artwork: MusicAPI.getOptimalImage(track.images),
-	}
-}
+	};
+};
 
 const HomeScreen = () => {
-	const scrollRef = useRef<ScrollView>(null)
+	const scrollRef = useRef<ScrollView>(null);
 	const sectionOffsets = useRef<Record<SectionKey, number>>({
 		recommend: 0,
 		favorites: 0,
 		recently: 0,
-	})
+	});
 	const queueOffsets = useRef<Record<SectionKey, number>>({
 		recommend: 0,
 		favorites: 0,
 		recently: 0,
-	})
+	});
 
-	const { colors, defaultStyles, utilsStyles } = useThemeStyles()
-	const { t } = useStrings()
-	const { theme } = useTheme()
-	const { activeQueueId, setActiveQueueId } = useQueue()
+	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
+	const { t } = useStrings();
+	const { theme } = useTheme();
+	const { activeQueueId, setActiveQueueId } = useQueue();
 
 	const sectionConfigs = useMemo(
 		() => ({
@@ -94,34 +94,34 @@ const HomeScreen = () => {
 			},
 		}),
 		[t],
-	)
+	);
 
 	const [sections, setSections] = useState<Record<SectionKey, SectionState>>({
 		recommend: { tracks: [], loading: true },
 		favorites: { tracks: [], loading: true },
 		recently: { tracks: [], loading: true },
-	})
+	});
 	const [playableTracks, setPlayableTracks] = useState<Record<SectionKey, PlayerTrack[]>>({
 		recommend: [],
 		favorites: [],
 		recently: [],
-	})
-	const [refreshing, setRefreshing] = useState(false)
+	});
+	const [refreshing, setRefreshing] = useState(false);
 
 	const themedStyles = useMemo(
 		() => styles(colors, defaultStyles, theme),
 		[colors, defaultStyles, theme],
-	)
+	);
 
 	const hydratePlayableTracks = useCallback(async (key: SectionKey, tracks: ApiTrack[]) => {
 		if (!tracks.length) {
-			setPlayableTracks((prev) => ({ ...prev, [key]: [] }))
-			return
+			setPlayableTracks((prev) => ({ ...prev, [key]: [] }));
+			return;
 		}
 
-		const hydrated = await Promise.all(tracks.map((track) => mapApiTrackToPlayerTrack(track)))
-		setPlayableTracks((prev) => ({ ...prev, [key]: hydrated }))
-	}, [])
+		const hydrated = await Promise.all(tracks.map((track) => mapApiTrackToPlayerTrack(track)));
+		setPlayableTracks((prev) => ({ ...prev, [key]: hydrated }));
+	}, []);
 
 	const loadSection = useCallback(
 		async (key: SectionKey) => {
@@ -132,10 +132,10 @@ const HomeScreen = () => {
 					loading: true,
 					error: undefined,
 				},
-			}))
+			}));
 
 			try {
-				const tracks = await sectionConfigs[key].fetchTracks()
+				const tracks = await sectionConfigs[key].fetchTracks();
 				setSections((prev) => ({
 					...prev,
 					[key]: {
@@ -143,11 +143,11 @@ const HomeScreen = () => {
 						loading: false,
 						error: undefined,
 					},
-				}))
+				}));
 
-				void hydratePlayableTracks(key, tracks)
+				void hydratePlayableTracks(key, tracks);
 			} catch (error) {
-				const message = error instanceof Error ? error.message : t.musicfeed_error
+				const message = error instanceof Error ? error.message : t.musicfeed_error;
 				setSections((prev) => ({
 					...prev,
 					[key]: {
@@ -155,66 +155,66 @@ const HomeScreen = () => {
 						loading: false,
 						error: message,
 					},
-				}))
+				}));
 			}
 		},
 		[hydratePlayableTracks, sectionConfigs, t],
-	)
+	);
 
 	const refreshAll = useCallback(async () => {
-		setRefreshing(true)
-		await Promise.all((Object.keys(sectionConfigs) as SectionKey[]).map((key) => loadSection(key)))
-		setRefreshing(false)
-	}, [loadSection, sectionConfigs])
+		setRefreshing(true);
+		await Promise.all((Object.keys(sectionConfigs) as SectionKey[]).map((key) => loadSection(key)));
+		setRefreshing(false);
+	}, [loadSection, sectionConfigs]);
 
 	useEffect(() => {
-		refreshAll().then()
-	}, [refreshAll])
+		refreshAll().then();
+	}, [refreshAll]);
 
 	const handlePlay = async (key: SectionKey, trackId: number) => {
-		const tracks = playableTracks[key]
-		if (!tracks.length) return
+		const tracks = playableTracks[key];
+		if (!tracks.length) return;
 
-		const trackIndex = tracks.findIndex((track) => track.id === trackId)
-		if (trackIndex === -1) return
+		const trackIndex = tracks.findIndex((track) => track.id === trackId);
+		if (trackIndex === -1) return;
 
-		const queueId = generateTracksListId(key)
-		const isChangingQueue = queueId !== activeQueueId
+		const queueId = generateTracksListId(key);
+		const isChangingQueue = queueId !== activeQueueId;
 
 		if (isChangingQueue) {
-			const beforeTracks = tracks.slice(0, trackIndex)
-			const afterTracks = tracks.slice(trackIndex + 1)
+			const beforeTracks = tracks.slice(0, trackIndex);
+			const afterTracks = tracks.slice(trackIndex + 1);
 
-			await TrackPlayer.reset()
+			await TrackPlayer.reset();
 
-			await TrackPlayer.add(tracks[trackIndex])
-			await TrackPlayer.add(afterTracks)
-			await TrackPlayer.add(beforeTracks)
+			await TrackPlayer.add(tracks[trackIndex]);
+			await TrackPlayer.add(afterTracks);
+			await TrackPlayer.add(beforeTracks);
 
-			await TrackPlayer.play()
+			await TrackPlayer.play();
 
-			queueOffsets.current[key] = trackIndex
-			setActiveQueueId(queueId)
+			queueOffsets.current[key] = trackIndex;
+			setActiveQueueId(queueId);
 		} else {
-			const offset = queueOffsets.current[key] ?? 0
+			const offset = queueOffsets.current[key] ?? 0;
 			const nextTrackIndex =
-				trackIndex - offset < 0 ? tracks.length + trackIndex - offset : trackIndex - offset
+				trackIndex - offset < 0 ? tracks.length + trackIndex - offset : trackIndex - offset;
 
-			await TrackPlayer.skip(nextTrackIndex)
-			await TrackPlayer.play()
+			await TrackPlayer.skip(nextTrackIndex);
+			await TrackPlayer.play();
 		}
-	}
+	};
 
 	const scrollToSection = (key: SectionKey) => {
-		const offset = sectionOffsets.current[key]
-		if (offset == null) return
+		const offset = sectionOffsets.current[key];
+		if (offset == null) return;
 
-		scrollRef.current?.scrollTo({ y: Math.max(offset - 30, 0), animated: true })
-	}
+		scrollRef.current?.scrollTo({ y: Math.max(offset - 30, 0), animated: true });
+	};
 
 	const renderTrackCard = (key: SectionKey, track: ApiTrack) => {
-		const config = sectionConfigs[key]
-		const badge = MusicAPI.getQualityBadge(track)
+		const config = sectionConfigs[key];
+		const badge = MusicAPI.getQualityBadge(track);
 
 		return (
 			<TouchableOpacity
@@ -250,19 +250,19 @@ const HomeScreen = () => {
 					{track.albumTitle} • {MusicAPI.formatDuration(Math.round(track.duration))}
 				</Text>
 			</TouchableOpacity>
-		)
-	}
+		);
+	};
 
 	const renderSection = (key: SectionKey) => {
-		const config = sectionConfigs[key]
-		const section = sections[key]
+		const config = sectionConfigs[key];
+		const section = sections[key];
 
 		return (
 			<View
 				key={key}
 				style={themedStyles.section}
 				onLayout={(event) => {
-					sectionOffsets.current[key] = event.nativeEvent.layout.y
+					sectionOffsets.current[key] = event.nativeEvent.layout.y;
 				}}
 			>
 				<View style={themedStyles.sectionHeader}>
@@ -305,8 +305,8 @@ const HomeScreen = () => {
 					</View>
 				)}
 			</View>
-		)
-	}
+		);
+	};
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -399,8 +399,8 @@ const HomeScreen = () => {
 				{(Object.keys(sectionConfigs) as SectionKey[]).map((key) => renderSection(key))}
 			</ScrollView>
 		</View>
-	)
-}
+	);
+};
 
 const styles = (
 	colors: ReturnType<typeof useThemeStyles>['colors'],
@@ -639,6 +639,6 @@ const styles = (
 			...defaultStyles.text,
 			marginTop: 10,
 		},
-	})
+	});
 
-export default HomeScreen
+export default HomeScreen;

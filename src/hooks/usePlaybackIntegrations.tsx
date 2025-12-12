@@ -1,29 +1,29 @@
-import { useEffect } from 'react'
-import { useActiveTrack, useIsPlaying } from '@/lib/expo-track-player'
-import { NotificationService } from '@/lib/notification'
-import { WakelockService } from '@/lib/wake-lock'
+import { useEffect } from 'react';
+import { useActiveTrack, useIsPlaying } from '@/lib/expo-track-player';
+import { NotificationService } from '@/lib/notification';
+import { WakelockService } from '@/lib/wake-lock';
 
 export const usePlaybackIntegrations = () => {
-	const activeTrack = useActiveTrack()
-	const { playing } = useIsPlaying()
+	const activeTrack = useActiveTrack();
+	const { playing } = useIsPlaying();
 
 	useEffect(() => {
 		NotificationService.initialize().catch((error) => {
-			console.error('Failed to initialize notifications', error)
-		})
+			console.error('Failed to initialize notifications', error);
+		});
 
 		return () => {
-			void NotificationService.hideMediaNotification()
-			void WakelockService.deactivate()
-		}
-	}, [])
+			void NotificationService.hideMediaNotification();
+			void WakelockService.deactivate();
+		};
+	}, []);
 
 	useEffect(() => {
 		const syncSideEffects = async () => {
 			if (playing) {
-				await WakelockService.activate()
+				await WakelockService.activate();
 			} else {
-				await WakelockService.deactivate()
+				await WakelockService.deactivate();
 			}
 
 			if (activeTrack) {
@@ -34,14 +34,14 @@ export const usePlaybackIntegrations = () => {
 						artist: activeTrack.artist ?? 'Unknown artist',
 					},
 					playing,
-				)
+				);
 			} else if (!playing) {
-				await NotificationService.hideMediaNotification()
+				await NotificationService.hideMediaNotification();
 			}
-		}
+		};
 
 		syncSideEffects().catch((error) => {
-			console.error('Failed to sync playback integrations', error)
-		})
-	}, [activeTrack, playing])
-}
+			console.error('Failed to sync playback integrations', error);
+		});
+	}, [activeTrack, playing]);
+};

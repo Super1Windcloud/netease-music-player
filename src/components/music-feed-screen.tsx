@@ -1,8 +1,8 @@
-import { Ionicons } from '@expo/vector-icons'
-import { BlurView } from 'expo-blur'
-import { Image } from 'expo-image'
-import { LinearGradient } from 'expo-linear-gradient'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	ActivityIndicator,
 	RefreshControl,
@@ -11,39 +11,39 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
-} from 'react-native'
-import { generateTracksListId } from '@/helpers/miscellaneous'
-import { useStrings } from '@/hooks/useStrings'
-import { useTheme } from '@/hooks/useTheme'
-import TrackPlayer, { type Track as PlayerTrack } from '@/lib/expo-track-player'
-import { useQueue } from '@/store/queue'
-import { useThemeStyles } from '@/styles'
-import MusicAPI, { type Track as ApiTrack } from '../../scripts/music'
+} from 'react-native';
+import { generateTracksListId } from '@/helpers/miscellaneous';
+import { useStrings } from '@/hooks/useStrings';
+import { useTheme } from '@/hooks/useTheme';
+import TrackPlayer, { type Track as PlayerTrack } from '@/lib/expo-track-player';
+import { useQueue } from '@/store/queue';
+import { useThemeStyles } from '@/styles';
+import MusicAPI, { type Track as ApiTrack } from '../../scripts/music';
 
 export type MusicFeedConfig = {
-	variant: 'recommend' | 'favorites' | 'recently'
-	headline: string
-	subtitle: string
-	gradient: [string, string]
-	icon: keyof typeof Ionicons.glyphMap
-	pillLabel: string
-	fetchTracks: () => Promise<ApiTrack[]>
-}
+	variant: 'recommend' | 'favorites' | 'recently';
+	headline: string;
+	subtitle: string;
+	gradient: [string, string];
+	icon: keyof typeof Ionicons.glyphMap;
+	pillLabel: string;
+	fetchTracks: () => Promise<ApiTrack[]>;
+};
 
 type FeedState = {
-	tracks: ApiTrack[]
-	loading: boolean
-	error?: string
-}
+	tracks: ApiTrack[];
+	loading: boolean;
+	error?: string;
+};
 
 const mapApiTrackToPlayerTrack = async (track: ApiTrack): Promise<PlayerTrack> => {
-	const fallbackUrl = MusicAPI.getTrackUrl(track)
-	let streamUrl = fallbackUrl
+	const fallbackUrl = MusicAPI.getTrackUrl(track);
+	let streamUrl = fallbackUrl;
 
 	try {
-		streamUrl = await MusicAPI.getStreamUrl(String(track.id))
+		streamUrl = await MusicAPI.getStreamUrl(String(track.id));
 	} catch (error) {
-		console.warn('Falling back to default stream URL', error)
+		console.warn('Falling back to default stream URL', error);
 	}
 
 	return {
@@ -53,112 +53,112 @@ const mapApiTrackToPlayerTrack = async (track: ApiTrack): Promise<PlayerTrack> =
 		artist: track.artist,
 		album: track.albumTitle,
 		artwork: MusicAPI.getOptimalImage(track.images),
-	}
-}
+	};
+};
 
 export const MusicFeedScreen = ({ config }: { config: MusicFeedConfig }) => {
-	const { colors, defaultStyles, utilsStyles } = useThemeStyles()
-	const { t } = useStrings()
-	const { theme } = useTheme()
-	const queueOffset = useRef(0)
-	const { activeQueueId, setActiveQueueId } = useQueue()
-	const queueId = useMemo(() => generateTracksListId(config.variant), [config.variant])
+	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
+	const { t } = useStrings();
+	const { theme } = useTheme();
+	const queueOffset = useRef(0);
+	const { activeQueueId, setActiveQueueId } = useQueue();
+	const queueId = useMemo(() => generateTracksListId(config.variant), [config.variant]);
 
 	const [state, setState] = useState<FeedState>({
 		tracks: [],
 		loading: true,
 		error: undefined,
-	})
-	const [playableTracks, setPlayableTracks] = useState<PlayerTrack[]>([])
-	const blurTint = theme === 'dark' ? 'dark' : 'light'
+	});
+	const [playableTracks, setPlayableTracks] = useState<PlayerTrack[]>([]);
+	const blurTint = theme === 'dark' ? 'dark' : 'light';
 	const themedStyles = useMemo(
 		() => styles(colors, defaultStyles, theme),
 		[colors, defaultStyles, theme],
-	)
-	const heroStatus = state.loading ? t.musicfeed_loading : config.pillLabel
+	);
+	const heroStatus = state.loading ? t.musicfeed_loading : config.pillLabel;
 	const backgroundGradient = useMemo(() => {
-		const [start, end] = config.gradient
+		const [start, end] = config.gradient;
 		const withAlpha = (hex: string, alpha: string) =>
-			hex.startsWith('#') && hex.length === 7 ? `${hex}${alpha}` : hex
+			hex.startsWith('#') && hex.length === 7 ? `${hex}${alpha}` : hex;
 
-		return [withAlpha(start, '2b'), withAlpha(end, '14'), colors.background]
-	}, [colors.background, config.gradient])
+		return [withAlpha(start, '2b'), withAlpha(end, '14'), colors.background];
+	}, [colors.background, config.gradient]);
 
 	const hydratePlayableTracks = useCallback(async (tracks: ApiTrack[]) => {
 		if (!tracks.length) {
-			setPlayableTracks([])
-			return
+			setPlayableTracks([]);
+			return;
 		}
 
-		const hydrated = await Promise.all(tracks.map((track) => mapApiTrackToPlayerTrack(track)))
-		setPlayableTracks(hydrated)
-	}, [])
+		const hydrated = await Promise.all(tracks.map((track) => mapApiTrackToPlayerTrack(track)));
+		setPlayableTracks(hydrated);
+	}, []);
 
 	const loadTracks = useCallback(async () => {
 		setState((prev) => ({
 			...prev,
 			loading: true,
 			error: undefined,
-		}))
+		}));
 
 		try {
-			const tracks = await config.fetchTracks()
+			const tracks = await config.fetchTracks();
 			setState({
 				tracks,
 				loading: false,
 				error: undefined,
-			})
+			});
 
-			void hydratePlayableTracks(tracks)
+			void hydratePlayableTracks(tracks);
 		} catch (error) {
-			const message = error instanceof Error ? error.message : t.musicfeed_error
+			const message = error instanceof Error ? error.message : t.musicfeed_error;
 			setState({
 				tracks: [],
 				loading: false,
 				error: message,
-			})
+			});
 		}
-	}, [config.fetchTracks, hydratePlayableTracks, t])
+	}, [config.fetchTracks, hydratePlayableTracks, t]);
 
 	useEffect(() => {
-		loadTracks().then()
-	}, [loadTracks])
+		loadTracks().then();
+	}, [loadTracks]);
 
 	const handlePlay = async (trackId: number) => {
-		if (!playableTracks.length) return
+		if (!playableTracks.length) return;
 
-		const trackIndex = playableTracks.findIndex((track) => track.id === trackId)
-		if (trackIndex === -1) return
+		const trackIndex = playableTracks.findIndex((track) => track.id === trackId);
+		if (trackIndex === -1) return;
 
-		const isChangingQueue = queueId !== activeQueueId
+		const isChangingQueue = queueId !== activeQueueId;
 
 		if (isChangingQueue) {
-			const beforeTracks = playableTracks.slice(0, trackIndex)
-			const afterTracks = playableTracks.slice(trackIndex + 1)
+			const beforeTracks = playableTracks.slice(0, trackIndex);
+			const afterTracks = playableTracks.slice(trackIndex + 1);
 
-			await TrackPlayer.reset()
+			await TrackPlayer.reset();
 
-			await TrackPlayer.add(playableTracks[trackIndex])
-			await TrackPlayer.add(afterTracks)
-			await TrackPlayer.add(beforeTracks)
+			await TrackPlayer.add(playableTracks[trackIndex]);
+			await TrackPlayer.add(afterTracks);
+			await TrackPlayer.add(beforeTracks);
 
-			await TrackPlayer.play()
+			await TrackPlayer.play();
 
-			queueOffset.current = trackIndex
-			setActiveQueueId(queueId)
+			queueOffset.current = trackIndex;
+			setActiveQueueId(queueId);
 		} else {
 			const nextTrackIndex =
 				trackIndex - queueOffset.current < 0
 					? playableTracks.length + trackIndex - queueOffset.current
-					: trackIndex - queueOffset.current
+					: trackIndex - queueOffset.current;
 
-			await TrackPlayer.skip(nextTrackIndex)
-			await TrackPlayer.play()
+			await TrackPlayer.skip(nextTrackIndex);
+			await TrackPlayer.play();
 		}
-	}
+	};
 
 	const renderTrackCard = (track: ApiTrack) => {
-		const badge = MusicAPI.getQualityBadge(track)
+		const badge = MusicAPI.getQualityBadge(track);
 
 		return (
 			<TouchableOpacity
@@ -206,8 +206,8 @@ export const MusicFeedScreen = ({ config }: { config: MusicFeedConfig }) => {
 					</View>
 				</View>
 			</TouchableOpacity>
-		)
-	}
+		);
+	};
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -272,8 +272,8 @@ export const MusicFeedScreen = ({ config }: { config: MusicFeedConfig }) => {
 				)}
 			</ScrollView>
 		</View>
-	)
-}
+	);
+};
 
 const styles = (
 	colors: ReturnType<typeof useThemeStyles>['colors'],
@@ -440,6 +440,6 @@ const styles = (
 			...defaultStyles.text,
 			fontSize: 13,
 		},
-	})
+	});
 
-export default MusicFeedScreen
+export default MusicFeedScreen;

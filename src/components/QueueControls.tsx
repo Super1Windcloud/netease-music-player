@@ -1,31 +1,31 @@
-import { Ionicons } from '@expo/vector-icons'
-import { useMemo } from 'react'
-import { StyleSheet, Text, View, type ViewProps } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import { useStrings } from '@/hooks/useStrings'
-import TrackPlayer, { type Track } from '@/lib/expo-track-player'
-import { useThemeStyles } from '@/styles'
+import { Ionicons } from '@expo/vector-icons';
+import { useMemo } from 'react';
+import { StyleSheet, Text, View, type ViewProps } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useStrings } from '@/hooks/useStrings';
+import TrackPlayer, { type Track } from '@/lib/expo-track-player';
+import { useThemeStyles } from '@/styles';
 
 type QueueControlsProps = {
-	tracks: Track[]
-} & ViewProps
+	tracks: Track[];
+} & ViewProps;
 
 export const QueueControls = ({ tracks, style, ...viewProps }: QueueControlsProps) => {
-	const { t } = useStrings()
-	const { colors, defaultStyles } = useThemeStyles()
-	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles])
+	const { t } = useStrings();
+	const { colors, defaultStyles } = useThemeStyles();
+	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
 
 	const handlePlay = async () => {
-		await TrackPlayer.setQueue(tracks)
-		await TrackPlayer.play()
-	}
+		await TrackPlayer.setQueue(tracks);
+		await TrackPlayer.play();
+	};
 
 	const handleShufflePlay = async () => {
-		const shuffledTracks = [...tracks].sort(() => Math.random() - 0.5)
+		const shuffledTracks = [...tracks].sort(() => Math.random() - 0.5);
 
-		await TrackPlayer.setQueue(shuffledTracks)
-		await TrackPlayer.play()
-	}
+		await TrackPlayer.setQueue(shuffledTracks);
+		await TrackPlayer.play();
+	};
 
 	return (
 		<View style={[{ flexDirection: 'row', columnGap: 16 }, style]} {...viewProps}>
@@ -51,8 +51,8 @@ export const QueueControls = ({ tracks, style, ...viewProps }: QueueControlsProp
 				</TouchableOpacity>
 			</View>
 		</View>
-	)
-}
+	);
+};
 
 const styles = (
 	colors: ReturnType<typeof useThemeStyles>['colors'],
@@ -77,4 +77,4 @@ const styles = (
 			fontSize: 18,
 			textAlign: 'center',
 		},
-	})
+	});

@@ -1,35 +1,43 @@
-import { Ionicons } from '@expo/vector-icons'
-import { type ReactNode, useMemo } from 'react'
-import { Linking, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
-import { fontSize, screenPadding } from '@/constants/tokens'
-import { useNavigationSearch } from '@/hooks/useNavigationSearch'
-import { useStrings } from '@/hooks/useStrings'
-import { useTheme } from '@/hooks/useTheme'
-import { useLanguagePreference, useThemePreference } from '@/store/preferences'
-import { useThemeStyles } from '@/styles'
+import { Ionicons } from '@expo/vector-icons';
+import { type ReactNode, useMemo } from 'react';
+import {
+	Linking,
+	ScrollView,
+	StyleSheet,
+	Switch,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
+import { fontSize, screenPadding } from '@/constants/tokens';
+import { useNavigationSearch } from '@/hooks/useNavigationSearch';
+import { useStrings } from '@/hooks/useStrings';
+import { useTheme } from '@/hooks/useTheme';
+import { useLanguagePreference, useThemePreference } from '@/store/preferences';
+import { useThemeStyles } from '@/styles';
 
 type SettingOption<T extends string> = {
-	value: T
-	label: string
-	helper?: string
-}
+	value: T;
+	label: string;
+	helper?: string;
+};
 
 const SettingsScreen = () => {
-	const { colors } = useTheme()
-	const { defaultStyles, utilsStyles } = useThemeStyles()
-	const { t } = useStrings()
-	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles])
+	const { colors } = useTheme();
+	const { defaultStyles, utilsStyles } = useThemeStyles();
+	const { t } = useStrings();
+	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
 	const search = useNavigationSearch({
 		searchBarOptions: {
 			placeholder: t.settings_search_placeholder,
 		},
-	})
+	});
 
-	const { value: language, setLanguage } = useLanguagePreference()
-	const { value: theme, setTheme } = useThemePreference()
+	const { value: language, setLanguage } = useLanguagePreference();
+	const { value: theme, setTheme } = useThemePreference();
 	const openGithubProfile = () => {
-		void Linking.openURL('https://github.com/Super1Windcloud')
-	}
+		void Linking.openURL('https://github.com/Super1Windcloud');
+	};
 
 	const languageOptions: SettingOption<'system' | 'en' | 'zh'>[] = useMemo(
 		() => [
@@ -38,7 +46,7 @@ const SettingsScreen = () => {
 			{ value: 'zh', label: t.settings_chinese },
 		],
 		[t],
-	)
+	);
 
 	const themeOptions: SettingOption<'system' | 'light' | 'dark'>[] = useMemo(
 		() => [
@@ -47,25 +55,25 @@ const SettingsScreen = () => {
 			{ value: 'dark', label: t.settings_dark_theme },
 		],
 		[t],
-	)
+	);
 
 	const aboutOptions: SettingOption<'github'>[] = useMemo(
 		() => [{ value: 'github', label: t.settings_github, helper: t.settings_github_helper }],
 		[t],
-	)
+	);
 
-	const filteredLanguageOptions = useFilteredOptions(languageOptions, search)
-	const filteredThemeOptions = useFilteredOptions(themeOptions, search)
-	const filteredAboutOptions = useFilteredOptions(aboutOptions, search)
+	const filteredLanguageOptions = useFilteredOptions(languageOptions, search);
+	const filteredThemeOptions = useFilteredOptions(themeOptions, search);
+	const filteredAboutOptions = useFilteredOptions(aboutOptions, search);
 
 	const noResults =
 		search &&
 		filteredLanguageOptions.length === 0 &&
 		filteredThemeOptions.length === 0 &&
-		filteredAboutOptions.length === 0
-	const showLanguageSection = search.length === 0 || filteredLanguageOptions.length > 0
-	const showThemeSection = search.length === 0 || filteredThemeOptions.length > 0
-	const showAboutSection = search.length === 0 || filteredAboutOptions.length > 0
+		filteredAboutOptions.length === 0;
+	const showLanguageSection = search.length === 0 || filteredLanguageOptions.length > 0;
+	const showThemeSection = search.length === 0 || filteredThemeOptions.length > 0;
+	const showAboutSection = search.length === 0 || filteredAboutOptions.length > 0;
 
 	return (
 		<ScrollView
@@ -165,21 +173,21 @@ const SettingsScreen = () => {
 				</SettingsSection>
 			)}
 		</ScrollView>
-	)
-}
+	);
+};
 
 const useFilteredOptions = <T extends string>(options: SettingOption<T>[], search: string) => {
 	return useMemo(() => {
-		if (!search) return options
+		if (!search) return options;
 
-		const lowered = search.toLowerCase()
+		const lowered = search.toLowerCase();
 		return options.filter(
 			(option) =>
 				option.label.toLowerCase().includes(lowered) ||
 				option.helper?.toLowerCase().includes(lowered),
-		)
-	}, [options, search])
-}
+		);
+	}, [options, search]);
+};
 
 const SettingsSection = ({
 	title,
@@ -187,10 +195,10 @@ const SettingsSection = ({
 	children,
 	themedStyles,
 }: {
-	title: string
-	description?: string
-	children: ReactNode
-	themedStyles: ReturnType<typeof styles>
+	title: string;
+	description?: string;
+	children: ReactNode;
+	themedStyles: ReturnType<typeof styles>;
 }) => {
 	return (
 		<View style={{ marginTop: 26 }}>
@@ -199,8 +207,8 @@ const SettingsSection = ({
 
 			<View style={themedStyles.card}>{children}</View>
 		</View>
-	)
-}
+	);
+};
 
 const SettingRow = ({
 	label,
@@ -211,13 +219,13 @@ const SettingRow = ({
 	utilsStyles,
 	themedStyles,
 }: {
-	label: string
-	helper?: string
-	selected: boolean
-	onPress: () => void
-	colors: ReturnType<typeof useTheme>['colors']
-	utilsStyles: ReturnType<typeof useThemeStyles>['utilsStyles']
-	themedStyles: ReturnType<typeof styles>
+	label: string;
+	helper?: string;
+	selected: boolean;
+	onPress: () => void;
+	colors: ReturnType<typeof useTheme>['colors'];
+	utilsStyles: ReturnType<typeof useThemeStyles>['utilsStyles'];
+	themedStyles: ReturnType<typeof styles>;
 }) => {
 	return (
 		<TouchableOpacity onPress={onPress} activeOpacity={0.85} style={themedStyles.row}>
@@ -232,8 +240,8 @@ const SettingRow = ({
 				</View>
 			)}
 		</TouchableOpacity>
-	)
-}
+	);
+};
 
 const styles = (
 	colors: ReturnType<typeof useTheme>['colors'],
@@ -275,6 +283,6 @@ const styles = (
 			color: colors.textMuted,
 			marginTop: 4,
 		},
-	})
+	});
 
-export default SettingsScreen
+export default SettingsScreen;

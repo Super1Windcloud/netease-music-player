@@ -1,15 +1,15 @@
-import { Ionicons } from '@expo/vector-icons'
-import { BlurView } from 'expo-blur'
-import { Tabs } from 'expo-router'
-import { StyleSheet } from 'react-native'
-import { FloatingPlayer } from '@/components/FloatingPlayer'
-import { fontSize } from '@/constants/tokens'
-import { useStrings } from '@/hooks/useStrings'
-import { useTheme } from '@/hooks/useTheme'
+import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
+import { Tabs } from 'expo-router';
+import { StyleSheet } from 'react-native';
+import { FloatingPlayer } from '@/components/FloatingPlayer';
+import { fontSize } from '@/constants/tokens';
+import { useStrings } from '@/hooks/useStrings';
+import { useTheme } from '@/hooks/useTheme';
 
 const TabsNavigation = () => {
-	const { colors } = useTheme()
-	const { t } = useStrings()
+	const { colors } = useTheme();
+	const { t } = useStrings();
 
 	return (
 		<>
@@ -88,7 +88,7 @@ const TabsNavigation = () => {
 				}}
 			/>
 		</>
-	)
-}
+	);
+};
 
-export default TabsNavigation
+export default TabsNavigation;

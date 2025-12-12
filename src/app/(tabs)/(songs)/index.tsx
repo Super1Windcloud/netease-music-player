@@ -1,34 +1,34 @@
-import { useMemo } from 'react'
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native'
-import { TracksList } from '@/components/TracksList'
-import { screenPadding } from '@/constants/tokens'
-import { trackTitleFilter } from '@/helpers/filter'
-import { generateTracksListId } from '@/helpers/miscellaneous'
-import { useNavigationSearch } from '@/hooks/useNavigationSearch'
-import { useStrings } from '@/hooks/useStrings'
-import { useTheme } from '@/hooks/useTheme'
-import { useEnsureLibraryLoaded, useLibraryStatus, useTracks } from '@/store/library'
-import { useThemeStyles } from '@/styles'
+import { useMemo } from 'react';
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { TracksList } from '@/components/TracksList';
+import { screenPadding } from '@/constants/tokens';
+import { trackTitleFilter } from '@/helpers/filter';
+import { generateTracksListId } from '@/helpers/miscellaneous';
+import { useNavigationSearch } from '@/hooks/useNavigationSearch';
+import { useStrings } from '@/hooks/useStrings';
+import { useTheme } from '@/hooks/useTheme';
+import { useEnsureLibraryLoaded, useLibraryStatus, useTracks } from '@/store/library';
+import { useThemeStyles } from '@/styles';
 
 const SongsScreen = () => {
-	const { colors } = useTheme()
-	const { defaultStyles } = useThemeStyles()
-	const { t } = useStrings()
+	const { colors } = useTheme();
+	const { defaultStyles } = useThemeStyles();
+	const { t } = useStrings();
 	const search = useNavigationSearch({
 		searchBarOptions: {
 			placeholder: t.songs_search_placeholder,
 		},
-	})
+	});
 
-	useEnsureLibraryLoaded()
-	const { status, error } = useLibraryStatus()
-	const tracks = useTracks()
+	useEnsureLibraryLoaded();
+	const { status, error } = useLibraryStatus();
+	const tracks = useTracks();
 
 	const filteredTracks = useMemo(() => {
-		if (!search) return tracks
+		if (!search) return tracks;
 
-		return tracks.filter(trackTitleFilter(search))
-	}, [search, tracks])
+		return tracks.filter(trackTitleFilter(search));
+	}, [search, tracks]);
 
 	if (status === 'loading' || status === 'idle') {
 		return (
@@ -38,7 +38,7 @@ const SongsScreen = () => {
 					{t.songs_loading}
 				</Text>
 			</View>
-		)
+		);
 	}
 
 	return (
@@ -59,7 +59,7 @@ const SongsScreen = () => {
 				/>
 			</ScrollView>
 		</View>
-	)
-}
+	);
+};
 
-export default SongsScreen
+export default SongsScreen;

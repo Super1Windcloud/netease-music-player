@@ -1,37 +1,37 @@
-import { Image } from 'expo-image'
-import { LinearGradient } from 'expo-linear-gradient'
-import { useMemo } from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { MovingText } from '@/components/MovingText'
-import { PlayerControls } from '@/components/PlayerControls'
-import { PlayerProgressBar } from '@/components/PlayerProgressbar'
-import { PlayerRepeatToggle } from '@/components/PlayerRepeatToggle'
-import { PlayerVolumeBar } from '@/components/PlayerVolumeBar'
-import { unknownTrackImageUri } from '@/constants/images'
-import { fontSize, screenPadding } from '@/constants/tokens'
-import { usePlayerBackground } from '@/hooks/usePlayerBackground'
-import { useActiveTrack } from '@/lib/expo-track-player'
-import { useThemeStyles } from '@/styles'
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useMemo } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { MovingText } from '@/components/MovingText';
+import { PlayerControls } from '@/components/PlayerControls';
+import { PlayerProgressBar } from '@/components/PlayerProgressbar';
+import { PlayerRepeatToggle } from '@/components/PlayerRepeatToggle';
+import { PlayerVolumeBar } from '@/components/PlayerVolumeBar';
+import { unknownTrackImageUri } from '@/constants/images';
+import { fontSize, screenPadding } from '@/constants/tokens';
+import { usePlayerBackground } from '@/hooks/usePlayerBackground';
+import { useActiveTrack } from '@/lib/expo-track-player';
+import { useThemeStyles } from '@/styles';
 
 const PlayerScreen = () => {
-	const activeTrack = useActiveTrack()
-	const { imageColors } = usePlayerBackground(activeTrack?.artwork ?? unknownTrackImageUri)
-	const { colors, defaultStyles, utilsStyles } = useThemeStyles()
-	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles])
+	const activeTrack = useActiveTrack();
+	const { imageColors } = usePlayerBackground(activeTrack?.artwork ?? unknownTrackImageUri);
+	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
+	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
 	const gradientColors = useMemo<[string, string]>(
 		() => [imageColors?.background ?? colors.background, imageColors?.primary ?? colors.primary],
 		[colors.background, colors.primary, imageColors?.background, imageColors?.primary],
-	)
+	);
 
-	const { top, bottom } = useSafeAreaInsets()
+	const { top, bottom } = useSafeAreaInsets();
 
 	if (!activeTrack) {
 		return (
 			<View style={[defaultStyles.container, { justifyContent: 'center' }]}>
 				<ActivityIndicator color={colors.icon} />
 			</View>
-		)
+		);
 	}
 
 	return (
@@ -87,12 +87,12 @@ const PlayerScreen = () => {
 				</View>
 			</View>
 		</LinearGradient>
-	)
-}
+	);
+};
 
 const DismissPlayerSymbol = () => {
-	const { top } = useSafeAreaInsets()
-	const { colors } = useThemeStyles()
+	const { top } = useSafeAreaInsets();
+	const { colors } = useThemeStyles();
 
 	return (
 		<View
@@ -116,8 +116,8 @@ const DismissPlayerSymbol = () => {
 				}}
 			/>
 		</View>
-	)
-}
+	);
+};
 
 const styles = (
 	_colors: ReturnType<typeof useThemeStyles>['colors'],
@@ -161,6 +161,6 @@ const styles = (
 			opacity: 0.8,
 			maxWidth: '90%',
 		},
-	})
+	});
 
-export default PlayerScreen
+export default PlayerScreen;
