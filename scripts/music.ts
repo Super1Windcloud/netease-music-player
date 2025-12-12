@@ -174,6 +174,7 @@ const performStreamRequest = async (trackId: string): Promise<string> => {
 		const apiMessage =
 			typeof response.data === "object" && response.data !== null && "error" in response.data
 				? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 					(response.data as any).error
 				: "No stream URL received";
 
