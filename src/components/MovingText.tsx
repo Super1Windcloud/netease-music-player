@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, type StyleProp, type TextStyle } from "react-native";
+import { type StyleProp, type TextStyle, View } from "react-native";
 import Animated, {
 	cancelAnimation,
 	Easing,
