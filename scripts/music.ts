@@ -154,21 +154,31 @@ const searchTracks = async (
 };
 
 const performStreamRequest = async (trackId: string): Promise<string> => {
-	try {
-		const response: AxiosResponse<{ url: string }> = await apiClient.get(
-			`/stream?trackId=${trackId}`,
-			{
-				timeout: 15000,
-			},
-		);
+	if (!trackId) {
+		throw new Error("Missing track id");
+	}
 
-		if (!response.data.url) {
-			throw new Error("No stream URL received");
+	try {
+		const response: AxiosResponse<{ url?: string; streamUrl?: string; data?: { url?: string } }> =
+			await apiClient.get(`/stream?trackId=${trackId}`, {
+				timeout: 15000,
+			});
+
+		const streamUrl =
+			response.data?.url || response.data?.streamUrl || response.data?.data?.url || "";
+
+		if (streamUrl) {
+			return streamUrl;
 		}
 
-		return response.data.url;
+		const apiMessage =
+			typeof response.data === "object" && response.data !== null && "error" in response.data
+				? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+					(response.data as any).error
+				: "No stream URL received";
+
+		throw new Error(apiMessage);
 	} catch (error) {
-		console.error("Stream URL error:", error);
 		if (axios.isAxiosError(error)) {
 			throw new Error(
 				`Stream request failed with status ${error.response?.status || "unknown"}: ${error.message}`,
