@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
 import { Buffer } from "buffer";
 import { Asset } from "expo-asset";
-import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
+import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { inflate } from "pako";
+import { useEffect, useMemo, useState } from "react";
 import { useTheme } from "@/hooks/useTheme";
 
 type PlayerImageColors = {
@@ -105,15 +105,13 @@ const deriveColorsFromImage = async (imageUrl: string) => {
 		const localUri = await resolveLocalImageUri();
 		if (!localUri) return null;
 
-		const result = await manipulateAsync(
-			localUri,
-			[{ resize: { width: 1, height: 1 } }],
-			{
-				compress: 0,
-				format: SaveFormat.PNG,
-				base64: true,
-			},
-		);
+		const context = ImageManipulator.manipulate(localUri).resize({ width: 1, height: 1 });
+		const rendered = await context.renderAsync();
+		const result = await rendered.saveAsync({
+			compress: 0,
+			format: SaveFormat.PNG,
+			base64: true,
+		});
 
 		if (!result.base64) return null;
 

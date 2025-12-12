@@ -11,7 +11,10 @@ export const withOpacity = (color: string, alpha: number): string => {
 
 	const hex = color.replace("#", "");
 	if (hex.length === 3 || hex.length === 4) {
-		const [r, g, b] = hex.slice(0, 3).split("").map((value) => parseInt(value.repeat(2), 16));
+		const [r, g, b] = hex
+			.slice(0, 3)
+			.split("")
+			.map((value) => parseInt(value.repeat(2), 16));
 		return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 	}
 

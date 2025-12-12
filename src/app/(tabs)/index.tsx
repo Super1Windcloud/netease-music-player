@@ -16,12 +16,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { unknownTrackImageUri } from "@/constants/images";
 import { withOpacity } from "@/helpers/colors";
 import { generateTracksListId } from "@/helpers/miscellaneous";
-import { useStrings } from "@/hooks/useStrings";
-import { useActiveTrack } from "@/lib/expo-track-player";
-import { usePlayerBackground } from "@/hooks/usePlayerBackground";
 import { useLastActiveTrack } from "@/hooks/useLastActiveTrack";
+import { usePlayerBackground } from "@/hooks/usePlayerBackground";
+import { useStrings } from "@/hooks/useStrings";
 import { useTheme } from "@/hooks/useTheme";
-import TrackPlayer, { type Track as PlayerTrack } from "@/lib/expo-track-player";
+import TrackPlayer, { type Track as PlayerTrack, useActiveTrack } from "@/lib/expo-track-player";
 import { useQueue } from "@/store/queue";
 import { useThemeStyles } from "@/styles";
 import MusicAPI, { type Track as ApiTrack } from "../../../scripts/music";
@@ -130,13 +129,7 @@ const HomeScreen = () => {
 					theme === "dark" ? 0.82 : 0.92,
 				),
 			),
-		[
-			colors,
-			defaultStyles,
-			heroImageColors?.background,
-			theme,
-			utilsStyles,
-		],
+		[colors, defaultStyles, heroImageColors?.background, theme, utilsStyles],
 	);
 
 	const backgroundGradient = useMemo(
@@ -369,10 +362,7 @@ const HomeScreen = () => {
 				}
 			>
 				<View style={[utilsStyles.glassCard, themedStyles.heroCard, { marginBottom: 16 }]}>
-					<LinearGradient
-						colors={heroGradient}
-						style={themedStyles.heroGradient}
-					>
+					<LinearGradient colors={heroGradient} style={themedStyles.heroGradient}>
 						<BlurView tint="dark" intensity={65} style={themedStyles.heroBlur} />
 						<View style={themedStyles.heroHeader}>
 							<View style={themedStyles.heroBadge}>
