@@ -12,6 +12,15 @@ export type ThemeColors = {
 	border: string;
 };
 
+export type AccentColorName = "appleMusic" | "oceanBlue" | "mint" | "sunset";
+
+export const accentColors: Record<AccentColorName, string> = {
+	appleMusic: "#ff2d55",
+	oceanBlue: "#0a84ff",
+	mint: "#00c7be",
+	sunset: "#ff9f0a",
+};
+
 export const themeColors: Record<ThemeName, ThemeColors> = {
 	light: {
 		primary: "#0a84ff",
@@ -33,7 +42,7 @@ export const themeColors: Record<ThemeName, ThemeColors> = {
 		maximumTrackTintColor: "rgba(255, 255, 255, 0.25)",
 		minimumTrackTintColor: "rgba(90, 200, 250, 0.9)",
 		card: "rgba(255, 255, 255, 0.06)",
-		border: "rgba(255, 255, 255, 0.07)",
+		border: "rgba(255, 255, 255, 0.06)",
 	},
 };
 

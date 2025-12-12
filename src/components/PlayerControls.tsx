@@ -29,16 +29,17 @@ export const PlayerControls = ({ style }: PlayerControlsProps) => {
 export const PlayPauseButton = ({ style, iconSize = 48 }: PlayerButtonProps) => {
 	const { playing } = useIsPlaying();
 	const { colors } = useTheme();
+	const buttonSize = iconSize + 20;
 
 	return (
-		<View style={[{ height: iconSize }, style]}>
-			<TouchableOpacity
-				activeOpacity={0.85}
-				onPress={playing ? TrackPlayer.pause : TrackPlayer.play}
-				style={{
-					width: iconSize + 16,
-					height: iconSize + 16,
-					borderRadius: (iconSize + 16) / 2,
+		<TouchableOpacity
+			activeOpacity={0.85}
+			onPress={playing ? TrackPlayer.pause : TrackPlayer.play}
+			style={[
+				{
+					width: buttonSize,
+					height: buttonSize,
+					borderRadius: buttonSize / 2,
 					alignItems: "center",
 					justifyContent: "center",
 					backgroundColor: colors.card,
@@ -48,46 +49,53 @@ export const PlayPauseButton = ({ style, iconSize = 48 }: PlayerButtonProps) => 
 					shadowOpacity: 0.08,
 					shadowRadius: 10,
 					shadowOffset: { width: 0, height: 6 },
-				}}
-			>
-				<FontAwesome6 name={playing ? "pause" : "play"} size={iconSize} color={colors.text} />
-			</TouchableOpacity>
-		</View>
+				},
+				style,
+			]}
+		>
+			<FontAwesome6 name={playing ? "pause" : "play"} size={iconSize} color={colors.text} />
+		</TouchableOpacity>
 	);
 };
 
-export const SkipToNextButton = ({ iconSize = 30 }: PlayerButtonProps) => {
+export const SkipToNextButton = ({ iconSize = 30, style }: PlayerButtonProps) => {
 	const { colors } = useTheme();
 	return (
 		<TouchableOpacity
 			activeOpacity={0.8}
 			onPress={() => TrackPlayer.skipToNext()}
-			style={{
-				padding: 10,
-				borderRadius: 12,
-				backgroundColor: colors.card,
-				borderWidth: StyleSheet.hairlineWidth,
-				borderColor: colors.border,
-			}}
+			style={[
+				{
+					padding: 10,
+					borderRadius: 12,
+					backgroundColor: colors.card,
+					borderWidth: StyleSheet.hairlineWidth,
+					borderColor: colors.border,
+				},
+				style,
+			]}
 		>
 			<FontAwesome6 name="forward" size={iconSize} color={colors.text} />
 		</TouchableOpacity>
 	);
 };
 
-export const SkipToPreviousButton = ({ iconSize = 30 }: PlayerButtonProps) => {
+export const SkipToPreviousButton = ({ iconSize = 30, style }: PlayerButtonProps) => {
 	const { colors } = useTheme();
 	return (
 		<TouchableOpacity
 			activeOpacity={0.8}
 			onPress={() => TrackPlayer.skipToPrevious()}
-			style={{
-				padding: 10,
-				borderRadius: 12,
-				backgroundColor: colors.card,
-				borderWidth: StyleSheet.hairlineWidth,
-				borderColor: colors.border,
-			}}
+			style={[
+				{
+					padding: 10,
+					borderRadius: 12,
+					backgroundColor: colors.card,
+					borderWidth: StyleSheet.hairlineWidth,
+					borderColor: colors.border,
+				},
+				style,
+			]}
 		>
 			<FontAwesome6 name={"backward"} size={iconSize} color={colors.text} />
 		</TouchableOpacity>
