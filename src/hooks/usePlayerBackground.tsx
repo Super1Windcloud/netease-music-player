@@ -1,3 +1,4 @@
+// biome-ignore lint/style/useNodejsImportProtocol: Metro does not resolve node:buffer, use RN polyfill
 import { Buffer } from "buffer";
 import { Asset } from "expo-asset";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
