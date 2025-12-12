@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 import axios, { type AxiosResponse } from "axios";
 export interface Track {
 	id: number;
