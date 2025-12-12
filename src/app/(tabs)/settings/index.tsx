@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { type ReactNode, useMemo } from "react";
 import {
 	Linking,
@@ -23,10 +24,13 @@ type SettingOption<T extends string> = {
 };
 
 const SettingsScreen = () => {
-	const { colors } = useTheme();
+	const { colors, theme } = useTheme();
 	const { defaultStyles, utilsStyles } = useThemeStyles();
 	const { t } = useStrings();
-	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
+	const themedStyles = useMemo(
+		() => styles(colors, defaultStyles, utilsStyles),
+		[colors, defaultStyles, utilsStyles],
+	);
 	const search = useNavigationSearch({
 		searchBarOptions: {
 			placeholder: t.settings_search_placeholder,
@@ -34,7 +38,7 @@ const SettingsScreen = () => {
 	});
 
 	const { value: language, setLanguage } = useLanguagePreference();
-	const { value: theme, setTheme } = useThemePreference();
+	const { value: themePreference, setTheme: setThemePreference } = useThemePreference();
 	const openGithubProfile = () => {
 		void Linking.openURL("https://github.com/Super1Windcloud");
 	};
@@ -66,6 +70,14 @@ const SettingsScreen = () => {
 	const filteredThemeOptions = useFilteredOptions(themeOptions, search);
 	const filteredAboutOptions = useFilteredOptions(aboutOptions, search);
 
+	const backgroundGradient = useMemo(
+		() =>
+			theme === "dark"
+				? (["#0b1120", "#0a1020", colors.background] as const)
+				: (["#f9fbff", "#eef4ff", colors.background] as const),
+		[colors.background, theme],
+	);
+
 	const noResults =
 		search &&
 		filteredLanguageOptions.length === 0 &&
@@ -76,103 +88,107 @@ const SettingsScreen = () => {
 	const showAboutSection = search.length === 0 || filteredAboutOptions.length > 0;
 
 	return (
-		<ScrollView
-			style={defaultStyles.container}
-			contentInsetAdjustmentBehavior="automatic"
-			contentContainerStyle={{
-				paddingHorizontal: screenPadding.horizontal,
-				paddingBottom: 32,
-				paddingTop: 12,
-			}}
-		>
-			{noResults && (
-				<Text
-					style={{
-						...defaultStyles.text,
-						color: colors.textMuted,
-						marginTop: 20,
-					}}
-				>
-					{t.settings_no_results}
-				</Text>
-			)}
+		<View style={{ flex: 1 }}>
+			<LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFillObject} />
 
-			{showLanguageSection && (
-				<SettingsSection
-					title={t.settings_language}
-					description={t.settings_language_description}
-					themedStyles={themedStyles}
-				>
-					{filteredLanguageOptions.map((option) => (
-						<SettingRow
-							key={option.value}
-							label={option.label}
-							helper={option.helper}
-							selected={language === option.value}
-							onPress={() => setLanguage(option.value)}
-							colors={colors}
-							utilsStyles={utilsStyles}
-							themedStyles={themedStyles}
-						/>
-					))}
-				</SettingsSection>
-			)}
+			<ScrollView
+				style={[defaultStyles.container, { backgroundColor: "transparent" }]}
+				contentInsetAdjustmentBehavior="automatic"
+				contentContainerStyle={{
+					paddingHorizontal: screenPadding.horizontal,
+					paddingBottom: 32,
+					paddingTop: 12,
+				}}
+			>
+				{noResults && (
+					<Text
+						style={{
+							...defaultStyles.text,
+							color: colors.textMuted,
+							marginTop: 20,
+						}}
+					>
+						{t.settings_no_results}
+					</Text>
+				)}
 
-			{showThemeSection && (
-				<SettingsSection
-					title={t.settings_theme}
-					description={t.settings_theme_description}
-					themedStyles={themedStyles}
-				>
-					{filteredThemeOptions.map((option) => (
-						<SettingRow
-							key={option.value}
-							label={option.label}
-							helper={option.helper}
-							selected={theme === option.value}
-							onPress={() => setTheme(option.value)}
-							colors={colors}
-							utilsStyles={utilsStyles}
-							themedStyles={themedStyles}
-						/>
-					))}
+				{showLanguageSection && (
+					<SettingsSection
+						title={t.settings_language}
+						description={t.settings_language_description}
+						themedStyles={themedStyles}
+					>
+						{filteredLanguageOptions.map((option) => (
+							<SettingRow
+								key={option.value}
+								label={option.label}
+								helper={option.helper}
+								selected={language === option.value}
+								onPress={() => setLanguage(option.value)}
+								colors={colors}
+								utilsStyles={utilsStyles}
+								themedStyles={themedStyles}
+							/>
+						))}
+					</SettingsSection>
+				)}
 
-					<View style={[themedStyles.row, { borderBottomWidth: 0 }]}>
-						<View>
-							<Text style={themedStyles.rowTitle}>{t.settings_dark_mode}</Text>
-							<Text style={themedStyles.rowSubtitle}>{t.settings_dark_mode_helper}</Text>
+				{showThemeSection && (
+					<SettingsSection
+						title={t.settings_theme}
+						description={t.settings_theme_description}
+						themedStyles={themedStyles}
+					>
+						{filteredThemeOptions.map((option) => (
+							<SettingRow
+								key={option.value}
+								label={option.label}
+								helper={option.helper}
+								selected={themePreference === option.value}
+								onPress={() => setThemePreference(option.value)}
+								colors={colors}
+								utilsStyles={utilsStyles}
+								themedStyles={themedStyles}
+							/>
+						))}
+
+						<View style={[themedStyles.row, { borderBottomWidth: 0 }]}>
+							<View>
+								<Text style={themedStyles.rowTitle}>{t.settings_dark_mode}</Text>
+								<Text style={themedStyles.rowSubtitle}>{t.settings_dark_mode_helper}</Text>
+							</View>
+							<Switch
+								value={themePreference === "dark"}
+								onValueChange={(value) => setThemePreference(value ? "dark" : "light")}
+								trackColor={{ false: colors.border, true: colors.primary }}
+								thumbColor={colors.icon}
+							/>
 						</View>
-						<Switch
-							value={theme === "dark"}
-							onValueChange={(value) => setTheme(value ? "dark" : "light")}
-							trackColor={{ false: colors.border, true: colors.primary }}
-							thumbColor={colors.icon}
-						/>
-					</View>
-				</SettingsSection>
-			)}
+					</SettingsSection>
+				)}
 
-			{showAboutSection && (
-				<SettingsSection
-					title={t.settings_about}
-					description={t.settings_about_description}
-					themedStyles={themedStyles}
-				>
-					{filteredAboutOptions.map((option) => (
-						<SettingRow
-							key={option.value}
-							label={option.label}
-							helper={option.helper}
-							selected={false}
-							onPress={openGithubProfile}
-							colors={colors}
-							utilsStyles={utilsStyles}
-							themedStyles={themedStyles}
-						/>
-					))}
-				</SettingsSection>
-			)}
-		</ScrollView>
+				{showAboutSection && (
+					<SettingsSection
+						title={t.settings_about}
+						description={t.settings_about_description}
+						themedStyles={themedStyles}
+					>
+						{filteredAboutOptions.map((option) => (
+							<SettingRow
+								key={option.value}
+								label={option.label}
+								helper={option.helper}
+								selected={false}
+								onPress={openGithubProfile}
+								colors={colors}
+								utilsStyles={utilsStyles}
+								themedStyles={themedStyles}
+							/>
+						))}
+					</SettingsSection>
+				)}
+			</ScrollView>
+		</View>
 	);
 };
 
@@ -246,6 +262,7 @@ const SettingRow = ({
 const styles = (
 	colors: ReturnType<typeof useTheme>["colors"],
 	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
+	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"],
 ) =>
 	StyleSheet.create({
 		sectionTitle: {
@@ -259,11 +276,9 @@ const styles = (
 			marginTop: 4,
 		},
 		card: {
-			backgroundColor: colors.card,
-			borderRadius: 12,
+			...utilsStyles.glassCard,
 			marginTop: 16,
-			borderWidth: StyleSheet.hairlineWidth,
-			borderColor: colors.border,
+			borderRadius: 18,
 		},
 		row: {
 			paddingVertical: 14,

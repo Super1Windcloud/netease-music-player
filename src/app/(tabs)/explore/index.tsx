@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
 	ActivityIndicator,
@@ -14,6 +15,7 @@ import { screenPadding } from "@/constants/tokens";
 import { formatSecondsToMinutes, generateTracksListId } from "@/helpers/miscellaneous";
 import { useNavigationSearch } from "@/hooks/useNavigationSearch";
 import { useStrings } from "@/hooks/useStrings";
+import { useTheme } from "@/hooks/useTheme";
 import { type SongSearchResult, searchSongs } from "@/lib/appleSearch";
 import TrackPlayer, { type Track } from "@/lib/expo-track-player";
 import { useQueue } from "@/store/queue";
@@ -52,7 +54,19 @@ const mapSongToTrack = (song: SongSearchResult): Track | null => {
 const ExploreScreen = () => {
 	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
 	const { t } = useStrings();
-	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
+	const { theme } = useTheme();
+	const themedStyles = useMemo(
+		() => styles(colors, defaultStyles, utilsStyles),
+		[colors, defaultStyles, utilsStyles],
+	);
+
+	const backgroundGradient = useMemo(
+		() =>
+			theme === "dark"
+				? (["#0b1120", "#0a1020", colors.background] as const)
+				: (["#f9fbff", "#eef4ff", colors.background] as const),
+		[colors.background, theme],
+	);
 
 	const search = useNavigationSearch({
 		searchBarOptions: {
@@ -158,10 +172,16 @@ const ExploreScreen = () => {
 	);
 
 	return (
-		<View style={defaultStyles.container}>
+		<View style={{ flex: 1 }}>
+			<LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFillObject} />
+
 			<ScrollView
-				style={{ paddingHorizontal: screenPadding.horizontal }}
-				contentContainerStyle={{ paddingBottom: 120, paddingTop: 10 }}
+				style={[defaultStyles.container, { backgroundColor: "transparent" }]}
+				contentContainerStyle={{
+					paddingBottom: 120,
+					paddingTop: 10,
+					paddingHorizontal: screenPadding.horizontal,
+				}}
 				contentInsetAdjustmentBehavior="automatic"
 			>
 				{!search.trim() && (
@@ -266,20 +286,25 @@ const ExploreScreen = () => {
 const styles = (
 	colors: ReturnType<typeof useThemeStyles>["colors"],
 	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
+	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"],
 ) =>
 	StyleSheet.create({
 		card: {
+			...utilsStyles.glassCard,
 			flexDirection: "row",
 			columnGap: 12,
 			alignItems: "center",
-			paddingVertical: 8,
-			borderBottomWidth: StyleSheet.hairlineWidth,
-			borderBottomColor: colors.border,
+			paddingVertical: 12,
+			paddingHorizontal: 12,
+			borderRadius: 16,
+			marginBottom: 12,
 		},
 		artwork: {
-			borderRadius: 12,
-			width: 60,
-			height: 60,
+			borderRadius: 14,
+			width: 68,
+			height: 68,
+			borderWidth: StyleSheet.hairlineWidth,
+			borderColor: colors.border,
 		},
 		primaryText: {
 			...defaultStyles.text,
@@ -319,6 +344,11 @@ const styles = (
 			marginTop: 12,
 			marginBottom: 8,
 			rowGap: 6,
+			padding: 14,
+			borderRadius: 18,
+			backgroundColor: colors.card,
+			borderWidth: StyleSheet.hairlineWidth,
+			borderColor: colors.border,
 		},
 		placeholderTitle: {
 			...defaultStyles.text,

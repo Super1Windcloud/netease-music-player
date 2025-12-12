@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useEffect } from "react";
 import { View, type ViewProps } from "react-native";
 import { Slider } from "react-native-awesome-slider";
 import { useSharedValue } from "react-native-reanimated";
@@ -13,7 +14,9 @@ export const PlayerVolumeBar = ({ style }: ViewProps) => {
 	const min = useSharedValue(0);
 	const max = useSharedValue(1);
 
-	progress.value = volume ?? 0;
+	useEffect(() => {
+		progress.value = volume ?? 0;
+	}, [progress, volume]);
 
 	return (
 		<View style={style}>

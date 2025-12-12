@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { StyleSheet, Text, View, type ViewProps } from "react-native";
 import { Slider } from "react-native-awesome-slider";
 import { useSharedValue } from "react-native-reanimated";
@@ -12,17 +12,19 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
 	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
 
-	const isSliding = useSharedValue(false);
 	const progress = useSharedValue(0);
 	const min = useSharedValue(0);
 	const max = useSharedValue(1);
+	const isSliding = useRef(false);
 
 	const trackElapsedTime = formatSecondsToMinutes(position);
 	const trackRemainingTime = formatSecondsToMinutes(duration - position);
 
-	if (!isSliding.value) {
+	useEffect(() => {
+		if (isSliding.current) return;
+
 		progress.value = duration > 0 ? position / duration : 0;
-	}
+	}, [duration, position, progress]);
 
 	return (
 		<View style={style}>
@@ -38,17 +40,15 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 					maximumTrackTintColor: colors.maximumTrackTintColor,
 				}}
 				onSlidingStart={() => {
-					isSliding.value = true;
+					isSliding.current = true;
 				}}
 				onValueChange={async (value) => {
 					await TrackPlayer.seekTo(value * duration);
 				}}
 				onSlidingComplete={async (value) => {
-					// if the user is not sliding, we should not update the position
-					if (!isSliding.value) return;
+					if (!isSliding.current) return;
 
-					isSliding.value = false;
-
+					isSliding.current = false;
 					await TrackPlayer.seekTo(value * duration);
 				}}
 			/>

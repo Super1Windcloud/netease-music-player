@@ -12,8 +12,11 @@ type QueueControlsProps = {
 
 export const QueueControls = ({ tracks, style, ...viewProps }: QueueControlsProps) => {
 	const { t } = useStrings();
-	const { colors, defaultStyles } = useThemeStyles();
-	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
+	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
+	const themedStyles = useMemo(
+		() => styles(colors, defaultStyles, utilsStyles),
+		[colors, defaultStyles, utilsStyles],
+	);
 
 	const handlePlay = async () => {
 		await TrackPlayer.setQueue(tracks);
@@ -57,18 +60,17 @@ export const QueueControls = ({ tracks, style, ...viewProps }: QueueControlsProp
 const styles = (
 	colors: ReturnType<typeof useThemeStyles>["colors"],
 	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
+	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"],
 ) =>
 	StyleSheet.create({
 		button: {
+			...utilsStyles.glassCard,
 			padding: 12,
-			backgroundColor: colors.card,
-			borderRadius: 8,
+			borderRadius: 16,
 			flexDirection: "row",
 			justifyContent: "center",
 			alignItems: "center",
 			columnGap: 8,
-			borderWidth: StyleSheet.hairlineWidth,
-			borderColor: colors.border,
 		},
 		buttonText: {
 			...defaultStyles.text,

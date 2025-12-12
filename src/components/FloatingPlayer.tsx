@@ -11,44 +11,43 @@ import { MovingText } from "./MovingText";
 
 export const FloatingPlayer = ({ style }: ViewProps) => {
 	const router = useRouter();
-	const { colors, defaultStyles } = useThemeStyles();
+	const { defaultStyles, utilsStyles } = useThemeStyles();
 
 	const themedStyles = useMemo(
 		() =>
 			StyleSheet.create({
 				container: {
+					...utilsStyles.glassCard,
 					flexDirection: "row",
 					alignItems: "center",
-					backgroundColor: colors.card,
-					padding: 8,
-					borderRadius: 12,
-					paddingVertical: 10,
+					padding: 10,
+					borderRadius: 18,
 				},
 				trackArtworkImage: {
-					width: 40,
-					height: 40,
-					borderRadius: 8,
+					width: 46,
+					height: 46,
+					borderRadius: 12,
 				},
 				trackTitleContainer: {
 					flex: 1,
 					overflow: "hidden",
-					marginLeft: 10,
+					marginLeft: 12,
 				},
 				trackTitle: {
 					...defaultStyles.text,
-					fontSize: 18,
-					fontWeight: "600",
-					paddingLeft: 10,
+					fontSize: 16,
+					fontWeight: "700",
+					paddingLeft: 4,
 				},
 				trackControlsContainer: {
 					flexDirection: "row",
 					alignItems: "center",
-					columnGap: 20,
-					marginRight: 16,
-					paddingLeft: 16,
+					columnGap: 16,
+					marginRight: 10,
+					paddingLeft: 12,
 				},
 			}),
-		[colors.card, defaultStyles.text],
+		[defaultStyles.text, utilsStyles.glassCard],
 	);
 
 	const activeTrack = useActiveTrack();

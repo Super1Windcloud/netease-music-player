@@ -24,7 +24,7 @@ export type MusicFeedConfig = {
 	variant: "recommend" | "favorites" | "recently";
 	headline: string;
 	subtitle: string;
-	gradient: [string, string];
+	gradient: readonly [string, string];
 	icon: keyof typeof Ionicons.glyphMap;
 	pillLabel: string;
 	fetchTracks: () => Promise<ApiTrack[]>;
@@ -81,7 +81,7 @@ export const MusicFeedScreen = ({ config }: { config: MusicFeedConfig }) => {
 		const withAlpha = (hex: string, alpha: string) =>
 			hex.startsWith("#") && hex.length === 7 ? `${hex}${alpha}` : hex;
 
-		return [withAlpha(start, "2b"), withAlpha(end, "14"), colors.background];
+		return [withAlpha(start, "2b"), withAlpha(end, "14"), colors.background] as const;
 	}, [colors.background, config.gradient]);
 
 	const hydratePlayableTracks = useCallback(async (tracks: ApiTrack[]) => {

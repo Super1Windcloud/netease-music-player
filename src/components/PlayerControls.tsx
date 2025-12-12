@@ -35,6 +35,20 @@ export const PlayPauseButton = ({ style, iconSize = 48 }: PlayerButtonProps) => 
 			<TouchableOpacity
 				activeOpacity={0.85}
 				onPress={playing ? TrackPlayer.pause : TrackPlayer.play}
+				style={{
+					width: iconSize + 16,
+					height: iconSize + 16,
+					borderRadius: (iconSize + 16) / 2,
+					alignItems: "center",
+					justifyContent: "center",
+					backgroundColor: colors.card,
+					borderColor: colors.border,
+					borderWidth: StyleSheet.hairlineWidth,
+					shadowColor: colors.text,
+					shadowOpacity: 0.08,
+					shadowRadius: 10,
+					shadowOffset: { width: 0, height: 6 },
+				}}
 			>
 				<FontAwesome6 name={playing ? "pause" : "play"} size={iconSize} color={colors.text} />
 			</TouchableOpacity>
@@ -45,7 +59,17 @@ export const PlayPauseButton = ({ style, iconSize = 48 }: PlayerButtonProps) => 
 export const SkipToNextButton = ({ iconSize = 30 }: PlayerButtonProps) => {
 	const { colors } = useTheme();
 	return (
-		<TouchableOpacity activeOpacity={0.7} onPress={() => TrackPlayer.skipToNext()}>
+		<TouchableOpacity
+			activeOpacity={0.8}
+			onPress={() => TrackPlayer.skipToNext()}
+			style={{
+				padding: 10,
+				borderRadius: 12,
+				backgroundColor: colors.card,
+				borderWidth: StyleSheet.hairlineWidth,
+				borderColor: colors.border,
+			}}
+		>
 			<FontAwesome6 name="forward" size={iconSize} color={colors.text} />
 		</TouchableOpacity>
 	);
@@ -54,7 +78,17 @@ export const SkipToNextButton = ({ iconSize = 30 }: PlayerButtonProps) => {
 export const SkipToPreviousButton = ({ iconSize = 30 }: PlayerButtonProps) => {
 	const { colors } = useTheme();
 	return (
-		<TouchableOpacity activeOpacity={0.7} onPress={() => TrackPlayer.skipToPrevious()}>
+		<TouchableOpacity
+			activeOpacity={0.8}
+			onPress={() => TrackPlayer.skipToPrevious()}
+			style={{
+				padding: 10,
+				borderRadius: 12,
+				backgroundColor: colors.card,
+				borderWidth: StyleSheet.hairlineWidth,
+				borderColor: colors.border,
+			}}
+		>
 			<FontAwesome6 name={"backward"} size={iconSize} color={colors.text} />
 		</TouchableOpacity>
 	);
@@ -66,7 +100,8 @@ const styles = StyleSheet.create({
 	},
 	row: {
 		flexDirection: "row",
-		justifyContent: "space-evenly",
+		justifyContent: "space-between",
 		alignItems: "center",
+		columnGap: 24,
 	},
 });

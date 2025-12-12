@@ -71,7 +71,7 @@ const HomeScreen = () => {
 			recommend: {
 				title: t.musicfeed_recommend_title,
 				subtitle: t.musicfeed_recommend_subtitle,
-				gradient: ["#ff3b30", "#ff5470"] as [string, string],
+				gradient: ["#99b8ff", "#cde5ff"] as const,
 				icon: "sparkles-sharp" as const,
 				fetchTracks: () => MusicAPI.getMadeForYou(),
 				pill: t.home_section_recommend,
@@ -79,7 +79,7 @@ const HomeScreen = () => {
 			favorites: {
 				title: t.musicfeed_favorites_title,
 				subtitle: t.musicfeed_favorites_subtitle,
-				gradient: ["#ff7a7f", "#ff4d67"] as [string, string],
+				gradient: ["#ffc8d8", "#f3d6ff"] as const,
 				icon: "heart" as const,
 				fetchTracks: () => MusicAPI.getPopularTracks(),
 				pill: t.home_section_favorites,
@@ -87,7 +87,7 @@ const HomeScreen = () => {
 			recently: {
 				title: t.musicfeed_recently_title,
 				subtitle: t.musicfeed_recently_subtitle,
-				gradient: ["#16c0a8", "#1c7bd9"] as [string, string],
+				gradient: ["#b8f0e5", "#d2e7ff"] as const,
 				icon: "time" as const,
 				fetchTracks: () => MusicAPI.getRecentlyPlayed(),
 				pill: t.home_section_recent,
@@ -109,8 +109,16 @@ const HomeScreen = () => {
 	const [refreshing, setRefreshing] = useState(false);
 
 	const themedStyles = useMemo(
-		() => styles(colors, defaultStyles, theme),
-		[colors, defaultStyles, theme],
+		() => styles(colors, defaultStyles, utilsStyles, theme),
+		[colors, defaultStyles, theme, utilsStyles],
+	);
+
+	const backgroundGradient = useMemo(
+		() =>
+			theme === "dark"
+				? (["#0a1020", "#0a1224", colors.background] as const)
+				: (["#f9fbff", "#eef4ff", colors.background] as const),
+		[colors.background, theme],
 	);
 
 	const hydratePlayableTracks = useCallback(async (key: SectionKey, tracks: ApiTrack[]) => {
@@ -310,14 +318,7 @@ const HomeScreen = () => {
 
 	return (
 		<View style={{ flex: 1 }}>
-			<LinearGradient
-				colors={
-					theme === "dark"
-						? ["#1a0f0f", "#0b0f16", colors.background]
-						: ["#fff0f0", "#f7f7ff", colors.background]
-				}
-				style={StyleSheet.absoluteFillObject}
-			/>
+			<LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFillObject} />
 
 			<ScrollView
 				ref={scrollRef}
@@ -334,14 +335,17 @@ const HomeScreen = () => {
 				}
 			>
 				<View style={themedStyles.heroCard}>
-					<LinearGradient colors={["#ff463a", "#ff1050"]} style={themedStyles.heroGradient}>
-						<BlurView tint="dark" intensity={60} style={themedStyles.heroBlur} />
+					<LinearGradient
+						colors={["#0a84ff", "#7eb5ff"] as const}
+						style={themedStyles.heroGradient}
+					>
+						<BlurView tint="dark" intensity={65} style={themedStyles.heroBlur} />
 						<View style={themedStyles.heroHeader}>
 							<View style={themedStyles.heroBadge}>
 								<Ionicons name="musical-notes" size={16} color="#fff" />
 								<Text style={themedStyles.heroBadgeText}>{t.tabs_recommend}</Text>
 							</View>
-							<Ionicons name="flash" size={18} color="#fff" />
+							<Ionicons name="flash" size={18} color="rgba(255,255,255,0.8)" />
 						</View>
 						<Text style={themedStyles.heroTitle}>{t.home_title}</Text>
 						<Text style={themedStyles.heroSubtitle}>{t.home_subtitle}</Text>
@@ -405,21 +409,19 @@ const HomeScreen = () => {
 const styles = (
 	colors: ReturnType<typeof useThemeStyles>["colors"],
 	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
+	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"],
 	theme: ReturnType<typeof useTheme>["theme"],
 ) =>
 	StyleSheet.create({
 		heroCard: {
-			borderRadius: 18,
+			...utilsStyles.glassCard,
 			overflow: "hidden",
 			marginBottom: 16,
-			shadowColor: "#000",
-			shadowOpacity: 0.25,
-			shadowRadius: 10,
-			shadowOffset: { width: 0, height: 8 },
+			borderRadius: 22,
 		},
 		heroGradient: {
-			padding: 18,
-			borderRadius: 18,
+			padding: 20,
+			borderRadius: 22,
 			overflow: "hidden",
 			position: "relative",
 		},
@@ -432,13 +434,12 @@ const styles = (
 			justifyContent: "space-between",
 		},
 		heroBadge: {
+			...utilsStyles.pill,
+			backgroundColor: "rgba(255,255,255,0.18)",
+			borderColor: "rgba(255,255,255,0.2)",
 			flexDirection: "row",
 			alignItems: "center",
 			gap: 8,
-			paddingHorizontal: 12,
-			paddingVertical: 6,
-			borderRadius: 999,
-			backgroundColor: "rgba(255,255,255,0.16)",
 		},
 		heroBadgeText: {
 			...defaultStyles.text,
@@ -450,12 +451,12 @@ const styles = (
 			...defaultStyles.text,
 			color: "#fff",
 			fontSize: 24,
-			fontWeight: "800",
+			fontWeight: "700",
 			marginTop: 14,
 		},
 		heroSubtitle: {
 			...defaultStyles.text,
-			color: "rgba(255,255,255,0.85)",
+			color: "rgba(255,255,255,0.8)",
 			marginTop: 8,
 			fontSize: 14,
 			lineHeight: 22,
@@ -486,6 +487,7 @@ const styles = (
 		quickAction: {
 			flex: 1,
 			alignItems: "center",
+			paddingVertical: 8,
 		},
 		quickIcon: {
 			width: 52,
@@ -494,7 +496,7 @@ const styles = (
 			alignItems: "center",
 			justifyContent: "center",
 			shadowColor: "#000",
-			shadowOpacity: 0.2,
+			shadowOpacity: 0.12,
 			shadowRadius: 8,
 			shadowOffset: { width: 0, height: 4 },
 		},
@@ -506,7 +508,7 @@ const styles = (
 			textAlign: "center",
 		},
 		section: {
-			marginTop: 10,
+			marginTop: 14,
 		},
 		sectionHeader: {
 			flexDirection: "row",
@@ -540,8 +542,12 @@ const styles = (
 			flexDirection: "row",
 			alignItems: "center",
 			gap: 6,
-			paddingVertical: 6,
-			paddingHorizontal: 10,
+			paddingVertical: 8,
+			paddingHorizontal: 12,
+			borderRadius: 999,
+			backgroundColor: colors.card,
+			borderWidth: StyleSheet.hairlineWidth,
+			borderColor: colors.border,
 		},
 		sectionActionText: {
 			...defaultStyles.text,
@@ -557,12 +563,16 @@ const styles = (
 		trackCard: {
 			width: "48%",
 			marginBottom: 14,
-			padding: 10,
-			borderRadius: 14,
+			padding: 12,
+			borderRadius: 16,
 			overflow: "hidden",
-			backgroundColor: theme === "dark" ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.92)",
+			backgroundColor: theme === "dark" ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.65)",
 			borderWidth: StyleSheet.hairlineWidth,
 			borderColor: colors.border,
+			shadowColor: "#000",
+			shadowOpacity: 0.05,
+			shadowRadius: 12,
+			shadowOffset: { width: 0, height: 8 },
 		},
 		trackArtworkWrapper: {
 			position: "relative",
@@ -577,7 +587,7 @@ const styles = (
 		},
 		trackOverlay: {
 			...StyleSheet.absoluteFillObject,
-			opacity: 0.35,
+			opacity: 0.28,
 		},
 		playBadge: {
 			position: "absolute",

@@ -17,13 +17,20 @@ export const TracksListItem = ({
 	onTrackSelect: handleTrackSelect,
 }: TracksListItemProps) => {
 	const { playing } = useIsPlaying();
-	const { colors, defaultStyles } = useThemeStyles();
-	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
+	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
+	const themedStyles = useMemo(
+		() => styles(colors, defaultStyles, utilsStyles),
+		[colors, defaultStyles, utilsStyles],
+	);
 
 	const isActiveTrack = useActiveTrack()?.url === track.url;
 
 	return (
-		<TouchableHighlight onPress={() => handleTrackSelect(track)}>
+		<TouchableHighlight
+			onPress={() => handleTrackSelect(track)}
+			underlayColor={colors.border}
+			style={themedStyles.touchable}
+		>
 			<View style={themedStyles.trackItemContainer}>
 				<View>
 					<Image
@@ -90,13 +97,21 @@ export const TracksListItem = ({
 const styles = (
 	colors: ReturnType<typeof useThemeStyles>["colors"],
 	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
+	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"],
 ) =>
 	StyleSheet.create({
+		touchable: {
+			borderRadius: 16,
+			overflow: "hidden",
+		},
 		trackItemContainer: {
+			...utilsStyles.glassCard,
 			flexDirection: "row",
 			columnGap: 14,
 			alignItems: "center",
-			paddingRight: 20,
+			paddingRight: 18,
+			paddingVertical: 10,
+			borderRadius: 16,
 		},
 		trackPlayingIconIndicator: {
 			position: "absolute",
@@ -111,9 +126,11 @@ const styles = (
 			left: 14,
 		},
 		trackArtworkImage: {
-			borderRadius: 8,
-			width: 50,
-			height: 50,
+			borderRadius: 12,
+			width: 56,
+			height: 56,
+			borderWidth: StyleSheet.hairlineWidth,
+			borderColor: colors.border,
 		},
 		trackTitleText: {
 			...defaultStyles.text,

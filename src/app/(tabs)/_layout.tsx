@@ -16,6 +16,7 @@ const TabsNavigation = () => {
 			<Tabs
 				screenOptions={{
 					tabBarActiveTintColor: colors.primary,
+					tabBarInactiveTintColor: colors.textMuted,
 					tabBarLabelStyle: {
 						fontSize: fontSize.xs,
 						fontWeight: "500",
@@ -27,15 +28,22 @@ const TabsNavigation = () => {
 						borderTopRightRadius: 20,
 						borderTopWidth: 0,
 						paddingTop: 8,
+						backgroundColor: "transparent",
+						borderWidth: StyleSheet.hairlineWidth,
+						borderColor: colors.border,
+						marginHorizontal: 10,
+						marginBottom: 6,
+						height: 72,
 					},
 					tabBarBackground: () => (
 						<BlurView
-							intensity={95}
+							intensity={80}
 							style={{
 								...StyleSheet.absoluteFillObject,
 								overflow: "hidden",
 								borderTopLeftRadius: 20,
 								borderTopRightRadius: 20,
+								backgroundColor: colors.card,
 							}}
 						/>
 					),

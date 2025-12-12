@@ -1,5 +1,6 @@
+import { LinearGradient } from "expo-linear-gradient";
 import { useMemo } from "react";
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { TracksList } from "@/components/TracksList";
 import { screenPadding } from "@/constants/tokens";
 import { trackTitleFilter } from "@/helpers/filter";
@@ -11,7 +12,7 @@ import { useEnsureLibraryLoaded, useLibraryStatus, useTracks } from "@/store/lib
 import { useThemeStyles } from "@/styles";
 
 const SongsScreen = () => {
-	const { colors } = useTheme();
+	const { colors, theme } = useTheme();
 	const { defaultStyles } = useThemeStyles();
 	const { t } = useStrings();
 	const search = useNavigationSearch({
@@ -30,22 +31,42 @@ const SongsScreen = () => {
 		return tracks.filter(trackTitleFilter(search));
 	}, [search, tracks]);
 
+	const backgroundGradient = useMemo(
+		() =>
+			theme === "dark"
+				? (["#0b1120", "#0a1020", colors.background] as const)
+				: (["#f9fbff", "#eef4ff", colors.background] as const),
+		[colors.background, theme],
+	);
+
 	if (status === "loading" || status === "idle") {
 		return (
-			<View style={[defaultStyles.container, { justifyContent: "center" }]}>
-				<ActivityIndicator color={colors.primary} />
-				<Text style={{ ...defaultStyles.text, marginTop: 12, color: colors.textMuted }}>
-					{t.songs_loading}
-				</Text>
+			<View style={{ flex: 1 }}>
+				<LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFillObject} />
+				<View
+					style={[
+						defaultStyles.container,
+						{ justifyContent: "center", backgroundColor: "transparent" },
+					]}
+				>
+					<ActivityIndicator color={colors.primary} />
+					<Text style={{ ...defaultStyles.text, marginTop: 12, color: colors.textMuted }}>
+						{t.songs_loading}
+					</Text>
+				</View>
 			</View>
 		);
 	}
 
 	return (
-		<View style={defaultStyles.container}>
+		<View style={{ flex: 1 }}>
+			<LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFillObject} />
 			<ScrollView
 				contentInsetAdjustmentBehavior="automatic"
-				style={{ paddingHorizontal: screenPadding.horizontal }}
+				style={[
+					defaultStyles.container,
+					{ paddingHorizontal: screenPadding.horizontal, backgroundColor: "transparent" },
+				]}
 			>
 				{error && (
 					<Text style={{ ...defaultStyles.text, color: colors.textMuted, marginBottom: 12 }}>

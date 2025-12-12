@@ -38,6 +38,28 @@ export const useThemeStyles = () => {
 					borderWidth: StyleSheet.hairlineWidth,
 					opacity: 0.3,
 				},
+				mutedText: {
+					...defaultStyles.text,
+					color: colors.textMuted,
+				},
+				glassCard: {
+					backgroundColor: colors.card,
+					borderRadius: 18,
+					borderWidth: StyleSheet.hairlineWidth,
+					borderColor: colors.border,
+					shadowColor: "#000",
+					shadowOpacity: 0.08,
+					shadowRadius: 16,
+					shadowOffset: { width: 0, height: 10 },
+				},
+				pill: {
+					borderRadius: 999,
+					paddingHorizontal: 14,
+					paddingVertical: 6,
+					backgroundColor: colors.card,
+					borderWidth: StyleSheet.hairlineWidth,
+					borderColor: colors.border,
+				},
 				emptyContentText: {
 					...defaultStyles.text,
 					color: colors.textMuted,

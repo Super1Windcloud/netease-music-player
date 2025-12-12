@@ -1,3 +1,4 @@
+import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useMemo } from "react";
@@ -11,15 +12,20 @@ import { PlayerVolumeBar } from "@/components/PlayerVolumeBar";
 import { unknownTrackImageUri } from "@/constants/images";
 import { fontSize, screenPadding } from "@/constants/tokens";
 import { usePlayerBackground } from "@/hooks/usePlayerBackground";
+import { useTheme } from "@/hooks/useTheme";
 import { useActiveTrack } from "@/lib/expo-track-player";
 import { useThemeStyles } from "@/styles";
 
 const PlayerScreen = () => {
 	const activeTrack = useActiveTrack();
 	const { imageColors } = usePlayerBackground(activeTrack?.artwork ?? unknownTrackImageUri);
+	const { theme } = useTheme();
 	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
-	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
-	const gradientColors = useMemo<[string, string]>(
+	const themedStyles = useMemo(
+		() => styles(defaultStyles, utilsStyles, theme),
+		[defaultStyles, theme, utilsStyles],
+	);
+	const gradientColors = useMemo<readonly [string, string]>(
 		() => [imageColors?.background ?? colors.background, imageColors?.primary ?? colors.primary],
 		[colors.background, colors.primary, imageColors?.background, imageColors?.primary],
 	);
@@ -36,10 +42,19 @@ const PlayerScreen = () => {
 
 	return (
 		<LinearGradient style={{ flex: 1 }} colors={gradientColors}>
+			<LinearGradient
+				colors={
+					theme === "dark"
+						? ["rgba(5, 9, 16, 0.65)", "rgba(5, 9, 16, 0.15)"]
+						: ["rgba(255,255,255,0.6)", "rgba(255,255,255,0.2)"]
+				}
+				style={StyleSheet.absoluteFillObject}
+			/>
+
 			<View style={themedStyles.overlayContainer}>
 				<DismissPlayerSymbol />
 
-				<View style={{ flex: 1, marginTop: top + 70, marginBottom: bottom }}>
+				<View style={{ flex: 1, marginTop: top + 36, marginBottom: bottom + 10, gap: 20 }}>
 					<View style={themedStyles.artworkImageContainer}>
 						<Image
 							source={{
@@ -51,39 +66,37 @@ const PlayerScreen = () => {
 						/>
 					</View>
 
-					<View style={{ flex: 1 }}>
-						<View style={{ marginTop: "auto" }}>
-							<View style={{ height: 60 }}>
-								<View style={{ alignItems: "center" }}>
-									{/* Track title */}
-									<View style={[themedStyles.trackTitleContainer, { width: "100%" }]}>
-										<MovingText
-											text={activeTrack.title ?? ""}
-											animationThreshold={30}
-											style={themedStyles.trackTitleText}
-										/>
-									</View>
-								</View>
-
-								{/* Track artist */}
-								{activeTrack.artist && (
-									<Text numberOfLines={1} style={[themedStyles.trackArtistText, { marginTop: 6 }]}>
-										{activeTrack.artist}
-									</Text>
-								)}
-							</View>
-
-							<PlayerProgressBar style={{ marginTop: 32 }} />
-
-							<PlayerControls style={{ marginTop: 40 }} />
+					<View style={themedStyles.infoBlock}>
+						<View style={themedStyles.trackTitleContainer}>
+							<MovingText
+								text={activeTrack.title ?? ""}
+								animationThreshold={28}
+								style={themedStyles.trackTitleText}
+							/>
 						</View>
 
-						<PlayerVolumeBar style={{ marginTop: "auto", marginBottom: 30 }} />
-
-						<View style={utilsStyles.centeredRow}>
-							<PlayerRepeatToggle size={30} style={{ marginBottom: 6 }} />
-						</View>
+						{activeTrack.artist && (
+							<Text numberOfLines={1} style={[themedStyles.trackArtistText, { marginTop: 6 }]}>
+								{activeTrack.artist}
+							</Text>
+						)}
 					</View>
+
+					<BlurView
+						tint={theme === "dark" ? "dark" : "light"}
+						intensity={75}
+						style={themedStyles.panel}
+					>
+						<PlayerProgressBar />
+
+						<PlayerControls style={{ marginTop: 30 }} />
+
+						<PlayerVolumeBar style={{ marginTop: 26 }} />
+
+						<View style={[utilsStyles.centeredRow, { marginTop: 10 }]}>
+							<PlayerRepeatToggle size={30} style={{ marginBottom: 4 }} />
+						</View>
+					</BlurView>
 				</View>
 			</View>
 		</LinearGradient>
@@ -109,10 +122,10 @@ const DismissPlayerSymbol = () => {
 				accessible={false}
 				style={{
 					width: 50,
-					height: 8,
-					borderRadius: 8,
+					height: 6,
+					borderRadius: 10,
 					backgroundColor: colors.text,
-					opacity: 0.7,
+					opacity: 0.2,
 				}}
 			/>
 		</View>
@@ -120,46 +133,62 @@ const DismissPlayerSymbol = () => {
 };
 
 const styles = (
-	_colors: ReturnType<typeof useThemeStyles>["colors"],
 	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
+	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"],
+	theme: ReturnType<typeof useTheme>["theme"],
 ) =>
 	StyleSheet.create({
 		overlayContainer: {
 			...defaultStyles.container,
 			paddingHorizontal: screenPadding.horizontal,
-			backgroundColor: "rgba(0,0,0,0.4)",
 		},
 		artworkImageContainer: {
 			shadowOffset: {
 				width: 0,
-				height: 8,
+				height: 12,
 			},
-			shadowOpacity: 0.44,
-			shadowRadius: 11.0,
+			shadowOpacity: 0.32,
+			shadowRadius: 18,
 			flexDirection: "row",
 			justifyContent: "center",
-			height: "45%",
+			height: "50%",
 		},
 		artworkImage: {
 			width: "100%",
 			height: "100%",
 			resizeMode: "cover",
-			borderRadius: 12,
+			borderRadius: 24,
+			borderWidth: StyleSheet.hairlineWidth,
+			borderColor: theme === "dark" ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.6)",
+		},
+		infoBlock: {
+			alignItems: "center",
+			rowGap: 4,
 		},
 		trackTitleContainer: {
 			flex: 1,
 			overflow: "hidden",
+			width: "100%",
 		},
 		trackTitleText: {
 			...defaultStyles.text,
 			fontSize: 22,
 			fontWeight: "700",
+			textAlign: "center",
 		},
 		trackArtistText: {
 			...defaultStyles.text,
 			fontSize: fontSize.base,
-			opacity: 0.8,
+			opacity: 0.7,
+			textAlign: "center",
 			maxWidth: "90%",
+		},
+		panel: {
+			...utilsStyles.glassCard,
+			padding: 18,
+			borderRadius: 22,
+			backgroundColor: theme === "dark" ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.7)",
+			rowGap: 10,
 		},
 	});
 
