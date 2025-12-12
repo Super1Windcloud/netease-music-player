@@ -57,7 +57,7 @@ export const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || "https://dab
 
 const apiClient = axios.create({
 	baseURL: "https://dab.yeet.su/api",
-	timeout: 10000,
+	timeout: 20000,
 	headers: {
 		"Content-Type": "application/json",
 		"User-Agent":
@@ -129,9 +129,9 @@ const getOptimalImage = (images: { small: string; thumbnail: string; large: stri
 
 const getRandomOffset = (max: number = 60, step: number = 10): number => {
 	// Randomize the offset to reduce repeated results across refreshes
-	const steps = Math.max(1, Math.floor(max / step))
-	return Math.floor(Math.random() * steps) * step
-}
+	const steps = Math.max(1, Math.floor(max / step));
+	return Math.floor(Math.random() * steps) * step;
+};
 
 const searchTracks = async (
 	query: string,
