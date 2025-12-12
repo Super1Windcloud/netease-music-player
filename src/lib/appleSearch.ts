@@ -1,4 +1,4 @@
-const APPLE_SEARCH_ENDPOINT = 'https://itunes.apple.com/search';
+const APPLE_SEARCH_ENDPOINT = "https://itunes.apple.com/search";
 
 type AppleSearchResponse<T> = {
 	resultCount: number;
@@ -69,7 +69,7 @@ const fetchAppleSearch = async <T>(
 	signal?: AbortSignal,
 ) => {
 	const searchParams = new URLSearchParams({
-		media: 'music',
+		media: "music",
 		...Object.fromEntries(Object.entries(params).map(([key, value]) => [key, String(value)])),
 	});
 
@@ -78,7 +78,7 @@ const fetchAppleSearch = async <T>(
 	});
 
 	if (!response.ok) {
-		throw new Error('Unable to reach Apple Search API');
+		throw new Error("Unable to reach Apple Search API");
 	}
 
 	const data = (await response.json()) as AppleSearchResponse<T>;
@@ -89,7 +89,7 @@ export const searchSongs = async (term: string, signal?: AbortSignal) => {
 	const results = await fetchAppleSearch<AppleSongResult>(
 		{
 			term,
-			entity: 'musicTrack',
+			entity: "musicTrack",
 			limit: 15,
 		},
 		signal,
@@ -114,7 +114,7 @@ export const searchAlbums = async (term: string, signal?: AbortSignal) => {
 	const results = await fetchAppleSearch<AppleAlbumResult>(
 		{
 			term,
-			entity: 'album',
+			entity: "album",
 			limit: 12,
 		},
 		signal,

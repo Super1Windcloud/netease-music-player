@@ -1,10 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
-import { useMemo } from 'react';
-import { StyleSheet, Text, View, type ViewProps } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useStrings } from '@/hooks/useStrings';
-import TrackPlayer, { type Track } from '@/lib/expo-track-player';
-import { useThemeStyles } from '@/styles';
+import { Ionicons } from "@expo/vector-icons";
+import { useMemo } from "react";
+import { StyleSheet, Text, View, type ViewProps } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useStrings } from "@/hooks/useStrings";
+import TrackPlayer, { type Track } from "@/lib/expo-track-player";
+import { useThemeStyles } from "@/styles";
 
 type QueueControlsProps = {
 	tracks: Track[];
@@ -28,7 +28,7 @@ export const QueueControls = ({ tracks, style, ...viewProps }: QueueControlsProp
 	};
 
 	return (
-		<View style={[{ flexDirection: 'row', columnGap: 16 }, style]} {...viewProps}>
+		<View style={[{ flexDirection: "row", columnGap: 16 }, style]} {...viewProps}>
 			{/* Play button */}
 			<View style={{ flex: 1 }}>
 				<TouchableOpacity onPress={handlePlay} activeOpacity={0.8} style={themedStyles.button}>
@@ -45,7 +45,7 @@ export const QueueControls = ({ tracks, style, ...viewProps }: QueueControlsProp
 					activeOpacity={0.8}
 					style={themedStyles.button}
 				>
-					<Ionicons name={'shuffle-sharp'} size={24} color={colors.primary} />
+					<Ionicons name={"shuffle-sharp"} size={24} color={colors.primary} />
 
 					<Text style={themedStyles.buttonText}>{t.queue_shuffle}</Text>
 				</TouchableOpacity>
@@ -55,17 +55,17 @@ export const QueueControls = ({ tracks, style, ...viewProps }: QueueControlsProp
 };
 
 const styles = (
-	colors: ReturnType<typeof useThemeStyles>['colors'],
-	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
+	colors: ReturnType<typeof useThemeStyles>["colors"],
+	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
 ) =>
 	StyleSheet.create({
 		button: {
 			padding: 12,
 			backgroundColor: colors.card,
 			borderRadius: 8,
-			flexDirection: 'row',
-			justifyContent: 'center',
-			alignItems: 'center',
+			flexDirection: "row",
+			justifyContent: "center",
+			alignItems: "center",
 			columnGap: 8,
 			borderWidth: StyleSheet.hairlineWidth,
 			borderColor: colors.border,
@@ -73,8 +73,8 @@ const styles = (
 		buttonText: {
 			...defaultStyles.text,
 			color: colors.primary,
-			fontWeight: '600',
+			fontWeight: "600",
 			fontSize: 18,
-			textAlign: 'center',
+			textAlign: "center",
 		},
 	});

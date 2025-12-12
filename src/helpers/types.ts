@@ -1,4 +1,4 @@
-import type { Track } from '@/lib/expo-track-player';
+import type { Track } from "@/lib/expo-track-player";
 
 export type Album = {
 	name: string;

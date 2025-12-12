@@ -1,11 +1,11 @@
-import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
-import { Tabs } from 'expo-router';
-import { StyleSheet } from 'react-native';
-import { FloatingPlayer } from '@/components/FloatingPlayer';
-import { fontSize } from '@/constants/tokens';
-import { useStrings } from '@/hooks/useStrings';
-import { useTheme } from '@/hooks/useTheme';
+import { Ionicons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
+import { Tabs } from "expo-router";
+import { StyleSheet } from "react-native";
+import { FloatingPlayer } from "@/components/FloatingPlayer";
+import { fontSize } from "@/constants/tokens";
+import { useStrings } from "@/hooks/useStrings";
+import { useTheme } from "@/hooks/useTheme";
 
 const TabsNavigation = () => {
 	const { colors } = useTheme();
@@ -18,11 +18,11 @@ const TabsNavigation = () => {
 					tabBarActiveTintColor: colors.primary,
 					tabBarLabelStyle: {
 						fontSize: fontSize.xs,
-						fontWeight: '500',
+						fontWeight: "500",
 					},
 					headerShown: false,
 					tabBarStyle: {
-						position: 'absolute',
+						position: "absolute",
 						borderTopLeftRadius: 20,
 						borderTopRightRadius: 20,
 						borderTopWidth: 0,
@@ -33,7 +33,7 @@ const TabsNavigation = () => {
 							intensity={95}
 							style={{
 								...StyleSheet.absoluteFillObject,
-								overflow: 'hidden',
+								overflow: "hidden",
 								borderTopLeftRadius: 20,
 								borderTopRightRadius: 20,
 							}}
@@ -81,7 +81,7 @@ const TabsNavigation = () => {
 
 			<FloatingPlayer
 				style={{
-					position: 'absolute',
+					position: "absolute",
 					left: 8,
 					right: 8,
 					bottom: 78,

@@ -50,5 +50,5 @@ export interface SearchResponse {
 export interface SearchParams {
 	q: string;
 	offset?: number;
-	type?: 'track' | 'album' | 'artist';
+	type?: "track" | "album" | "artist";
 }

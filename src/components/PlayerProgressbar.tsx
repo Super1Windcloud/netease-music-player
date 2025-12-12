@@ -1,11 +1,11 @@
-import { useMemo } from 'react';
-import { StyleSheet, Text, View, type ViewProps } from 'react-native';
-import { Slider } from 'react-native-awesome-slider';
-import { useSharedValue } from 'react-native-reanimated';
-import { fontSize } from '@/constants/tokens';
-import { formatSecondsToMinutes } from '@/helpers/miscellaneous';
-import TrackPlayer, { useProgress } from '@/lib/expo-track-player';
-import { useThemeStyles } from '@/styles';
+import { useMemo } from "react";
+import { StyleSheet, Text, View, type ViewProps } from "react-native";
+import { Slider } from "react-native-awesome-slider";
+import { useSharedValue } from "react-native-reanimated";
+import { fontSize } from "@/constants/tokens";
+import { formatSecondsToMinutes } from "@/helpers/miscellaneous";
+import TrackPlayer, { useProgress } from "@/lib/expo-track-player";
+import { useThemeStyles } from "@/styles";
 
 export const PlayerProgressBar = ({ style }: ViewProps) => {
 	const { duration, position } = useProgress(250);
@@ -57,7 +57,7 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 				<Text style={themedStyles.timeText}>{trackElapsedTime}</Text>
 
 				<Text style={themedStyles.timeText}>
-					{'-'} {trackRemainingTime}
+					{"-"} {trackRemainingTime}
 				</Text>
 			</View>
 		</View>
@@ -65,14 +65,14 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 };
 
 const styles = (
-	colors: ReturnType<typeof useThemeStyles>['colors'],
-	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
+	colors: ReturnType<typeof useThemeStyles>["colors"],
+	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
 ) =>
 	StyleSheet.create({
 		timeRow: {
-			flexDirection: 'row',
-			justifyContent: 'space-between',
-			alignItems: 'baseline',
+			flexDirection: "row",
+			justifyContent: "space-between",
+			alignItems: "baseline",
 			marginTop: 20,
 		},
 		timeText: {
@@ -81,6 +81,6 @@ const styles = (
 			opacity: 0.75,
 			fontSize: fontSize.xs,
 			letterSpacing: 0.7,
-			fontWeight: '500',
+			fontWeight: "500",
 		},
 	});

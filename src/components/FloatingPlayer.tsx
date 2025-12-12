@@ -1,13 +1,13 @@
-import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
-import { useMemo } from 'react';
-import { StyleSheet, TouchableOpacity, View, type ViewProps } from 'react-native';
-import { PlayPauseButton, SkipToNextButton } from '@/components/PlayerControls';
-import { unknownTrackImageUri } from '@/constants/images';
-import { useLastActiveTrack } from '@/hooks/useLastActiveTrack';
-import { useActiveTrack } from '@/lib/expo-track-player';
-import { useThemeStyles } from '@/styles';
-import { MovingText } from './MovingText';
+import { Image } from "expo-image";
+import { useRouter } from "expo-router";
+import { useMemo } from "react";
+import { StyleSheet, TouchableOpacity, View, type ViewProps } from "react-native";
+import { PlayPauseButton, SkipToNextButton } from "@/components/PlayerControls";
+import { unknownTrackImageUri } from "@/constants/images";
+import { useLastActiveTrack } from "@/hooks/useLastActiveTrack";
+import { useActiveTrack } from "@/lib/expo-track-player";
+import { useThemeStyles } from "@/styles";
+import { MovingText } from "./MovingText";
 
 export const FloatingPlayer = ({ style }: ViewProps) => {
 	const router = useRouter();
@@ -17,8 +17,8 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 		() =>
 			StyleSheet.create({
 				container: {
-					flexDirection: 'row',
-					alignItems: 'center',
+					flexDirection: "row",
+					alignItems: "center",
 					backgroundColor: colors.card,
 					padding: 8,
 					borderRadius: 12,
@@ -31,18 +31,18 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 				},
 				trackTitleContainer: {
 					flex: 1,
-					overflow: 'hidden',
+					overflow: "hidden",
 					marginLeft: 10,
 				},
 				trackTitle: {
 					...defaultStyles.text,
 					fontSize: 18,
-					fontWeight: '600',
+					fontWeight: "600",
 					paddingLeft: 10,
 				},
 				trackControlsContainer: {
-					flexDirection: 'row',
-					alignItems: 'center',
+					flexDirection: "row",
+					alignItems: "center",
 					columnGap: 20,
 					marginRight: 16,
 					paddingLeft: 16,
@@ -57,7 +57,7 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 	const displayedTrack = activeTrack ?? lastActiveTrack;
 
 	const handlePress = () => {
-		router.navigate('/player');
+		router.navigate("/player");
 	};
 
 	if (!displayedTrack) return null;
@@ -79,7 +79,7 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 			<View style={themedStyles.trackTitleContainer}>
 				<MovingText
 					style={themedStyles.trackTitle}
-					text={displayedTrack.title ?? ''}
+					text={displayedTrack.title ?? ""}
 					animationThreshold={25}
 				/>
 			</View>

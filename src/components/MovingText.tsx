@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import type { StyleProp, TextStyle } from 'react-native';
+import { useEffect } from "react";
+import type { StyleProp, TextStyle } from "react-native";
 import Animated, {
 	cancelAnimation,
 	Easing,
@@ -8,7 +8,7 @@ import Animated, {
 	withDelay,
 	withRepeat,
 	withTiming,
-} from 'react-native-reanimated';
+} from "react-native-reanimated";
 
 export type MovingTextProps = {
 	text: string;

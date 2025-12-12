@@ -1,7 +1,7 @@
-import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
+import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 
 let isActive = false;
-const WAKELOCK_TAG = 'netease-music-player';
+const WAKELOCK_TAG = "netease-music-player";
 
 const activate = async () => {
 	try {
@@ -10,7 +10,7 @@ const activate = async () => {
 			isActive = true;
 		}
 	} catch (error) {
-		console.error('Failed to activate wakelock:', error);
+		console.error("Failed to activate wakelock:", error);
 	}
 };
 
@@ -21,7 +21,7 @@ const deactivate = async () => {
 			isActive = false;
 		}
 	} catch (error) {
-		console.error('Failed to deactivate wakelock:', error);
+		console.error("Failed to deactivate wakelock:", error);
 	}
 };
 

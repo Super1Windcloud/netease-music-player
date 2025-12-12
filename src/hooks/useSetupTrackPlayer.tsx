@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import TrackPlayer, { Capability, RatingType, RepeatMode } from '@/lib/expo-track-player';
+import { useEffect, useRef } from "react";
+import TrackPlayer, { Capability, RatingType, RepeatMode } from "@/lib/expo-track-player";
 
 const setupPlayer = async () => {
 	await TrackPlayer.setupPlayer({

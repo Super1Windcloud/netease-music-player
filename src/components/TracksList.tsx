@@ -1,13 +1,13 @@
-import { Image } from 'expo-image';
-import { useRef } from 'react';
-import { FlatList, type FlatListProps, Text, View } from 'react-native';
-import { TracksListItem } from '@/components/TracksListItem';
-import { unknownTrackImageUri } from '@/constants/images';
-import { useStrings } from '@/hooks/useStrings';
-import TrackPlayer, { type Track } from '@/lib/expo-track-player';
-import { useQueue } from '@/store/queue';
-import { useThemeStyles } from '@/styles';
-import { QueueControls } from './QueueControls';
+import { Image } from "expo-image";
+import { useRef } from "react";
+import { FlatList, type FlatListProps, Text, View } from "react-native";
+import { TracksListItem } from "@/components/TracksListItem";
+import { unknownTrackImageUri } from "@/constants/images";
+import { useStrings } from "@/hooks/useStrings";
+import TrackPlayer, { type Track } from "@/lib/expo-track-player";
+import { useQueue } from "@/store/queue";
+import { useThemeStyles } from "@/styles";
+import { QueueControls } from "./QueueControls";
 
 export type TracksListProps = Partial<FlatListProps<Track>> & {
 	id: string;

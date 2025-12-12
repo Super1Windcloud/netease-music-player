@@ -1,7 +1,7 @@
-import { useNavigation } from 'expo-router';
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { SearchBarProps } from 'react-native-screens';
-import { useTheme } from '@/hooks/useTheme';
+import { useNavigation } from "expo-router";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
+import type { SearchBarProps } from "react-native-screens";
+import { useTheme } from "@/hooks/useTheme";
 
 const shallowEqual = (a?: SearchBarProps, b?: SearchBarProps) => {
 	if (a === b) return true;
@@ -21,12 +21,12 @@ export const useNavigationSearch = ({
 	searchBarOptions?: SearchBarProps;
 }) => {
 	const { colors } = useTheme();
-	const [search, setSearch] = useState('');
+	const [search, setSearch] = useState("");
 	const lastOptionsRef = useRef<SearchBarProps | undefined>(undefined);
 
 	const navigation = useNavigation();
 
-	const handleOnChangeText: SearchBarProps['onChangeText'] = useCallback(
+	const handleOnChangeText: SearchBarProps["onChangeText"] = useCallback(
 		({ nativeEvent: { text } }: { nativeEvent: { text: string } }) => {
 			setSearch(text);
 		},

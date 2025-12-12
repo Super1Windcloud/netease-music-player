@@ -1,18 +1,18 @@
-import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useMemo } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { MovingText } from '@/components/MovingText';
-import { PlayerControls } from '@/components/PlayerControls';
-import { PlayerProgressBar } from '@/components/PlayerProgressbar';
-import { PlayerRepeatToggle } from '@/components/PlayerRepeatToggle';
-import { PlayerVolumeBar } from '@/components/PlayerVolumeBar';
-import { unknownTrackImageUri } from '@/constants/images';
-import { fontSize, screenPadding } from '@/constants/tokens';
-import { usePlayerBackground } from '@/hooks/usePlayerBackground';
-import { useActiveTrack } from '@/lib/expo-track-player';
-import { useThemeStyles } from '@/styles';
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
+import { useMemo } from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MovingText } from "@/components/MovingText";
+import { PlayerControls } from "@/components/PlayerControls";
+import { PlayerProgressBar } from "@/components/PlayerProgressbar";
+import { PlayerRepeatToggle } from "@/components/PlayerRepeatToggle";
+import { PlayerVolumeBar } from "@/components/PlayerVolumeBar";
+import { unknownTrackImageUri } from "@/constants/images";
+import { fontSize, screenPadding } from "@/constants/tokens";
+import { usePlayerBackground } from "@/hooks/usePlayerBackground";
+import { useActiveTrack } from "@/lib/expo-track-player";
+import { useThemeStyles } from "@/styles";
 
 const PlayerScreen = () => {
 	const activeTrack = useActiveTrack();
@@ -28,7 +28,7 @@ const PlayerScreen = () => {
 
 	if (!activeTrack) {
 		return (
-			<View style={[defaultStyles.container, { justifyContent: 'center' }]}>
+			<View style={[defaultStyles.container, { justifyContent: "center" }]}>
 				<ActivityIndicator color={colors.icon} />
 			</View>
 		);
@@ -45,20 +45,20 @@ const PlayerScreen = () => {
 							source={{
 								uri: activeTrack.artwork ?? unknownTrackImageUri,
 							}}
-							priority={'high'}
+							priority={"high"}
 							contentFit="cover"
 							style={themedStyles.artworkImage}
 						/>
 					</View>
 
 					<View style={{ flex: 1 }}>
-						<View style={{ marginTop: 'auto' }}>
+						<View style={{ marginTop: "auto" }}>
 							<View style={{ height: 60 }}>
-								<View style={{ alignItems: 'center' }}>
+								<View style={{ alignItems: "center" }}>
 									{/* Track title */}
-									<View style={[themedStyles.trackTitleContainer, { width: '100%' }]}>
+									<View style={[themedStyles.trackTitleContainer, { width: "100%" }]}>
 										<MovingText
-											text={activeTrack.title ?? ''}
+											text={activeTrack.title ?? ""}
 											animationThreshold={30}
 											style={themedStyles.trackTitleText}
 										/>
@@ -78,7 +78,7 @@ const PlayerScreen = () => {
 							<PlayerControls style={{ marginTop: 40 }} />
 						</View>
 
-						<PlayerVolumeBar style={{ marginTop: 'auto', marginBottom: 30 }} />
+						<PlayerVolumeBar style={{ marginTop: "auto", marginBottom: 30 }} />
 
 						<View style={utilsStyles.centeredRow}>
 							<PlayerRepeatToggle size={30} style={{ marginBottom: 6 }} />
@@ -97,12 +97,12 @@ const DismissPlayerSymbol = () => {
 	return (
 		<View
 			style={{
-				position: 'absolute',
+				position: "absolute",
 				top: top + 8,
 				left: 0,
 				right: 0,
-				flexDirection: 'row',
-				justifyContent: 'center',
+				flexDirection: "row",
+				justifyContent: "center",
 			}}
 		>
 			<View
@@ -120,14 +120,14 @@ const DismissPlayerSymbol = () => {
 };
 
 const styles = (
-	_colors: ReturnType<typeof useThemeStyles>['colors'],
-	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
+	_colors: ReturnType<typeof useThemeStyles>["colors"],
+	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
 ) =>
 	StyleSheet.create({
 		overlayContainer: {
 			...defaultStyles.container,
 			paddingHorizontal: screenPadding.horizontal,
-			backgroundColor: 'rgba(0,0,0,0.4)',
+			backgroundColor: "rgba(0,0,0,0.4)",
 		},
 		artworkImageContainer: {
 			shadowOffset: {
@@ -136,30 +136,30 @@ const styles = (
 			},
 			shadowOpacity: 0.44,
 			shadowRadius: 11.0,
-			flexDirection: 'row',
-			justifyContent: 'center',
-			height: '45%',
+			flexDirection: "row",
+			justifyContent: "center",
+			height: "45%",
 		},
 		artworkImage: {
-			width: '100%',
-			height: '100%',
-			resizeMode: 'cover',
+			width: "100%",
+			height: "100%",
+			resizeMode: "cover",
 			borderRadius: 12,
 		},
 		trackTitleContainer: {
 			flex: 1,
-			overflow: 'hidden',
+			overflow: "hidden",
 		},
 		trackTitleText: {
 			...defaultStyles.text,
 			fontSize: 22,
-			fontWeight: '700',
+			fontWeight: "700",
 		},
 		trackArtistText: {
 			...defaultStyles.text,
 			fontSize: fontSize.base,
 			opacity: 0.8,
-			maxWidth: '90%',
+			maxWidth: "90%",
 		},
 	});
 

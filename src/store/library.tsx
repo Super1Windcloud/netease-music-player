@@ -1,13 +1,13 @@
-import { useEffect, useMemo } from 'react';
-import { create } from 'zustand';
-import library from '@/assets/data/library.json';
-import { unknownTrackImageUri } from '@/constants/images';
-import type { Album } from '@/helpers/types';
-import type { Track } from '@/lib/expo-track-player';
+import { useEffect, useMemo } from "react";
+import { create } from "zustand";
+import library from "@/assets/data/library.json";
+import { unknownTrackImageUri } from "@/constants/images";
+import type { Album } from "@/helpers/types";
+import type { Track } from "@/lib/expo-track-player";
 
 interface LibraryState {
 	tracks: Track[];
-	status: 'idle' | 'loading' | 'ready' | 'error';
+	status: "idle" | "loading" | "ready" | "error";
 	error?: string;
 	loadFromDevice: () => Promise<void>;
 }
@@ -21,8 +21,8 @@ const fallbackTracks: Track[] = library.reduce<Track[]>((acc, track, index) => {
 		...trackFields,
 		url: trackFields.url,
 		id: trackFields.id ?? trackFields.url ?? index,
-		artist: trackFields.artist ?? 'Unknown artist',
-		album: trackFields.album ?? 'Unknown album',
+		artist: trackFields.artist ?? "Unknown artist",
+		album: trackFields.album ?? "Unknown album",
 		rating: trackFields.rating ?? 0,
 	});
 
@@ -31,11 +31,11 @@ const fallbackTracks: Track[] = library.reduce<Track[]>((acc, track, index) => {
 
 export const useLibraryStore = create<LibraryState>()((set) => ({
 	tracks: fallbackTracks,
-	status: 'ready',
+	status: "ready",
 	error: undefined,
 	loadFromDevice: async () => {
 		set({
-			status: 'ready',
+			status: "ready",
 			error: undefined,
 			tracks: fallbackTracks,
 		});
@@ -64,7 +64,7 @@ export const useAlbums = () => {
 
 	return useMemo(() => {
 		return tracks.reduce((acc, track) => {
-			const albumName = track.album ?? 'Unknown album';
+			const albumName = track.album ?? "Unknown album";
 			const existingAlbum = acc.find((album) => album.name === albumName);
 
 			if (existingAlbum) {

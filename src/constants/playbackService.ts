@@ -1,4 +1,4 @@
-import TrackPlayer, { Event } from '@/lib/expo-track-player';
+import TrackPlayer, { Event } from "@/lib/expo-track-player";
 
 export const playbackService = async () => {
 	TrackPlayer.addEventListener(Event.RemotePlay, () => {

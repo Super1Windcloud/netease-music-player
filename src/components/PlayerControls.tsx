@@ -1,7 +1,7 @@
-import { FontAwesome6 } from '@expo/vector-icons';
-import { StyleSheet, TouchableOpacity, View, type ViewStyle } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import TrackPlayer, { useIsPlaying } from '@/lib/expo-track-player';
+import { FontAwesome6 } from "@expo/vector-icons";
+import { StyleSheet, TouchableOpacity, View, type ViewStyle } from "react-native";
+import { useTheme } from "@/hooks/useTheme";
+import TrackPlayer, { useIsPlaying } from "@/lib/expo-track-player";
 
 type PlayerControlsProps = {
 	style?: ViewStyle;
@@ -36,7 +36,7 @@ export const PlayPauseButton = ({ style, iconSize = 48 }: PlayerButtonProps) => 
 				activeOpacity={0.85}
 				onPress={playing ? TrackPlayer.pause : TrackPlayer.play}
 			>
-				<FontAwesome6 name={playing ? 'pause' : 'play'} size={iconSize} color={colors.text} />
+				<FontAwesome6 name={playing ? "pause" : "play"} size={iconSize} color={colors.text} />
 			</TouchableOpacity>
 		</View>
 	);
@@ -55,18 +55,18 @@ export const SkipToPreviousButton = ({ iconSize = 30 }: PlayerButtonProps) => {
 	const { colors } = useTheme();
 	return (
 		<TouchableOpacity activeOpacity={0.7} onPress={() => TrackPlayer.skipToPrevious()}>
-			<FontAwesome6 name={'backward'} size={iconSize} color={colors.text} />
+			<FontAwesome6 name={"backward"} size={iconSize} color={colors.text} />
 		</TouchableOpacity>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%',
+		width: "100%",
 	},
 	row: {
-		flexDirection: 'row',
-		justifyContent: 'space-evenly',
-		alignItems: 'center',
+		flexDirection: "row",
+		justifyContent: "space-evenly",
+		alignItems: "center",
 	},
 });

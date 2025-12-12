@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { type Track, useActiveTrack } from '@/lib/expo-track-player';
+import { useEffect, useState } from "react";
+import { type Track, useActiveTrack } from "@/lib/expo-track-player";
 
 export const useLastActiveTrack = () => {
 	const activeTrack = useActiveTrack();

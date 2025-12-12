@@ -1,6 +1,6 @@
-import type { NativeStackNavigationOptions } from '@react-navigation/native-stack';
-import { useMemo } from 'react';
-import { useTheme } from '@/hooks/useTheme';
+import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
+import { useMemo } from "react";
+import { useTheme } from "@/hooks/useTheme";
 
 export const useStackScreenWithSearchBar = (): NativeStackNavigationOptions => {
 	const { colors } = useTheme();
@@ -16,7 +16,7 @@ export const useStackScreenWithSearchBar = (): NativeStackNavigationOptions => {
 			},
 			headerTintColor: colors.text,
 			headerTransparent: true,
-			headerBlurEffect: 'prominent',
+			headerBlurEffect: "prominent",
 			headerShadowVisible: false,
 		}),
 		[colors.background, colors.text],

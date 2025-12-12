@@ -1,8 +1,8 @@
-import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
-import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Ionicons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
 	ActivityIndicator,
 	RefreshControl,
@@ -11,16 +11,16 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
-} from 'react-native';
-import { generateTracksListId } from '@/helpers/miscellaneous';
-import { useStrings } from '@/hooks/useStrings';
-import { useTheme } from '@/hooks/useTheme';
-import TrackPlayer, { type Track as PlayerTrack } from '@/lib/expo-track-player';
-import { useQueue } from '@/store/queue';
-import { useThemeStyles } from '@/styles';
-import MusicAPI, { type Track as ApiTrack } from '../../../scripts/music';
+} from "react-native";
+import { generateTracksListId } from "@/helpers/miscellaneous";
+import { useStrings } from "@/hooks/useStrings";
+import { useTheme } from "@/hooks/useTheme";
+import TrackPlayer, { type Track as PlayerTrack } from "@/lib/expo-track-player";
+import { useQueue } from "@/store/queue";
+import { useThemeStyles } from "@/styles";
+import MusicAPI, { type Track as ApiTrack } from "../../../scripts/music";
 
-type SectionKey = 'recommend' | 'favorites' | 'recently';
+type SectionKey = "recommend" | "favorites" | "recently";
 
 type SectionState = {
 	tracks: ApiTrack[];
@@ -35,7 +35,7 @@ const mapApiTrackToPlayerTrack = async (track: ApiTrack): Promise<PlayerTrack> =
 	try {
 		streamUrl = await MusicAPI.getStreamUrl(String(track.id));
 	} catch (error) {
-		console.warn('Falling back to default stream URL', error);
+		console.warn("Falling back to default stream URL", error);
 	}
 
 	return {
@@ -71,24 +71,24 @@ const HomeScreen = () => {
 			recommend: {
 				title: t.musicfeed_recommend_title,
 				subtitle: t.musicfeed_recommend_subtitle,
-				gradient: ['#ff3b30', '#ff5470'] as [string, string],
-				icon: 'sparkles-sharp' as const,
+				gradient: ["#ff3b30", "#ff5470"] as [string, string],
+				icon: "sparkles-sharp" as const,
 				fetchTracks: () => MusicAPI.getMadeForYou(),
 				pill: t.home_section_recommend,
 			},
 			favorites: {
 				title: t.musicfeed_favorites_title,
 				subtitle: t.musicfeed_favorites_subtitle,
-				gradient: ['#ff7a7f', '#ff4d67'] as [string, string],
-				icon: 'heart' as const,
+				gradient: ["#ff7a7f", "#ff4d67"] as [string, string],
+				icon: "heart" as const,
 				fetchTracks: () => MusicAPI.getPopularTracks(),
 				pill: t.home_section_favorites,
 			},
 			recently: {
 				title: t.musicfeed_recently_title,
 				subtitle: t.musicfeed_recently_subtitle,
-				gradient: ['#16c0a8', '#1c7bd9'] as [string, string],
-				icon: 'time' as const,
+				gradient: ["#16c0a8", "#1c7bd9"] as [string, string],
+				icon: "time" as const,
 				fetchTracks: () => MusicAPI.getRecentlyPlayed(),
 				pill: t.home_section_recent,
 			},
@@ -312,9 +312,9 @@ const HomeScreen = () => {
 		<View style={{ flex: 1 }}>
 			<LinearGradient
 				colors={
-					theme === 'dark'
-						? ['#1a0f0f', '#0b0f16', colors.background]
-						: ['#fff0f0', '#f7f7ff', colors.background]
+					theme === "dark"
+						? ["#1a0f0f", "#0b0f16", colors.background]
+						: ["#fff0f0", "#f7f7ff", colors.background]
 				}
 				style={StyleSheet.absoluteFillObject}
 			/>
@@ -322,7 +322,7 @@ const HomeScreen = () => {
 			<ScrollView
 				ref={scrollRef}
 				contentInsetAdjustmentBehavior="automatic"
-				style={[defaultStyles.container, { backgroundColor: 'transparent' }]}
+				style={[defaultStyles.container, { backgroundColor: "transparent" }]}
 				contentContainerStyle={{ padding: 18, paddingBottom: 120 }}
 				refreshControl={
 					<RefreshControl
@@ -334,7 +334,7 @@ const HomeScreen = () => {
 				}
 			>
 				<View style={themedStyles.heroCard}>
-					<LinearGradient colors={['#ff463a', '#ff1050']} style={themedStyles.heroGradient}>
+					<LinearGradient colors={["#ff463a", "#ff1050"]} style={themedStyles.heroGradient}>
 						<BlurView tint="dark" intensity={60} style={themedStyles.heroBlur} />
 						<View style={themedStyles.heroHeader}>
 							<View style={themedStyles.heroBadge}>
@@ -348,7 +348,7 @@ const HomeScreen = () => {
 						<View style={themedStyles.heroFooter}>
 							<View style={themedStyles.heroDot} />
 							<Text style={themedStyles.heroFooterText}>
-								{t.musicfeed_loading.replace('...', '')}
+								{t.musicfeed_loading.replace("...", "")}
 							</Text>
 						</View>
 					</LinearGradient>
@@ -356,7 +356,7 @@ const HomeScreen = () => {
 
 				<View style={themedStyles.quickActionsRow}>
 					<TouchableOpacity
-						onPress={() => scrollToSection('recommend')}
+						onPress={() => scrollToSection("recommend")}
 						activeOpacity={0.85}
 						style={themedStyles.quickAction}
 					>
@@ -369,7 +369,7 @@ const HomeScreen = () => {
 						<Text style={themedStyles.quickActionText}>{t.home_action_recommend}</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
-						onPress={() => scrollToSection('favorites')}
+						onPress={() => scrollToSection("favorites")}
 						activeOpacity={0.85}
 						style={themedStyles.quickAction}
 					>
@@ -382,7 +382,7 @@ const HomeScreen = () => {
 						<Text style={themedStyles.quickActionText}>{t.home_action_favorites}</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
-						onPress={() => scrollToSection('recently')}
+						onPress={() => scrollToSection("recently")}
 						activeOpacity={0.85}
 						style={themedStyles.quickAction}
 					>
@@ -403,16 +403,16 @@ const HomeScreen = () => {
 };
 
 const styles = (
-	colors: ReturnType<typeof useThemeStyles>['colors'],
-	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
-	theme: ReturnType<typeof useTheme>['theme'],
+	colors: ReturnType<typeof useThemeStyles>["colors"],
+	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
+	theme: ReturnType<typeof useTheme>["theme"],
 ) =>
 	StyleSheet.create({
 		heroCard: {
 			borderRadius: 18,
-			overflow: 'hidden',
+			overflow: "hidden",
 			marginBottom: 16,
-			shadowColor: '#000',
+			shadowColor: "#000",
 			shadowOpacity: 0.25,
 			shadowRadius: 10,
 			shadowOffset: { width: 0, height: 8 },
@@ -420,80 +420,80 @@ const styles = (
 		heroGradient: {
 			padding: 18,
 			borderRadius: 18,
-			overflow: 'hidden',
-			position: 'relative',
+			overflow: "hidden",
+			position: "relative",
 		},
 		heroBlur: {
 			...StyleSheet.absoluteFillObject,
 		},
 		heroHeader: {
-			flexDirection: 'row',
-			alignItems: 'center',
-			justifyContent: 'space-between',
+			flexDirection: "row",
+			alignItems: "center",
+			justifyContent: "space-between",
 		},
 		heroBadge: {
-			flexDirection: 'row',
-			alignItems: 'center',
+			flexDirection: "row",
+			alignItems: "center",
 			gap: 8,
 			paddingHorizontal: 12,
 			paddingVertical: 6,
 			borderRadius: 999,
-			backgroundColor: 'rgba(255,255,255,0.16)',
+			backgroundColor: "rgba(255,255,255,0.16)",
 		},
 		heroBadgeText: {
 			...defaultStyles.text,
-			color: '#fff',
+			color: "#fff",
 			fontSize: 12,
-			fontWeight: '700',
+			fontWeight: "700",
 		},
 		heroTitle: {
 			...defaultStyles.text,
-			color: '#fff',
+			color: "#fff",
 			fontSize: 24,
-			fontWeight: '800',
+			fontWeight: "800",
 			marginTop: 14,
 		},
 		heroSubtitle: {
 			...defaultStyles.text,
-			color: 'rgba(255,255,255,0.85)',
+			color: "rgba(255,255,255,0.85)",
 			marginTop: 8,
 			fontSize: 14,
 			lineHeight: 22,
 		},
 		heroFooter: {
 			marginTop: 16,
-			flexDirection: 'row',
-			alignItems: 'center',
+			flexDirection: "row",
+			alignItems: "center",
 			gap: 10,
 		},
 		heroDot: {
 			width: 8,
 			height: 8,
 			borderRadius: 4,
-			backgroundColor: '#fff',
+			backgroundColor: "#fff",
 		},
 		heroFooterText: {
 			...defaultStyles.text,
-			color: '#fff',
+			color: "#fff",
 			fontSize: 13,
-			fontWeight: '600',
+			fontWeight: "600",
 		},
 		quickActionsRow: {
-			flexDirection: 'row',
-			justifyContent: 'space-between',
+			flexDirection: "row",
+			justifyContent: "space-between",
 			marginBottom: 14,
 		},
 		quickAction: {
 			flex: 1,
-			alignItems: 'center',
+			alignItems: "center",
 		},
 		quickIcon: {
 			width: 52,
 			height: 52,
 			borderRadius: 26,
-			alignItems: 'center',
-			justifyContent: 'center',
-			shadowColor: '#000',
+			alignItems: "center",
+			justifyContent: "center",
+			shadowColor: "#000",
 			shadowOpacity: 0.2,
 			shadowRadius: 8,
 			shadowOffset: { width: 0, height: 4 },
@@ -502,33 +502,33 @@ const styles = (
 			...defaultStyles.text,
 			marginTop: 8,
 			fontSize: 13,
-			fontWeight: '600',
-			textAlign: 'center',
+			fontWeight: "600",
+			textAlign: "center",
 		},
 		section: {
 			marginTop: 10,
 		},
 		sectionHeader: {
-			flexDirection: 'row',
-			alignItems: 'center',
-			justifyContent: 'space-between',
+			flexDirection: "row",
+			alignItems: "center",
+			justifyContent: "space-between",
 		},
 		sectionTitleRow: {
-			flexDirection: 'row',
-			alignItems: 'center',
+			flexDirection: "row",
+			alignItems: "center",
 			gap: 10,
 		},
 		sectionBadge: {
 			width: 34,
 			height: 34,
 			borderRadius: 10,
-			alignItems: 'center',
-			justifyContent: 'center',
+			alignItems: "center",
+			justifyContent: "center",
 		},
 		sectionTitle: {
 			...defaultStyles.text,
 			fontSize: 17,
-			fontWeight: '800',
+			fontWeight: "800",
 		},
 		sectionSubtitle: {
 			...defaultStyles.text,
@@ -537,8 +537,8 @@ const styles = (
 			marginTop: 2,
 		},
 		sectionAction: {
-			flexDirection: 'row',
-			alignItems: 'center',
+			flexDirection: "row",
+			alignItems: "center",
 			gap: 6,
 			paddingVertical: 6,
 			paddingHorizontal: 10,
@@ -546,32 +546,32 @@ const styles = (
 		sectionActionText: {
 			...defaultStyles.text,
 			fontSize: 12,
-			fontWeight: '600',
+			fontWeight: "600",
 		},
 		tracksGrid: {
-			flexDirection: 'row',
-			flexWrap: 'wrap',
-			justifyContent: 'space-between',
+			flexDirection: "row",
+			flexWrap: "wrap",
+			justifyContent: "space-between",
 			marginTop: 10,
 		},
 		trackCard: {
-			width: '48%',
+			width: "48%",
 			marginBottom: 14,
 			padding: 10,
 			borderRadius: 14,
-			overflow: 'hidden',
-			backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.92)',
+			overflow: "hidden",
+			backgroundColor: theme === "dark" ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.92)",
 			borderWidth: StyleSheet.hairlineWidth,
 			borderColor: colors.border,
 		},
 		trackArtworkWrapper: {
-			position: 'relative',
+			position: "relative",
 			borderRadius: 12,
-			overflow: 'hidden',
+			overflow: "hidden",
 			marginBottom: 10,
 		},
 		trackArtwork: {
-			width: '100%',
+			width: "100%",
 			height: 120,
 			borderRadius: 12,
 		},
@@ -580,22 +580,22 @@ const styles = (
 			opacity: 0.35,
 		},
 		playBadge: {
-			position: 'absolute',
+			position: "absolute",
 			right: 8,
 			bottom: 8,
 			width: 26,
 			height: 26,
 			borderRadius: 13,
 			backgroundColor: colors.primary,
-			alignItems: 'center',
-			justifyContent: 'center',
+			alignItems: "center",
+			justifyContent: "center",
 			shadowColor: colors.primary,
 			shadowOpacity: 0.3,
 			shadowRadius: 8,
 			shadowOffset: { width: 0, height: 4 },
 		},
 		qualityBadge: {
-			position: 'absolute',
+			position: "absolute",
 			left: 8,
 			top: 8,
 			paddingHorizontal: 8,
@@ -605,12 +605,12 @@ const styles = (
 		qualityBadgeText: {
 			...defaultStyles.text,
 			fontSize: 11,
-			fontWeight: '800',
+			fontWeight: "800",
 		},
 		trackTitle: {
 			...defaultStyles.text,
 			fontSize: 14,
-			fontWeight: '700',
+			fontWeight: "700",
 		},
 		trackArtist: {
 			...defaultStyles.text,
@@ -625,8 +625,8 @@ const styles = (
 			marginTop: 4,
 		},
 		loadingRow: {
-			flexDirection: 'row',
-			alignItems: 'center',
+			flexDirection: "row",
+			alignItems: "center",
 			gap: 8,
 			marginTop: 12,
 		},

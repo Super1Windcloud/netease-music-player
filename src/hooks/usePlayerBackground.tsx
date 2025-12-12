@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useTheme } from '@/hooks/useTheme';
+import { useEffect, useState } from "react";
+import { useTheme } from "@/hooks/useTheme";
 
 type PlayerImageColors = {
 	background: string;

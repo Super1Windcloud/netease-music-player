@@ -1,14 +1,14 @@
-import { SplashScreen, Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { useCallback } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { playbackService } from '@/constants/playbackService';
-import { useLogTrackPlayerState } from '@/hooks/useLogTrackPlayerState';
-import { usePlaybackIntegrations } from '@/hooks/usePlaybackIntegrations';
-import { useSetupTrackPlayer } from '@/hooks/useSetupTrackPlayer';
-import { useTheme } from '@/hooks/useTheme';
-import TrackPlayer from '@/lib/expo-track-player';
+import { SplashScreen, Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { useCallback } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { playbackService } from "@/constants/playbackService";
+import { useLogTrackPlayerState } from "@/hooks/useLogTrackPlayerState";
+import { usePlaybackIntegrations } from "@/hooks/usePlaybackIntegrations";
+import { useSetupTrackPlayer } from "@/hooks/useSetupTrackPlayer";
+import { useTheme } from "@/hooks/useTheme";
+import TrackPlayer from "@/lib/expo-track-player";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -32,7 +32,7 @@ const App = () => {
 			<GestureHandlerRootView style={{ flex: 1 }}>
 				<RootNavigation />
 
-				<StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+				<StatusBar style={theme === "dark" ? "light" : "dark"} />
 			</GestureHandlerRootView>
 		</SafeAreaProvider>
 	);
@@ -46,9 +46,9 @@ const RootNavigation = () => {
 			<Stack.Screen
 				name="player"
 				options={{
-					presentation: 'card',
+					presentation: "card",
 					gestureEnabled: true,
-					gestureDirection: 'vertical',
+					gestureDirection: "vertical",
 					animationDuration: 400,
 					headerShown: false,
 				}}

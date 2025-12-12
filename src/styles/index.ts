@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
-import { StyleSheet } from 'react-native';
-import { fontSize } from '@/constants/tokens';
-import { useTheme } from '@/hooks/useTheme';
+import { useMemo } from "react";
+import { StyleSheet } from "react-native";
+import { fontSize } from "@/constants/tokens";
+import { useTheme } from "@/hooks/useTheme";
 
 export const useThemeStyles = () => {
 	const { colors } = useTheme();
@@ -25,9 +25,9 @@ export const useThemeStyles = () => {
 		() =>
 			StyleSheet.create({
 				centeredRow: {
-					flexDirection: 'row',
-					justifyContent: 'center',
-					alignItems: 'center',
+					flexDirection: "row",
+					justifyContent: "center",
+					alignItems: "center",
 				},
 				slider: {
 					height: 7,
@@ -41,13 +41,13 @@ export const useThemeStyles = () => {
 				emptyContentText: {
 					...defaultStyles.text,
 					color: colors.textMuted,
-					textAlign: 'center',
+					textAlign: "center",
 					marginTop: 20,
 				},
 				emptyContentImage: {
 					width: 200,
 					height: 200,
-					alignSelf: 'center',
+					alignSelf: "center",
 					marginTop: 40,
 					opacity: 0.3,
 				},

@@ -1,9 +1,9 @@
-import { Ionicons } from '@expo/vector-icons';
-import { View, type ViewProps } from 'react-native';
-import { Slider } from 'react-native-awesome-slider';
-import { useSharedValue } from 'react-native-reanimated';
-import { useTrackPlayerVolume } from '@/hooks/useTrackPlayerVolume';
-import { useThemeStyles } from '@/styles';
+import { Ionicons } from "@expo/vector-icons";
+import { View, type ViewProps } from "react-native";
+import { Slider } from "react-native-awesome-slider";
+import { useSharedValue } from "react-native-reanimated";
+import { useTrackPlayerVolume } from "@/hooks/useTrackPlayerVolume";
+import { useThemeStyles } from "@/styles";
 
 export const PlayerVolumeBar = ({ style }: ViewProps) => {
 	const { volume, updateVolume } = useTrackPlayerVolume();
@@ -17,10 +17,10 @@ export const PlayerVolumeBar = ({ style }: ViewProps) => {
 
 	return (
 		<View style={style}>
-			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+			<View style={{ flexDirection: "row", alignItems: "center" }}>
 				<Ionicons name="volume-low" size={20} color={colors.icon} style={{ opacity: 0.8 }} />
 
-				<View style={{ flex: 1, flexDirection: 'row', paddingHorizontal: 10 }}>
+				<View style={{ flex: 1, flexDirection: "row", paddingHorizontal: 10 }}>
 					<Slider
 						progress={progress}
 						minimumValue={min}

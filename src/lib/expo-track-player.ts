@@ -3,8 +3,8 @@ import {
 	type AudioStatus,
 	createAudioPlayer,
 	setAudioModeAsync,
-} from 'expo-audio';
-import { useEffect, useSyncExternalStore } from 'react';
+} from "expo-audio";
+import { useEffect, useSyncExternalStore } from "react";
 
 export type Track = {
 	id?: string | number;
@@ -17,40 +17,40 @@ export type Track = {
 };
 
 export enum RepeatMode {
-	Off = 'off',
-	Track = 'track',
-	Queue = 'queue',
+	Off = "off",
+	Track = "track",
+	Queue = "queue",
 }
 
 export enum State {
-	None = 'none',
-	Ready = 'ready',
-	Playing = 'playing',
-	Paused = 'paused',
-	Stopped = 'stopped',
+	None = "none",
+	Ready = "ready",
+	Playing = "playing",
+	Paused = "paused",
+	Stopped = "stopped",
 }
 
 export enum Event {
-	PlaybackState = 'playback-state',
-	PlaybackError = 'playback-error',
-	PlaybackActiveTrackChanged = 'playback-track-changed',
-	RemotePlay = 'remote-play',
-	RemotePause = 'remote-pause',
-	RemoteStop = 'remote-stop',
-	RemoteNext = 'remote-next',
-	RemotePrevious = 'remote-previous',
+	PlaybackState = "playback-state",
+	PlaybackError = "playback-error",
+	PlaybackActiveTrackChanged = "playback-track-changed",
+	RemotePlay = "remote-play",
+	RemotePause = "remote-pause",
+	RemoteStop = "remote-stop",
+	RemoteNext = "remote-next",
+	RemotePrevious = "remote-previous",
 }
 
 export enum Capability {
-	Play = 'play',
-	Pause = 'pause',
-	SkipToNext = 'skip-to-next',
-	SkipToPrevious = 'skip-to-previous',
-	Stop = 'stop',
+	Play = "play",
+	Pause = "pause",
+	SkipToNext = "skip-to-next",
+	SkipToPrevious = "skip-to-previous",
+	Stop = "stop",
 }
 
 export enum RatingType {
-	Heart = 'heart',
+	Heart = "heart",
 }
 
 type PlaybackStateEvent = { type: Event.PlaybackState; state: State };
@@ -119,8 +119,8 @@ const ensureAudioMode = async () => {
 	await setAudioModeAsync({
 		playsInSilentMode: true,
 		shouldPlayInBackground: true,
-		interruptionMode: 'mixWithOthers',
-		interruptionModeAndroid: 'duckOthers',
+		interruptionMode: "mixWithOthers",
+		interruptionModeAndroid: "duckOthers",
 		allowsRecording: false,
 	});
 };
@@ -182,7 +182,7 @@ const attachStatusListener = () => {
 	statusSubscription?.remove();
 	if (!player) return;
 
-	statusSubscription = player.addListener('playbackStatusUpdate', onStatusUpdate);
+	statusSubscription = player.addListener("playbackStatusUpdate", onStatusUpdate);
 };
 
 const disposePlayer = () => {

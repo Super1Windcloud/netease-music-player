@@ -1,8 +1,8 @@
-import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
-import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Ionicons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
 	ActivityIndicator,
 	RefreshControl,
@@ -11,17 +11,17 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
-} from 'react-native';
-import { generateTracksListId } from '@/helpers/miscellaneous';
-import { useStrings } from '@/hooks/useStrings';
-import { useTheme } from '@/hooks/useTheme';
-import TrackPlayer, { type Track as PlayerTrack } from '@/lib/expo-track-player';
-import { useQueue } from '@/store/queue';
-import { useThemeStyles } from '@/styles';
-import MusicAPI, { type Track as ApiTrack } from '../../scripts/music';
+} from "react-native";
+import { generateTracksListId } from "@/helpers/miscellaneous";
+import { useStrings } from "@/hooks/useStrings";
+import { useTheme } from "@/hooks/useTheme";
+import TrackPlayer, { type Track as PlayerTrack } from "@/lib/expo-track-player";
+import { useQueue } from "@/store/queue";
+import { useThemeStyles } from "@/styles";
+import MusicAPI, { type Track as ApiTrack } from "../../scripts/music";
 
 export type MusicFeedConfig = {
-	variant: 'recommend' | 'favorites' | 'recently';
+	variant: "recommend" | "favorites" | "recently";
 	headline: string;
 	subtitle: string;
 	gradient: [string, string];
@@ -43,7 +43,7 @@ const mapApiTrackToPlayerTrack = async (track: ApiTrack): Promise<PlayerTrack> =
 	try {
 		streamUrl = await MusicAPI.getStreamUrl(String(track.id));
 	} catch (error) {
-		console.warn('Falling back to default stream URL', error);
+		console.warn("Falling back to default stream URL", error);
 	}
 
 	return {
@@ -70,7 +70,7 @@ export const MusicFeedScreen = ({ config }: { config: MusicFeedConfig }) => {
 		error: undefined,
 	});
 	const [playableTracks, setPlayableTracks] = useState<PlayerTrack[]>([]);
-	const blurTint = theme === 'dark' ? 'dark' : 'light';
+	const blurTint = theme === "dark" ? "dark" : "light";
 	const themedStyles = useMemo(
 		() => styles(colors, defaultStyles, theme),
 		[colors, defaultStyles, theme],
@@ -79,9 +79,9 @@ export const MusicFeedScreen = ({ config }: { config: MusicFeedConfig }) => {
 	const backgroundGradient = useMemo(() => {
 		const [start, end] = config.gradient;
 		const withAlpha = (hex: string, alpha: string) =>
-			hex.startsWith('#') && hex.length === 7 ? `${hex}${alpha}` : hex;
+			hex.startsWith("#") && hex.length === 7 ? `${hex}${alpha}` : hex;
 
-		return [withAlpha(start, '2b'), withAlpha(end, '14'), colors.background];
+		return [withAlpha(start, "2b"), withAlpha(end, "14"), colors.background];
 	}, [colors.background, config.gradient]);
 
 	const hydratePlayableTracks = useCallback(async (tracks: ApiTrack[]) => {
@@ -214,7 +214,7 @@ export const MusicFeedScreen = ({ config }: { config: MusicFeedConfig }) => {
 			<LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFillObject} />
 			<ScrollView
 				contentInsetAdjustmentBehavior="automatic"
-				style={[defaultStyles.container, { backgroundColor: 'transparent' }]}
+				style={[defaultStyles.container, { backgroundColor: "transparent" }]}
 				contentContainerStyle={{ padding: 18, paddingBottom: 120 }}
 				refreshControl={
 					<RefreshControl
@@ -276,95 +276,95 @@ export const MusicFeedScreen = ({ config }: { config: MusicFeedConfig }) => {
 };
 
 const styles = (
-	colors: ReturnType<typeof useThemeStyles>['colors'],
-	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
-	theme: ReturnType<typeof useTheme>['theme'],
+	colors: ReturnType<typeof useThemeStyles>["colors"],
+	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
+	theme: ReturnType<typeof useTheme>["theme"],
 ) =>
 	StyleSheet.create({
 		heroCard: {
 			borderRadius: 18,
-			overflow: 'hidden',
+			overflow: "hidden",
 			marginTop: 8,
 			marginBottom: 14,
-			shadowColor: '#000',
+			shadowColor: "#000",
 			shadowOpacity: 0.2,
 			shadowRadius: 12,
 			shadowOffset: { width: 0, height: 8 },
 			elevation: 6,
-			backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.4)',
+			backgroundColor: theme === "dark" ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.4)",
 		},
 		heroGradient: {
 			padding: 18,
 			borderRadius: 18,
-			overflow: 'hidden',
+			overflow: "hidden",
 		},
 		pill: {
-			alignSelf: 'flex-start',
-			backgroundColor: 'rgba(255,255,255,0.18)',
+			alignSelf: "flex-start",
+			backgroundColor: "rgba(255,255,255,0.18)",
 			paddingHorizontal: 10,
 			paddingVertical: 6,
 			borderRadius: 20,
-			flexDirection: 'row',
-			alignItems: 'center',
+			flexDirection: "row",
+			alignItems: "center",
 			gap: 8,
 		},
 		pillText: {
 			...defaultStyles.text,
-			color: '#fff',
-			fontWeight: '700',
+			color: "#fff",
+			fontWeight: "700",
 			fontSize: 12,
 		},
 		heroTitle: {
 			...defaultStyles.text,
-			color: '#fff',
+			color: "#fff",
 			fontSize: 22,
-			fontWeight: '800',
+			fontWeight: "800",
 			marginTop: 12,
 		},
 		heroSubtitle: {
 			...defaultStyles.text,
-			color: 'rgba(255,255,255,0.82)',
+			color: "rgba(255,255,255,0.82)",
 			fontSize: 15,
 			lineHeight: 22,
 			marginTop: 6,
 		},
 		heroFooter: {
 			marginTop: 14,
-			flexDirection: 'row',
-			alignItems: 'center',
+			flexDirection: "row",
+			alignItems: "center",
 			gap: 8,
 		},
 		heroDot: {
 			width: 8,
 			height: 8,
-			backgroundColor: '#fff',
+			backgroundColor: "#fff",
 			borderRadius: 4,
 		},
 		heroFooterText: {
 			...defaultStyles.text,
-			color: 'rgba(255,255,255,0.9)',
-			fontWeight: '600',
+			color: "rgba(255,255,255,0.9)",
+			fontWeight: "600",
 			fontSize: 13,
 		},
 		card: {
 			borderRadius: 16,
-			overflow: 'hidden',
+			overflow: "hidden",
 			marginBottom: 12,
 			borderWidth: StyleSheet.hairlineWidth,
 			borderColor: colors.border,
-			backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.7)',
+			backgroundColor: theme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.7)",
 		},
 		cardBlur: {
 			...StyleSheet.absoluteFillObject,
 		},
 		cardContent: {
 			padding: 12,
-			flexDirection: 'row',
-			alignItems: 'center',
+			flexDirection: "row",
+			alignItems: "center",
 			gap: 12,
 		},
 		coverContainer: {
-			position: 'relative',
+			position: "relative",
 		},
 		cover: {
 			width: 64,
@@ -372,29 +372,29 @@ const styles = (
 			borderRadius: 12,
 		},
 		playBadge: {
-			position: 'absolute',
+			position: "absolute",
 			right: -6,
 			bottom: -6,
 			width: 26,
 			height: 26,
 			borderRadius: 13,
 			backgroundColor: colors.primary,
-			alignItems: 'center',
-			justifyContent: 'center',
+			alignItems: "center",
+			justifyContent: "center",
 			shadowColor: colors.primary,
 			shadowOpacity: 0.3,
 			shadowRadius: 8,
 			shadowOffset: { width: 0, height: 4 },
 		},
 		titleRow: {
-			flexDirection: 'row',
-			alignItems: 'center',
+			flexDirection: "row",
+			alignItems: "center",
 			gap: 8,
 		},
 		trackTitle: {
 			...defaultStyles.text,
 			fontSize: 16,
-			fontWeight: '700',
+			fontWeight: "700",
 			flex: 1,
 		},
 		trackArtist: {
@@ -404,8 +404,8 @@ const styles = (
 			marginTop: 2,
 		},
 		metaRow: {
-			flexDirection: 'row',
-			alignItems: 'center',
+			flexDirection: "row",
+			alignItems: "center",
 			gap: 6,
 			marginTop: 6,
 		},
@@ -426,7 +426,7 @@ const styles = (
 		badgeText: {
 			...defaultStyles.text,
 			fontSize: 11,
-			fontWeight: '700',
+			fontWeight: "700",
 			color: colors.background,
 		},
 		notice: {
@@ -434,7 +434,7 @@ const styles = (
 			borderRadius: 12,
 			borderWidth: StyleSheet.hairlineWidth,
 			marginBottom: 10,
-			backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.8)',
+			backgroundColor: theme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.8)",
 		},
 		noticeText: {
 			...defaultStyles.text,

@@ -1,14 +1,14 @@
-import { useMemo } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
-import { TracksList } from '@/components/TracksList';
-import { screenPadding } from '@/constants/tokens';
-import { trackTitleFilter } from '@/helpers/filter';
-import { generateTracksListId } from '@/helpers/miscellaneous';
-import { useNavigationSearch } from '@/hooks/useNavigationSearch';
-import { useStrings } from '@/hooks/useStrings';
-import { useTheme } from '@/hooks/useTheme';
-import { useEnsureLibraryLoaded, useLibraryStatus, useTracks } from '@/store/library';
-import { useThemeStyles } from '@/styles';
+import { useMemo } from "react";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { TracksList } from "@/components/TracksList";
+import { screenPadding } from "@/constants/tokens";
+import { trackTitleFilter } from "@/helpers/filter";
+import { generateTracksListId } from "@/helpers/miscellaneous";
+import { useNavigationSearch } from "@/hooks/useNavigationSearch";
+import { useStrings } from "@/hooks/useStrings";
+import { useTheme } from "@/hooks/useTheme";
+import { useEnsureLibraryLoaded, useLibraryStatus, useTracks } from "@/store/library";
+import { useThemeStyles } from "@/styles";
 
 const SongsScreen = () => {
 	const { colors } = useTheme();
@@ -30,9 +30,9 @@ const SongsScreen = () => {
 		return tracks.filter(trackTitleFilter(search));
 	}, [search, tracks]);
 
-	if (status === 'loading' || status === 'idle') {
+	if (status === "loading" || status === "idle") {
 		return (
-			<View style={[defaultStyles.container, { justifyContent: 'center' }]}>
+			<View style={[defaultStyles.container, { justifyContent: "center" }]}>
 				<ActivityIndicator color={colors.primary} />
 				<Text style={{ ...defaultStyles.text, marginTop: 12, color: colors.textMuted }}>
 					{t.songs_loading}
@@ -53,7 +53,7 @@ const SongsScreen = () => {
 					</Text>
 				)}
 				<TracksList
-					id={generateTracksListId('songs', search)}
+					id={generateTracksListId("songs", search)}
 					tracks={filteredTracks}
 					scrollEnabled={false}
 				/>

@@ -1,6 +1,6 @@
-import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
-import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
 	ActivityIndicator,
 	ScrollView,
@@ -8,16 +8,16 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
-} from 'react-native';
-import { unknownTrackImageUri } from '@/constants/images';
-import { screenPadding } from '@/constants/tokens';
-import { formatSecondsToMinutes, generateTracksListId } from '@/helpers/miscellaneous';
-import { useNavigationSearch } from '@/hooks/useNavigationSearch';
-import { useStrings } from '@/hooks/useStrings';
-import { type SongSearchResult, searchSongs } from '@/lib/appleSearch';
-import TrackPlayer, { type Track } from '@/lib/expo-track-player';
-import { useQueue } from '@/store/queue';
-import { useThemeStyles } from '@/styles';
+} from "react-native";
+import { unknownTrackImageUri } from "@/constants/images";
+import { screenPadding } from "@/constants/tokens";
+import { formatSecondsToMinutes, generateTracksListId } from "@/helpers/miscellaneous";
+import { useNavigationSearch } from "@/hooks/useNavigationSearch";
+import { useStrings } from "@/hooks/useStrings";
+import { type SongSearchResult, searchSongs } from "@/lib/appleSearch";
+import TrackPlayer, { type Track } from "@/lib/expo-track-player";
+import { useQueue } from "@/store/queue";
+import { useThemeStyles } from "@/styles";
 
 type ExploreState = {
 	songs: SongSearchResult[];
@@ -33,7 +33,7 @@ const initialState: ExploreState = {
 
 const formatPrice = (price?: number, currency?: string) => {
 	if (price === undefined || price === null) return undefined;
-	return `${currency ?? '$'}${price.toFixed(2)}`;
+	return `${currency ?? "$"}${price.toFixed(2)}`;
 };
 
 const mapSongToTrack = (song: SongSearchResult): Track | null => {
@@ -92,7 +92,7 @@ const ExploreScreen = () => {
 			} catch (error) {
 				if (abortController.signal.aborted) return;
 
-				const message = error instanceof Error ? error.message : 'Something went wrong';
+				const message = error instanceof Error ? error.message : "Something went wrong";
 				setState((prev) => ({
 					...prev,
 					isLoading: false,
@@ -106,7 +106,7 @@ const ExploreScreen = () => {
 		return () => abortController.abort();
 	}, [search]);
 
-	const queueId = useMemo(() => generateTracksListId('explore', search.trim()), [search]);
+	const queueId = useMemo(() => generateTracksListId("explore", search.trim()), [search]);
 
 	const playableTracks = useMemo(
 		() => state.songs.map(mapSongToTrack).filter(Boolean) as Track[],
@@ -264,14 +264,14 @@ const ExploreScreen = () => {
 };
 
 const styles = (
-	colors: ReturnType<typeof useThemeStyles>['colors'],
-	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
+	colors: ReturnType<typeof useThemeStyles>["colors"],
+	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
 ) =>
 	StyleSheet.create({
 		card: {
-			flexDirection: 'row',
+			flexDirection: "row",
 			columnGap: 12,
-			alignItems: 'center',
+			alignItems: "center",
 			paddingVertical: 8,
 			borderBottomWidth: StyleSheet.hairlineWidth,
 			borderBottomColor: colors.border,
@@ -284,7 +284,7 @@ const styles = (
 		primaryText: {
 			...defaultStyles.text,
 			fontSize: 17,
-			fontWeight: '700',
+			fontWeight: "700",
 		},
 		secondaryText: {
 			...defaultStyles.text,
@@ -293,13 +293,13 @@ const styles = (
 			marginTop: 2,
 		},
 		metaRow: {
-			flexDirection: 'row',
+			flexDirection: "row",
 			gap: 12,
 			marginTop: 6,
 		},
 		metaItem: {
-			flexDirection: 'row',
-			alignItems: 'center',
+			flexDirection: "row",
+			alignItems: "center",
 		},
 		metaText: {
 			...defaultStyles.text,
@@ -311,7 +311,7 @@ const styles = (
 		},
 		sectionTitle: {
 			...defaultStyles.text,
-			fontWeight: '700',
+			fontWeight: "700",
 			fontSize: 18,
 			marginBottom: 8,
 		},
@@ -323,7 +323,7 @@ const styles = (
 		placeholderTitle: {
 			...defaultStyles.text,
 			fontSize: 20,
-			fontWeight: '700',
+			fontWeight: "700",
 		},
 		placeholderText: {
 			...defaultStyles.text,

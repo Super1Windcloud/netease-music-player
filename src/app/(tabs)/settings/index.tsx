@@ -1,5 +1,5 @@
-import { Ionicons } from '@expo/vector-icons';
-import { type ReactNode, useMemo } from 'react';
+import { Ionicons } from "@expo/vector-icons";
+import { type ReactNode, useMemo } from "react";
 import {
 	Linking,
 	ScrollView,
@@ -8,13 +8,13 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
-} from 'react-native';
-import { fontSize, screenPadding } from '@/constants/tokens';
-import { useNavigationSearch } from '@/hooks/useNavigationSearch';
-import { useStrings } from '@/hooks/useStrings';
-import { useTheme } from '@/hooks/useTheme';
-import { useLanguagePreference, useThemePreference } from '@/store/preferences';
-import { useThemeStyles } from '@/styles';
+} from "react-native";
+import { fontSize, screenPadding } from "@/constants/tokens";
+import { useNavigationSearch } from "@/hooks/useNavigationSearch";
+import { useStrings } from "@/hooks/useStrings";
+import { useTheme } from "@/hooks/useTheme";
+import { useLanguagePreference, useThemePreference } from "@/store/preferences";
+import { useThemeStyles } from "@/styles";
 
 type SettingOption<T extends string> = {
 	value: T;
@@ -36,29 +36,29 @@ const SettingsScreen = () => {
 	const { value: language, setLanguage } = useLanguagePreference();
 	const { value: theme, setTheme } = useThemePreference();
 	const openGithubProfile = () => {
-		void Linking.openURL('https://github.com/Super1Windcloud');
+		void Linking.openURL("https://github.com/Super1Windcloud");
 	};
 
-	const languageOptions: SettingOption<'system' | 'en' | 'zh'>[] = useMemo(
+	const languageOptions: SettingOption<"system" | "en" | "zh">[] = useMemo(
 		() => [
-			{ value: 'system', label: t.settings_follow_system },
-			{ value: 'en', label: t.settings_english },
-			{ value: 'zh', label: t.settings_chinese },
+			{ value: "system", label: t.settings_follow_system },
+			{ value: "en", label: t.settings_english },
+			{ value: "zh", label: t.settings_chinese },
 		],
 		[t],
 	);
 
-	const themeOptions: SettingOption<'system' | 'light' | 'dark'>[] = useMemo(
+	const themeOptions: SettingOption<"system" | "light" | "dark">[] = useMemo(
 		() => [
-			{ value: 'system', label: t.settings_system_theme },
-			{ value: 'light', label: t.settings_light_theme },
-			{ value: 'dark', label: t.settings_dark_theme },
+			{ value: "system", label: t.settings_system_theme },
+			{ value: "light", label: t.settings_light_theme },
+			{ value: "dark", label: t.settings_dark_theme },
 		],
 		[t],
 	);
 
-	const aboutOptions: SettingOption<'github'>[] = useMemo(
-		() => [{ value: 'github', label: t.settings_github, helper: t.settings_github_helper }],
+	const aboutOptions: SettingOption<"github">[] = useMemo(
+		() => [{ value: "github", label: t.settings_github, helper: t.settings_github_helper }],
 		[t],
 	);
 
@@ -143,8 +143,8 @@ const SettingsScreen = () => {
 							<Text style={themedStyles.rowSubtitle}>{t.settings_dark_mode_helper}</Text>
 						</View>
 						<Switch
-							value={theme === 'dark'}
-							onValueChange={(value) => setTheme(value ? 'dark' : 'light')}
+							value={theme === "dark"}
+							onValueChange={(value) => setTheme(value ? "dark" : "light")}
 							trackColor={{ false: colors.border, true: colors.primary }}
 							thumbColor={colors.icon}
 						/>
@@ -223,8 +223,8 @@ const SettingRow = ({
 	helper?: string;
 	selected: boolean;
 	onPress: () => void;
-	colors: ReturnType<typeof useTheme>['colors'];
-	utilsStyles: ReturnType<typeof useThemeStyles>['utilsStyles'];
+	colors: ReturnType<typeof useTheme>["colors"];
+	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"];
 	themedStyles: ReturnType<typeof styles>;
 }) => {
 	return (
@@ -244,14 +244,14 @@ const SettingRow = ({
 };
 
 const styles = (
-	colors: ReturnType<typeof useTheme>['colors'],
-	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
+	colors: ReturnType<typeof useTheme>["colors"],
+	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
 ) =>
 	StyleSheet.create({
 		sectionTitle: {
 			...defaultStyles.text,
 			fontSize: fontSize.lg,
-			fontWeight: '700',
+			fontWeight: "700",
 		},
 		sectionDescription: {
 			...defaultStyles.text,
@@ -268,15 +268,15 @@ const styles = (
 		row: {
 			paddingVertical: 14,
 			paddingHorizontal: 16,
-			flexDirection: 'row',
-			justifyContent: 'space-between',
-			alignItems: 'center',
+			flexDirection: "row",
+			justifyContent: "space-between",
+			alignItems: "center",
 			borderBottomWidth: StyleSheet.hairlineWidth,
 			borderBottomColor: colors.border,
 		},
 		rowTitle: {
 			...defaultStyles.text,
-			fontWeight: '600',
+			fontWeight: "600",
 		},
 		rowSubtitle: {
 			...defaultStyles.text,
