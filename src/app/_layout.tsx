@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { playbackService } from '@/constants/playbackService'
 import { useLogTrackPlayerState } from '@/hooks/useLogTrackPlayerState'
+import { usePlaybackIntegrations } from '@/hooks/usePlaybackIntegrations'
 import { useSetupTrackPlayer } from '@/hooks/useSetupTrackPlayer'
 import { useTheme } from '@/hooks/useTheme'
 import TrackPlayer from '@/lib/expo-track-player'
@@ -24,6 +25,7 @@ const App = () => {
 	})
 
 	useLogTrackPlayerState()
+	usePlaybackIntegrations()
 
 	return (
 		<SafeAreaProvider>

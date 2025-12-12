@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons'
 import { type ReactNode, useMemo } from 'react'
-import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
+import { Linking, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import { fontSize, screenPadding } from '@/constants/tokens'
 import { useNavigationSearch } from '@/hooks/useNavigationSearch'
 import { useStrings } from '@/hooks/useStrings'
@@ -27,6 +27,9 @@ const SettingsScreen = () => {
 
 	const { value: language, setLanguage } = useLanguagePreference()
 	const { value: theme, setTheme } = useThemePreference()
+	const openGithubProfile = () => {
+		void Linking.openURL('https://github.com/Super1Windcloud')
+	}
 
 	const languageOptions: SettingOption<'system' | 'en' | 'zh'>[] = useMemo(
 		() => [
@@ -46,13 +49,23 @@ const SettingsScreen = () => {
 		[t],
 	)
 
+	const aboutOptions: SettingOption<'github'>[] = useMemo(
+		() => [{ value: 'github', label: t.settings_github, helper: t.settings_github_helper }],
+		[t],
+	)
+
 	const filteredLanguageOptions = useFilteredOptions(languageOptions, search)
 	const filteredThemeOptions = useFilteredOptions(themeOptions, search)
+	const filteredAboutOptions = useFilteredOptions(aboutOptions, search)
 
 	const noResults =
-		search && filteredLanguageOptions.length === 0 && filteredThemeOptions.length === 0
+		search &&
+		filteredLanguageOptions.length === 0 &&
+		filteredThemeOptions.length === 0 &&
+		filteredAboutOptions.length === 0
 	const showLanguageSection = search.length === 0 || filteredLanguageOptions.length > 0
 	const showThemeSection = search.length === 0 || filteredThemeOptions.length > 0
+	const showAboutSection = search.length === 0 || filteredAboutOptions.length > 0
 
 	return (
 		<ScrollView
@@ -128,6 +141,27 @@ const SettingsScreen = () => {
 							thumbColor={colors.icon}
 						/>
 					</View>
+				</SettingsSection>
+			)}
+
+			{showAboutSection && (
+				<SettingsSection
+					title={t.settings_about}
+					description={t.settings_about_description}
+					themedStyles={themedStyles}
+				>
+					{filteredAboutOptions.map((option) => (
+						<SettingRow
+							key={option.value}
+							label={option.label}
+							helper={option.helper}
+							selected={false}
+							onPress={openGithubProfile}
+							colors={colors}
+							utilsStyles={utilsStyles}
+							themedStyles={themedStyles}
+						/>
+					))}
 				</SettingsSection>
 			)}
 		</ScrollView>

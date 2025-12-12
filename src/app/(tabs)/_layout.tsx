@@ -42,6 +42,15 @@ const TabsNavigation = () => {
 				}}
 			>
 				<Tabs.Screen
+					name="index"
+					options={{
+						title: t.tabs_home,
+						tabBarIcon: ({ color }: Record<string, string>) => (
+							<Ionicons name="home" size={22} color={color} />
+						),
+					}}
+				/>
+				<Tabs.Screen
 					name="(songs)"
 					options={{
 						title: t.tabs_localMusic,
