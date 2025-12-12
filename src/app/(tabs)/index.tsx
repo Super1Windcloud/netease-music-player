@@ -13,8 +13,13 @@ import {
 	View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { unknownTrackImageUri } from "@/constants/images";
+import { withOpacity } from "@/helpers/colors";
 import { generateTracksListId } from "@/helpers/miscellaneous";
 import { useStrings } from "@/hooks/useStrings";
+import { useActiveTrack } from "@/lib/expo-track-player";
+import { usePlayerBackground } from "@/hooks/usePlayerBackground";
+import { useLastActiveTrack } from "@/hooks/useLastActiveTrack";
 import { useTheme } from "@/hooks/useTheme";
 import TrackPlayer, { type Track as PlayerTrack } from "@/lib/expo-track-player";
 import { useQueue } from "@/store/queue";
@@ -66,6 +71,10 @@ const HomeScreen = () => {
 	const { t } = useStrings();
 	const { theme } = useTheme();
 	const { activeQueueId, setActiveQueueId } = useQueue();
+	const activeTrack = useActiveTrack();
+	const lastActiveTrack = useLastActiveTrack();
+	const heroArtwork = activeTrack?.artwork ?? lastActiveTrack?.artwork ?? null;
+	const { imageColors: heroImageColors } = usePlayerBackground(heroArtwork ?? unknownTrackImageUri);
 
 	const sectionConfigs = useMemo(
 		() => ({
@@ -110,8 +119,24 @@ const HomeScreen = () => {
 	const [refreshing, setRefreshing] = useState(false);
 
 	const themedStyles = useMemo(
-		() => styles(colors, defaultStyles, utilsStyles, theme),
-		[colors, defaultStyles, theme, utilsStyles],
+		() =>
+			styles(
+				colors,
+				defaultStyles,
+				utilsStyles,
+				theme,
+				withOpacity(
+					heroImageColors?.background ?? (theme === "dark" ? "#141418" : "#ffffff"),
+					theme === "dark" ? 0.82 : 0.92,
+				),
+			),
+		[
+			colors,
+			defaultStyles,
+			heroImageColors?.background,
+			theme,
+			utilsStyles,
+		],
 	);
 
 	const backgroundGradient = useMemo(
@@ -317,6 +342,14 @@ const HomeScreen = () => {
 		);
 	};
 
+	const heroGradient = useMemo<readonly [string, string]>(
+		() => [
+			withOpacity(heroImageColors?.background ?? "#0a84ff", 0.96),
+			withOpacity(heroImageColors?.primary ?? "#7eb5ff", 0.9),
+		],
+		[heroImageColors?.background, heroImageColors?.primary],
+	);
+
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["top"]}>
 			<LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFillObject} />
@@ -337,7 +370,7 @@ const HomeScreen = () => {
 			>
 				<View style={[utilsStyles.glassCard, themedStyles.heroCard, { marginBottom: 16 }]}>
 					<LinearGradient
-						colors={["#0a84ff", "#7eb5ff"] as const}
+						colors={heroGradient}
 						style={themedStyles.heroGradient}
 					>
 						<BlurView tint="dark" intensity={65} style={themedStyles.heroBlur} />
@@ -412,13 +445,14 @@ const styles = (
 	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
 	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"],
 	theme: ReturnType<typeof useTheme>["theme"],
+	heroCardBackground: string,
 ) =>
 	StyleSheet.create({
 		heroCard: {
 			borderRadius: 22,
 			padding: 1.5,
 			overflow: "visible",
-			backgroundColor: theme === "dark" ? "rgba(20,20,24,0.8)" : "rgba(255,255,255,0.92)",
+			backgroundColor: heroCardBackground,
 		},
 		heroGradient: {
 			padding: 20,

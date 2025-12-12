@@ -64,6 +64,13 @@ const ExploreScreen = () => {
 	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
 	const { t } = useStrings();
 	const { theme } = useTheme();
+	type CuratedMoment = {
+		title: string;
+		subtitle: string;
+		icon: IoniconName;
+		gradient: readonly [string, string];
+		query: string;
+	};
 	const themedStyles = useMemo(
 		() => styles(colors, defaultStyles, utilsStyles),
 		[colors, defaultStyles, utilsStyles],
@@ -86,27 +93,27 @@ const ExploreScreen = () => {
 		[],
 	);
 
-	const curatedMoments = useMemo(
+	const curatedMoments = useMemo<CuratedMoment[]>(
 		() => [
 			{
 				title: "Velvet Evenings",
 				subtitle: "Late-night R&B and neon keys",
 				icon: "moon" as IoniconName,
-				gradient: theme === "dark" ? ["#0c1024", "#102044"] : ["#e9f0ff", "#e8e3ff"],
+				gradient: theme === "dark" ? (["#0c1024", "#102044"] as const) : (["#e9f0ff", "#e8e3ff"] as const),
 				query: "late night rnb",
 			},
 			{
 				title: "Bloom & Focus",
 				subtitle: "Piano, strings, and calm electronica",
 				icon: "leaf" as IoniconName,
-				gradient: theme === "dark" ? ["#0b1712", "#0f2e22"] : ["#e7fff4", "#ebf5ff"],
+				gradient: theme === "dark" ? (["#0b1712", "#0f2e22"] as const) : (["#e7fff4", "#ebf5ff"] as const),
 				query: "focus piano strings",
 			},
 			{
 				title: "Pulse Run",
 				subtitle: "Bold pop with crisp drums",
 				icon: "flash" as IoniconName,
-				gradient: theme === "dark" ? ["#1a0f1a", "#251027"] : ["#ffe8f1", "#ffe7da"],
+				gradient: theme === "dark" ? (["#1a0f1a", "#251027"] as const) : (["#ffe8f1", "#ffe7da"] as const),
 				query: "energetic pop",
 			},
 		],

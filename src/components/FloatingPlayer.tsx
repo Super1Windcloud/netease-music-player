@@ -1,5 +1,6 @@
 import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, type ViewProps } from "react-native";
@@ -13,7 +14,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { PlayPauseButton, SkipToNextButton } from "@/components/PlayerControls";
 import { unknownTrackImageUri } from "@/constants/images";
+import { withOpacity } from "@/helpers/colors";
 import { useLastActiveTrack } from "@/hooks/useLastActiveTrack";
+import { usePlayerBackground } from "@/hooks/usePlayerBackground";
 import { useTheme } from "@/hooks/useTheme";
 import { useActiveTrack, useIsPlaying } from "@/lib/expo-track-player";
 import { useThemeStyles } from "@/styles";
@@ -47,6 +50,24 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 		transform: [{ rotate: `${artworkRotation.value}deg` }],
 	}));
 
+	const activeTrack = useActiveTrack();
+	const lastActiveTrack = useLastActiveTrack();
+
+	const displayedTrack = activeTrack ?? lastActiveTrack;
+	const { imageColors } = usePlayerBackground(displayedTrack?.artwork ?? unknownTrackImageUri);
+
+	const handlePress = () => {
+		router.navigate("/player");
+	};
+
+	const containerBase = imageColors?.background ?? (theme === "dark" ? "#16161c" : "#f5f5f7");
+	const accent = imageColors?.primary ?? (theme === "dark" ? "#4f6cff" : "#0a84ff");
+
+	const containerGradient = useMemo<readonly [string, string]>(
+		() => [withOpacity(containerBase, 0.9), withOpacity(accent, theme === "dark" ? 0.82 : 0.86)],
+		[accent, containerBase, theme],
+	);
+
 	const themedStyles = useMemo(
 		() =>
 			StyleSheet.create({
@@ -59,9 +80,12 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 					paddingHorizontal: 12,
 					borderRadius: 22,
 					borderWidth: StyleSheet.hairlineWidth * 0.5,
-					borderColor: theme === "dark" ? "rgba(255, 255, 255, 0.14)" : "rgba(255, 255, 255, 0.32)",
-					backgroundColor:
-						theme === "dark" ? "rgba(22, 22, 28, 0.62)" : "rgba(245, 245, 247, 0.86)",
+					borderColor: withOpacity(accent, theme === "dark" ? 0.3 : 0.25),
+					backgroundColor: withOpacity(containerBase, theme === "dark" ? 0.82 : 0.9),
+				},
+				gradientOverlay: {
+					...StyleSheet.absoluteFillObject,
+					opacity: 0.9,
 				},
 				artworkWrapper: {
 					width: 42,
@@ -111,17 +135,8 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 					...StyleSheet.absoluteFillObject,
 				},
 			}),
-		[defaultStyles.text, theme, utilsStyles.glassCard],
+		[accent, containerBase, defaultStyles.text, theme, utilsStyles.glassCard],
 	);
-
-	const activeTrack = useActiveTrack();
-	const lastActiveTrack = useLastActiveTrack();
-
-	const displayedTrack = activeTrack ?? lastActiveTrack;
-
-	const handlePress = () => {
-		router.navigate("/player");
-	};
 
 	if (!displayedTrack) return null;
 
@@ -131,6 +146,13 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 			activeOpacity={0.6}
 			style={[themedStyles.container, style]}
 		>
+			<LinearGradient
+				pointerEvents="none"
+				colors={containerGradient}
+				start={{ x: 0, y: 0 }}
+				end={{ x: 1, y: 1 }}
+				style={themedStyles.gradientOverlay}
+			/>
 			<BlurView
 				tint={theme === "dark" ? "dark" : "light"}
 				intensity={60}
