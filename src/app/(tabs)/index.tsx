@@ -20,7 +20,6 @@ import TrackPlayer, { type Track as PlayerTrack } from "@/lib/expo-track-player"
 import { useQueue } from "@/store/queue";
 import { useThemeStyles } from "@/styles";
 import MusicAPI, { type Track as ApiTrack } from "../../../scripts/music";
-import Ball from '@/components/utils/Ball'
 
 type SectionKey = "recommend" | "favorites" | "recently";
 
