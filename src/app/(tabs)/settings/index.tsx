@@ -1,125 +1,137 @@
-import { Ionicons } from '@expo/vector-icons'
-import { LinearGradient } from 'expo-linear-gradient'
-import { type ReactNode, useMemo } from 'react'
-import { Linking, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
-import { type AccentColorName, accentColors, fontSize, screenPadding } from '@/constants/tokens'
-import { useNavigationSearch } from '@/hooks/useNavigationSearch'
-import { useStrings } from '@/hooks/useStrings'
-import { useTheme } from '@/hooks/useTheme'
-import { useAccentPreference, useLanguagePreference, useThemePreference } from '@/store/preferences'
-import { useThemeStyles } from '@/styles'
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { type ReactNode, useMemo } from "react";
+import {
+	Linking,
+	ScrollView,
+	StyleSheet,
+	Switch,
+	Text,
+	TouchableOpacity,
+	View,
+} from "react-native";
+import { type AccentColorName, accentColors, fontSize, screenPadding } from "@/constants/tokens";
+import { useNavigationSearch } from "@/hooks/useNavigationSearch";
+import { useStrings } from "@/hooks/useStrings";
+import { useTheme } from "@/hooks/useTheme";
+import {
+	useAccentPreference,
+	useLanguagePreference,
+	useThemePreference,
+} from "@/store/preferences";
+import { useThemeStyles } from "@/styles";
 
 type SettingOption<T extends string> = {
-	value: T
-	label: string
-	helper?: string
-	color?: string
-}
+	value: T;
+	label: string;
+	helper?: string;
+	color?: string;
+};
 
 const SettingsScreen = () => {
-	const { colors, theme } = useTheme()
-	const { defaultStyles, utilsStyles } = useThemeStyles()
-	const { t } = useStrings()
+	const { colors, theme } = useTheme();
+	const { defaultStyles, utilsStyles } = useThemeStyles();
+	const { t } = useStrings();
 	const themedStyles = useMemo(
 		() => styles(colors, defaultStyles, utilsStyles),
 		[colors, defaultStyles, utilsStyles],
-	)
+	);
 	const search = useNavigationSearch({
 		searchBarOptions: {
 			placeholder: t.settings_search_placeholder,
 		},
-	})
+	});
 
-	const { value: language, setLanguage } = useLanguagePreference()
-	const { value: themePreference, setTheme: setThemePreference } = useThemePreference()
-	const { value: accentPreference, setAccentColor } = useAccentPreference()
+	const { value: language, setLanguage } = useLanguagePreference();
+	const { value: themePreference, setTheme: setThemePreference } = useThemePreference();
+	const { value: accentPreference, setAccentColor } = useAccentPreference();
 	const openGithubProfile = () => {
-		void Linking.openURL('https://github.com/Super1Windcloud')
-	}
+		void Linking.openURL("https://github.com/Super1Windcloud");
+	};
 
-	const languageOptions: SettingOption<'system' | 'en' | 'zh'>[] = useMemo(
+	const languageOptions: SettingOption<"system" | "en" | "zh">[] = useMemo(
 		() => [
-			{ value: 'system', label: t.settings_follow_system },
-			{ value: 'en', label: t.settings_english },
-			{ value: 'zh', label: t.settings_chinese },
+			{ value: "system", label: t.settings_follow_system },
+			{ value: "en", label: t.settings_english },
+			{ value: "zh", label: t.settings_chinese },
 		],
 		[t],
-	)
+	);
 
 	const accentOptions: SettingOption<AccentColorName>[] = useMemo(
 		() => [
 			{
-				value: 'appleMusic',
+				value: "appleMusic",
 				label: t.settings_accent_apple_music,
 				helper: t.settings_accent_apple_music_helper,
 				color: accentColors.appleMusic,
 			},
 			{
-				value: 'oceanBlue',
+				value: "oceanBlue",
 				label: t.settings_accent_ocean_blue,
 				helper: t.settings_accent_ocean_blue_helper,
 				color: accentColors.oceanBlue,
 			},
 			{
-				value: 'mint',
+				value: "mint",
 				label: t.settings_accent_mint,
 				helper: t.settings_accent_mint_helper,
 				color: accentColors.mint,
 			},
 			{
-				value: 'sunset',
+				value: "sunset",
 				label: t.settings_accent_sunset,
 				helper: t.settings_accent_sunset_helper,
 				color: accentColors.sunset,
 			},
 		],
 		[t],
-	)
+	);
 
-	const themeOptions: SettingOption<'system' | 'light' | 'dark'>[] = useMemo(
+	const themeOptions: SettingOption<"system" | "light" | "dark">[] = useMemo(
 		() => [
-			{ value: 'system', label: t.settings_system_theme },
-			{ value: 'light', label: t.settings_light_theme },
-			{ value: 'dark', label: t.settings_dark_theme },
+			{ value: "system", label: t.settings_system_theme },
+			{ value: "light", label: t.settings_light_theme },
+			{ value: "dark", label: t.settings_dark_theme },
 		],
 		[t],
-	)
+	);
 
-	const aboutOptions: SettingOption<'github'>[] = useMemo(
-		() => [{ value: 'github', label: t.settings_github, helper: t.settings_github_helper }],
+	const aboutOptions: SettingOption<"github">[] = useMemo(
+		() => [{ value: "github", label: t.settings_github, helper: t.settings_github_helper }],
 		[t],
-	)
+	);
 
-	const filteredLanguageOptions = useFilteredOptions(languageOptions, search)
-	const filteredThemeOptions = useFilteredOptions(themeOptions, search)
-	const filteredAccentOptions = useFilteredOptions(accentOptions, search)
-	const filteredAboutOptions = useFilteredOptions(aboutOptions, search)
+	const filteredLanguageOptions = useFilteredOptions(languageOptions, search);
+	const filteredThemeOptions = useFilteredOptions(themeOptions, search);
+	const filteredAccentOptions = useFilteredOptions(accentOptions, search);
+	const filteredAboutOptions = useFilteredOptions(aboutOptions, search);
 
 	const backgroundGradient = useMemo(
 		() =>
-			theme === 'dark'
-				? (['#0b1120', '#0a1020', colors.background] as const)
-				: (['#f9fbff', '#eef4ff', colors.background] as const),
+			theme === "dark"
+				? (["#0b1120", "#0a1020", colors.background] as const)
+				: (["#f9fbff", "#eef4ff", colors.background] as const),
 		[colors.background, theme],
-	)
+	);
 
 	const noResults =
 		search &&
 		filteredLanguageOptions.length === 0 &&
 		filteredThemeOptions.length === 0 &&
 		filteredAccentOptions.length === 0 &&
-		filteredAboutOptions.length === 0
-	const showLanguageSection = search.length === 0 || filteredLanguageOptions.length > 0
-	const showThemeSection = search.length === 0 || filteredThemeOptions.length > 0
-	const showAccentSection = search.length === 0 || filteredAccentOptions.length > 0
-	const showAboutSection = search.length === 0 || filteredAboutOptions.length > 0
+		filteredAboutOptions.length === 0;
+	const showLanguageSection = search.length === 0 || filteredLanguageOptions.length > 0;
+	const showThemeSection = search.length === 0 || filteredThemeOptions.length > 0;
+	const showAccentSection = search.length === 0 || filteredAccentOptions.length > 0;
+	const showAboutSection = search.length === 0 || filteredAboutOptions.length > 0;
 
 	return (
 		<View style={{ flex: 1 }}>
 			<LinearGradient colors={backgroundGradient} style={StyleSheet.absoluteFillObject} />
 
 			<ScrollView
-				style={[defaultStyles.container, { backgroundColor: 'transparent' }]}
+				style={[defaultStyles.container, { backgroundColor: "transparent" }]}
 				contentInsetAdjustmentBehavior="automatic"
 				contentContainerStyle={{
 					paddingHorizontal: screenPadding.horizontal,
@@ -185,8 +197,8 @@ const SettingsScreen = () => {
 								<Text style={themedStyles.rowSubtitle}>{t.settings_dark_mode_helper}</Text>
 							</View>
 							<Switch
-								value={themePreference === 'dark'}
-								onValueChange={(value) => setThemePreference(value ? 'dark' : 'light')}
+								value={themePreference === "dark"}
+								onValueChange={(value) => setThemePreference(value ? "dark" : "light")}
 								trackColor={{ false: colors.border, true: colors.primary }}
 								thumbColor={colors.icon}
 							/>
@@ -221,7 +233,7 @@ const SettingsScreen = () => {
 						title={t.settings_about}
 						description={t.settings_about_description}
 						themedStyles={themedStyles}
-						bottomPadding={50}
+						bottomPadding={70}
 					>
 						{filteredAboutOptions.map((option) => (
 							<SettingRow
@@ -239,21 +251,21 @@ const SettingsScreen = () => {
 				)}
 			</ScrollView>
 		</View>
-	)
-}
+	);
+};
 
 const useFilteredOptions = <T extends string>(options: SettingOption<T>[], search: string) => {
 	return useMemo(() => {
-		if (!search) return options
+		if (!search) return options;
 
-		const lowered = search.toLowerCase()
+		const lowered = search.toLowerCase();
 		return options.filter(
 			(option) =>
 				option.label.toLowerCase().includes(lowered) ||
 				option.helper?.toLowerCase().includes(lowered),
-		)
-	}, [options, search])
-}
+		);
+	}, [options, search]);
+};
 
 const SettingsSection = ({
 	title,
@@ -262,11 +274,11 @@ const SettingsSection = ({
 	themedStyles,
 	bottomPadding = 0,
 }: {
-	title: string
-	description?: string
-	children: ReactNode
-	themedStyles: ReturnType<typeof styles>
-	bottomPadding?: number
+	title: string;
+	description?: string;
+	children: ReactNode;
+	themedStyles: ReturnType<typeof styles>;
+	bottomPadding?: number;
 }) => {
 	return (
 		<View style={[themedStyles.section, bottomPadding ? { paddingBottom: bottomPadding } : null]}>
@@ -275,8 +287,8 @@ const SettingsSection = ({
 
 			<View style={themedStyles.card}>{children}</View>
 		</View>
-	)
-}
+	);
+};
 
 const SettingRow = ({
 	label,
@@ -288,18 +300,18 @@ const SettingRow = ({
 	themedStyles,
 	swatchColor,
 }: {
-	label: string
-	helper?: string
-	selected: boolean
-	onPress: () => void
-	colors: ReturnType<typeof useTheme>['colors']
-	utilsStyles: ReturnType<typeof useThemeStyles>['utilsStyles']
-	themedStyles: ReturnType<typeof styles>
-	swatchColor?: string
+	label: string;
+	helper?: string;
+	selected: boolean;
+	onPress: () => void;
+	colors: ReturnType<typeof useTheme>["colors"];
+	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"];
+	themedStyles: ReturnType<typeof styles>;
+	swatchColor?: string;
 }) => {
 	return (
 		<TouchableOpacity onPress={onPress} activeOpacity={0.85} style={themedStyles.row}>
-			<View style={{ flexDirection: 'row', alignItems: 'center', columnGap: 12 }}>
+			<View style={{ flexDirection: "row", alignItems: "center", columnGap: 12 }}>
 				{swatchColor && (
 					<View
 						style={{
@@ -325,13 +337,13 @@ const SettingRow = ({
 				</View>
 			)}
 		</TouchableOpacity>
-	)
-}
+	);
+};
 
 const styles = (
-	colors: ReturnType<typeof useTheme>['colors'],
-	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
-	utilsStyles: ReturnType<typeof useThemeStyles>['utilsStyles'],
+	colors: ReturnType<typeof useTheme>["colors"],
+	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
+	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"],
 ) =>
 	StyleSheet.create({
 		section: {
@@ -340,7 +352,7 @@ const styles = (
 		sectionTitle: {
 			...defaultStyles.text,
 			fontSize: fontSize.lg,
-			fontWeight: '700',
+			fontWeight: "700",
 		},
 		sectionDescription: {
 			...defaultStyles.text,
@@ -355,21 +367,21 @@ const styles = (
 		row: {
 			paddingVertical: 14,
 			paddingHorizontal: 16,
-			flexDirection: 'row',
-			justifyContent: 'space-between',
-			alignItems: 'center',
+			flexDirection: "row",
+			justifyContent: "space-between",
+			alignItems: "center",
 			borderBottomWidth: StyleSheet.hairlineWidth,
 			borderBottomColor: colors.border,
 		},
 		rowTitle: {
 			...defaultStyles.text,
-			fontWeight: '600',
+			fontWeight: "600",
 		},
 		rowSubtitle: {
 			...defaultStyles.text,
 			color: colors.textMuted,
 			marginTop: 4,
 		},
-	})
+	});
 
-export default SettingsScreen
+export default SettingsScreen;

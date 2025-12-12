@@ -179,13 +179,21 @@ const performStreamRequest = async (trackId: string): Promise<string> => {
 };
 
 const getStreamUrl = async (trackId: string): Promise<string> => {
+	const fallbackUrl = getTrackUrl({ id: Number(trackId) } as Track);
 	const cacheKey = `stream_${trackId}`;
 
 	if (streamCache.has(cacheKey)) {
 		return streamCache.get(cacheKey) as Promise<string>;
 	}
 
-	const requestPromise = performStreamRequest(trackId);
+	const requestPromise = (async () => {
+		try {
+			return await performStreamRequest(trackId);
+		} catch (error) {
+			console.warn("Stream request failed, using fallback", error);
+			return fallbackUrl;
+		}
+	})();
 
 	streamCache.set(cacheKey, requestPromise);
 
