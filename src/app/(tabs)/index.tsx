@@ -12,14 +12,6 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-import Animated, {
-	cancelAnimation,
-	Easing,
-	useAnimatedStyle,
-	useSharedValue,
-	withRepeat,
-	withTiming,
-} from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { generateTracksListId } from "@/helpers/miscellaneous";
 import { useStrings } from "@/hooks/useStrings";
@@ -30,7 +22,6 @@ import { useThemeStyles } from "@/styles";
 import MusicAPI, { type Track as ApiTrack } from "../../../scripts/music";
 
 type SectionKey = "recommend" | "favorites" | "recently";
-const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
 type SectionState = {
 	tracks: ApiTrack[];
@@ -75,8 +66,6 @@ const HomeScreen = () => {
 	const { t } = useStrings();
 	const { theme } = useTheme();
 	const { activeQueueId, setActiveQueueId } = useQueue();
-	const [heroWidth, setHeroWidth] = useState(0);
-	const heroBorderOffset = useSharedValue(0);
 
 	const sectionConfigs = useMemo(
 		() => ({
@@ -132,26 +121,6 @@ const HomeScreen = () => {
 				: (["#f9fbff", "#eef4ff", colors.background] as const),
 		[colors.background, theme],
 	);
-
-	const heroBorderStyle = useAnimatedStyle(() => ({
-		transform: [{ translateX: heroBorderOffset.value }],
-	}));
-
-	useEffect(() => {
-		if (!heroWidth) return;
-
-		cancelAnimation(heroBorderOffset);
-		heroBorderOffset.value = -heroWidth;
-		heroBorderOffset.value = withRepeat(
-			withTiming(heroWidth, { duration: 9000, easing: Easing.linear }),
-			-1,
-			false,
-		);
-
-		return () => {
-			cancelAnimation(heroBorderOffset);
-		};
-	}, [heroBorderOffset, heroWidth]);
 
 	const hydratePlayableTracks = useCallback(async (key: SectionKey, tracks: ApiTrack[]) => {
 		if (!tracks.length) {
@@ -366,51 +335,23 @@ const HomeScreen = () => {
 					/>
 				}
 			>
-				<View
-					style={themedStyles.heroCard}
-					onLayout={(event) => setHeroWidth(event.nativeEvent.layout.width)}
-				>
-					<LinearGradient
-						colors={["rgba(125,220,255,0.22)", "rgba(107,139,255,0.2)", "transparent"]}
-						start={{ x: 0.5, y: 0 }}
-						end={{ x: 0.5, y: 1 }}
-						style={themedStyles.heroGlow}
-						pointerEvents="none"
-					/>
-					<AnimatedLinearGradient
-						colors={["#7ddcff", "#6b8bff", "#7ddcff"]}
-						start={{ x: 0, y: 0 }}
-						end={{ x: 1, y: 1 }}
-						style={[
-							themedStyles.heroBorder,
-							heroBorderStyle,
-							{ width: heroWidth ? heroWidth * 2 : "200%" },
-						]}
-						pointerEvents="none"
-					/>
-					<View style={themedStyles.heroCardInner}>
-						<LinearGradient
-							colors={["#0a84ff", "#7eb5ff"] as const}
-							style={themedStyles.heroGradient}
-						>
-							<BlurView tint="dark" intensity={65} style={themedStyles.heroBlur} />
-							<View style={themedStyles.heroHeader}>
-								<View style={themedStyles.heroBadge}>
-									<Ionicons name="musical-notes" size={16} color="#fff" />
-									<Text style={themedStyles.heroBadgeText}>{t.tabs_recommend}</Text>
-								</View>
-								<Ionicons name="flash" size={18} color="rgba(255,255,255,0.8)" />
+				<View style={[utilsStyles.glassCard, themedStyles.heroCard, { marginBottom: 16 }]}>
+					<LinearGradient colors={["#0a84ff", "#7eb5ff"] as const} style={themedStyles.heroGradient}>
+						<BlurView tint="dark" intensity={65} style={themedStyles.heroBlur} />
+						<View style={themedStyles.heroHeader}>
+							<View style={themedStyles.heroBadge}>
+								<Ionicons name="musical-notes" size={16} color="#fff" />
+								<Text style={themedStyles.heroBadgeText}>{t.tabs_recommend}</Text>
 							</View>
-							<Text style={themedStyles.heroTitle}>{t.home_title}</Text>
-							<Text style={themedStyles.heroSubtitle}>{t.home_subtitle}</Text>
-							<View style={themedStyles.heroFooter}>
-								<View style={themedStyles.heroDot} />
-								<Text style={themedStyles.heroFooterText}>
-									{t.musicfeed_loading.replace("...", "")}
-								</Text>
-							</View>
-						</LinearGradient>
-					</View>
+							<Ionicons name="flash" size={18} color="rgba(255,255,255,0.8)" />
+						</View>
+						<Text style={themedStyles.heroTitle}>{t.home_title}</Text>
+						<Text style={themedStyles.heroSubtitle}>{t.home_subtitle}</Text>
+						<View style={themedStyles.heroFooter}>
+							<View style={themedStyles.heroDot} />
+							<Text style={themedStyles.heroFooterText}>{t.musicfeed_loading.replace("...", "")}</Text>
+						</View>
+					</LinearGradient>
 				</View>
 
 				<View style={themedStyles.quickActionsRow}>
@@ -469,34 +410,10 @@ const styles = (
 ) =>
 	StyleSheet.create({
 		heroCard: {
-			...utilsStyles.glassCard,
-			marginBottom: 16,
 			borderRadius: 22,
 			padding: 1.5,
 			overflow: "visible",
 			backgroundColor: theme === "dark" ? "rgba(20,20,24,0.8)" : "rgba(255,255,255,0.92)",
-		},
-		heroGlow: {
-			position: "absolute",
-			top: -48,
-			left: -18,
-			right: -18,
-			bottom: -12,
-			borderRadius: 30,
-			opacity: 0.75,
-		},
-		heroBorder: {
-			position: "absolute",
-			top: -14,
-			left: -8,
-			bottom: -14,
-			opacity: 0.9,
-			height: "120%",
-		},
-		heroCardInner: {
-			borderRadius: 20,
-			overflow: "hidden",
-			width: "100%",
 		},
 		heroGradient: {
 			padding: 20,

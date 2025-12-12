@@ -4,11 +4,11 @@ import { useEffect, useMemo, useRef } from "react";
 import {
 	Animated,
 	Easing,
+	type StyleProp,
 	StyleSheet,
 	TextInput,
-	type StyleProp,
-	type ViewStyle,
 	View,
+	type ViewStyle,
 } from "react-native";
 import { useTheme } from "@/hooks/useTheme";
 

@@ -282,7 +282,9 @@ const ExploreScreen = () => {
 							</Section>
 						) : (
 							!state.isLoading &&
-							search.trim() && <Text style={utilsStyles.emptyContentText}>{t.explore_no_results}</Text>
+							search.trim() && (
+								<Text style={utilsStyles.emptyContentText}>{t.explore_no_results}</Text>
+							)
 						)}
 					</ScrollView>
 				</View>
