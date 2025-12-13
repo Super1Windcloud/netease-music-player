@@ -213,19 +213,19 @@ const PlayerScreen = () => {
 						>
 							<GrayscaleArtworkLayer
 								uri={artworkUri}
-								filterId={`${artworkFilterBase}-backdrop`}
-								opacity={0.4}
-								style={themedStyles.artworkLayer}
-							/>
-
-							<View style={themedStyles.artworkColorOverlay} pointerEvents="none" />
-
-							<GrayscaleArtworkLayer
-								uri={artworkUri}
 								filterId={`${artworkFilterBase}-detail`}
 								opacity={0.6}
 								style={themedStyles.artworkLayer}
 							/>
+
+							<View style={themedStyles.artworkSmokeOverlay} pointerEvents="none">
+								<Image
+									source={smokeGif}
+									style={StyleSheet.absoluteFillObject}
+									contentFit="cover"
+									transition={0}
+								/>
+							</View>
 
 							<LinearGradient
 								colors={[
@@ -361,6 +361,11 @@ const styles = (
 		artworkDimmer: {
 			...StyleSheet.absoluteFillObject,
 			borderRadius: 24,
+		},
+		artworkSmokeOverlay: {
+			...StyleSheet.absoluteFillObject,
+			borderRadius: 24,
+			opacity: 0.32,
 		},
 		infoBlock: {
 			gap: 4,
