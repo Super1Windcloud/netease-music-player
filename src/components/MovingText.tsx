@@ -84,9 +84,11 @@ export const MovingText = ({
 			}}
 			style={{ overflow: "hidden" }}
 		>
-			{/* Hidden text used only to measure the full width (unclamped). */}
+			{/* Hidden text used only to measure the full width (unclamped). Constrain to one line so wrapping doesn't mask overflow. */}
 			<Animated.Text
 				accessible={false}
+				numberOfLines={1}
+				ellipsizeMode="clip"
 				onLayout={(event) => {
 					const width = event.nativeEvent.layout.width;
 					if (width !== measuredTextWidth) setMeasuredTextWidth(width);

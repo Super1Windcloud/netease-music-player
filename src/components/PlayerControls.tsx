@@ -93,7 +93,7 @@ export const SkipToPreviousButton = ({ iconSize = 30, style }: PlayerButtonProps
 					padding: 10,
 					borderRadius: 12,
 					backgroundColor: "transparent",
-					borderWidth: StyleSheet.hairlineWidth,
+					borderWidth: 0,
 					borderColor: colors.border,
 				},
 				style,
