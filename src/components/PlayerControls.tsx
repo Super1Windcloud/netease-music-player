@@ -1,16 +1,16 @@
-import { FontAwesome6 } from '@expo/vector-icons'
-import { StyleSheet, TouchableOpacity, View, type ViewStyle } from 'react-native'
-import { useTheme } from '@/hooks/useTheme'
-import TrackPlayer, { useIsPlaying } from '@/lib/expo-track-player'
+import { FontAwesome6 } from "@expo/vector-icons";
+import { StyleSheet, TouchableOpacity, View, type ViewStyle } from "react-native";
+import { useTheme } from "@/hooks/useTheme";
+import TrackPlayer, { useIsPlaying } from "@/lib/expo-track-player";
 
 type PlayerControlsProps = {
-	style?: ViewStyle
-}
+	style?: ViewStyle;
+};
 
 type PlayerButtonProps = {
-	style?: ViewStyle
-	iconSize?: number
-}
+	style?: ViewStyle;
+	iconSize?: number;
+};
 
 export const PlayerControls = ({ style }: PlayerControlsProps) => {
 	return (
@@ -23,13 +23,13 @@ export const PlayerControls = ({ style }: PlayerControlsProps) => {
 				<SkipToNextButton />
 			</View>
 		</View>
-	)
-}
+	);
+};
 
 export const PlayPauseButton = ({ style, iconSize = 48 }: PlayerButtonProps) => {
-	const { playing } = useIsPlaying()
-	const { colors } = useTheme()
-	const buttonSize = iconSize + 20
+	const { playing } = useIsPlaying();
+	const { colors } = useTheme();
+	const buttonSize = iconSize + 20;
 
 	return (
 		<TouchableOpacity
@@ -40,9 +40,9 @@ export const PlayPauseButton = ({ style, iconSize = 48 }: PlayerButtonProps) => 
 					width: buttonSize,
 					height: buttonSize,
 					borderRadius: buttonSize / 2,
-					alignItems: 'center',
-					justifyContent: 'center',
-					backgroundColor: 'transparent',
+					alignItems: "center",
+					justifyContent: "center",
+					backgroundColor: "transparent",
 
 					borderColor: colors.border,
 					borderWidth: StyleSheet.hairlineWidth,
@@ -54,13 +54,13 @@ export const PlayPauseButton = ({ style, iconSize = 48 }: PlayerButtonProps) => 
 				style,
 			]}
 		>
-			<FontAwesome6 name={playing ? 'pause' : 'play'} size={iconSize} color={colors.text} />
+			<FontAwesome6 name={playing ? "pause" : "play"} size={iconSize} color={colors.text} />
 		</TouchableOpacity>
-	)
-}
+	);
+};
 
 export const SkipToNextButton = ({ iconSize = 30, style }: PlayerButtonProps) => {
-	const { colors } = useTheme()
+	const { colors } = useTheme();
 	return (
 		<TouchableOpacity
 			activeOpacity={0.8}
@@ -69,7 +69,7 @@ export const SkipToNextButton = ({ iconSize = 30, style }: PlayerButtonProps) =>
 				{
 					padding: 10,
 					borderRadius: 12,
-					backgroundColor: 'transparent',
+					backgroundColor: "transparent",
 
 					borderWidth: StyleSheet.hairlineWidth,
 					borderColor: colors.border,
@@ -79,11 +79,11 @@ export const SkipToNextButton = ({ iconSize = 30, style }: PlayerButtonProps) =>
 		>
 			<FontAwesome6 name="forward" size={iconSize} color={colors.text} />
 		</TouchableOpacity>
-	)
-}
+	);
+};
 
 export const SkipToPreviousButton = ({ iconSize = 30, style }: PlayerButtonProps) => {
-	const { colors } = useTheme()
+	const { colors } = useTheme();
 	return (
 		<TouchableOpacity
 			activeOpacity={0.8}
@@ -92,26 +92,26 @@ export const SkipToPreviousButton = ({ iconSize = 30, style }: PlayerButtonProps
 				{
 					padding: 10,
 					borderRadius: 12,
-					backgroundColor: 'transparent',
+					backgroundColor: "transparent",
 					borderWidth: StyleSheet.hairlineWidth,
 					borderColor: colors.border,
 				},
 				style,
 			]}
 		>
-			<FontAwesome6 name={'backward'} size={iconSize} color={colors.text} />
+			<FontAwesome6 name={"backward"} size={iconSize} color={colors.text} />
 		</TouchableOpacity>
-	)
-}
+	);
+};
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%',
+		width: "100%",
 	},
 	row: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
 		columnGap: 24,
 	},
-})
+});
