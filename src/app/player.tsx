@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useMemo } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Animated, { Easing, FadeIn, FadeOut, ZoomIn, ZoomOut } from "react-native-reanimated";
 import { MovingText } from "@/components/MovingText";
 import { PlayerControls } from "@/components/PlayerControls";
 import { PlayerProgressBar } from "@/components/PlayerProgressbar";
@@ -46,62 +47,88 @@ const PlayerScreen = () => {
 	}
 
 	return (
-		<LinearGradient style={{ flex: 1 }} colors={gradientColors}>
-			<LinearGradient
-				colors={
-					theme === "dark"
-						? ["rgba(5, 9, 16, 0.65)", "rgba(5, 9, 16, 0.15)"]
-						: ["rgba(255,255,255,0.6)", "rgba(255,255,255,0.2)"]
-				}
-				style={StyleSheet.absoluteFillObject}
-			/>
+		<Animated.View
+			style={{ flex: 1 }}
+			entering={FadeIn.duration(220)
+				.easing(Easing.bezier(0.15, 0.55, 0.25, 1))
+				.springify()
+				.damping(16)
+				.mass(0.9)}
+			exiting={FadeOut.duration(240)
+				.easing(Easing.bezier(0.45, 0, 0.75, 0.95))
+				.withInitialValues({ transform: [{ scale: 1.02 }] })
+				.springify()
+				.damping(15)
+				.mass(0.8)}
+		>
+			<LinearGradient style={{ flex: 1 }} colors={gradientColors}>
+				<LinearGradient
+					colors={
+						theme === "dark"
+							? ["rgba(5, 9, 16, 0.65)", "rgba(5, 9, 16, 0.15)"]
+							: ["rgba(255,255,255,0.65)", "rgba(255,255,255,0.2)"]
+					}
+					style={StyleSheet.absoluteFillObject}
+				/>
 
-			<View style={themedStyles.overlayContainer}>
-				<DismissPlayerSymbol />
+				<View style={themedStyles.overlayContainer}>
+					<DismissPlayerSymbol />
 
-				<View style={{ flex: 1, marginTop: top + 36, marginBottom: bottom + 10, gap: 20 }}>
-					<View style={themedStyles.artworkImageContainer}>
-						<Image
-							source={{
-								uri: displayedTrack.artwork ?? unknownTrackImageUri,
-							}}
-							priority={"high"}
-							contentFit="cover"
-							style={themedStyles.artworkImage}
-						/>
-					</View>
-
-					<View style={themedStyles.infoBlock}>
-						<View style={themedStyles.trackTitleContainer}>
-							<MovingText
-								text={trackTitle}
-								animationThreshold={28}
-								style={themedStyles.trackTitleText}
+					<View style={{ flex: 1, marginTop: top + 36, marginBottom: bottom + 10, gap: 20 }}>
+						<Animated.View
+							entering={ZoomIn.duration(520)
+								.easing(Easing.bezier(0.16, 0.54, 0.12, 1))
+								.springify()
+								.damping(14)
+								.mass(0.85)}
+							exiting={ZoomOut.duration(280)
+								.easing(Easing.bezier(0.4, 0, 0.8, 0.7))
+								.springify()
+								.damping(18)}
+							style={themedStyles.artworkImageContainer}
+						>
+							<Image
+								source={{
+									uri: displayedTrack.artwork ?? unknownTrackImageUri,
+								}}
+								priority={"high"}
+								contentFit="cover"
+								style={themedStyles.artworkImage}
 							/>
+						</Animated.View>
+
+						<View style={themedStyles.infoBlock}>
+							<View style={themedStyles.trackTitleContainer}>
+								<MovingText
+									text={trackTitle}
+									animationThreshold={28}
+									style={themedStyles.trackTitleText}
+								/>
+							</View>
+							<Text numberOfLines={1} style={[themedStyles.trackArtistText]}>
+								{artistName}
+							</Text>
 						</View>
-						<Text numberOfLines={1} style={[themedStyles.trackArtistText]}>
-							{artistName}
-						</Text>
+
+						<BlurView
+							tint={theme === "dark" ? "dark" : "light"}
+							intensity={75}
+							style={themedStyles.panel}
+						>
+							<PlayerProgressBar />
+
+							<PlayerControls style={{ marginTop: 10 }} />
+
+							<PlayerVolumeBar style={{ marginTop: 15 }} />
+
+							<View style={[utilsStyles.centeredRow, { marginTop: 10 }]}>
+								<PlayerRepeatToggle size={30} style={{ marginBottom: 4 }} />
+							</View>
+						</BlurView>
 					</View>
-
-					<BlurView
-						tint={theme === "dark" ? "dark" : "light"}
-						intensity={75}
-						style={themedStyles.panel}
-					>
-						<PlayerProgressBar />
-
-						<PlayerControls style={{ marginTop: 10 }} />
-
-						<PlayerVolumeBar style={{ marginTop: 15 }} />
-
-						<View style={[utilsStyles.centeredRow, { marginTop: 10 }]}>
-							<PlayerRepeatToggle size={30} style={{ marginBottom: 4 }} />
-						</View>
-					</BlurView>
 				</View>
-			</View>
-		</LinearGradient>
+			</LinearGradient>
+		</Animated.View>
 	);
 };
 
@@ -163,33 +190,36 @@ const styles = (
 			borderWidth: StyleSheet.hairlineWidth,
 			borderColor: theme === "dark" ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.6)",
 		},
-		infoBlock: {
-			gap: 4,
-			alignItems: "center",
-			justifyContent: "flex-start",
-			flexDirection: "column",
-			width: "100%",
-			paddingHorizontal: 6,
-			paddingVertical: 4,
-			zIndex: 2,
-		},
-		trackTitleContainer: {
-			alignSelf: "stretch",
-			overflow: "hidden",
-			width: "100%",
-		},
-		trackTitleText: {
-			...defaultStyles.text,
-			fontSize: 22,
-			fontWeight: "700",
+	infoBlock: {
+		gap: 4,
+		alignItems: "center",
+		justifyContent: "flex-start",
+		flexDirection: "column",
+		width: "100%",
+		paddingHorizontal: 6,
+		paddingVertical: 10,
+		borderRadius: 18,
+		zIndex: 2,
+		backgroundColor: theme === "dark" ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.7)",
+	},
+	trackTitleContainer: {
+		alignSelf: "stretch",
+		overflow: "hidden",
+		width: "100%",
+		paddingHorizontal: 8,
+	},
+	trackTitleText: {
+		...defaultStyles.text,
+		fontSize: 22,
+		fontWeight: "700",
 			textAlign: "center",
 			lineHeight: 26,
 		},
-		trackArtistText: {
-			...defaultStyles.text,
-			fontSize: fontSize.base,
-			opacity: 0.7,
-			textAlign: "center",
+	trackArtistText: {
+		...defaultStyles.text,
+		fontSize: fontSize.base,
+		opacity: 0.7,
+		textAlign: "center",
 			maxWidth: "90%",
 		},
 		panel: {
