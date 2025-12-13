@@ -9,9 +9,9 @@ import { trackTitleFilter } from "@/helpers/filter";
 import { generateTracksListId } from "@/helpers/miscellaneous";
 import { useStrings } from "@/hooks/useStrings";
 import { useTheme } from "@/hooks/useTheme";
+import type { Track as PlayerTrack } from "@/lib/expo-track-player";
 import { useEnsureLibraryLoaded, useLibraryStatus, useTracks } from "@/store/library";
 import { useThemeStyles } from "@/styles";
-import { type Track as PlayerTrack } from "@/lib/expo-track-player";
 import MusicAPI, { type Track as ApiTrack } from "../../../../scripts/music";
 
 const mapApiTrackToPlayerTrack = async (track: ApiTrack): Promise<PlayerTrack> => {
@@ -89,9 +89,7 @@ const SongsScreen = () => {
 					}
 				} catch (fetchError) {
 					if (!cancelled) {
-						setSearchError(
-							fetchError instanceof Error ? fetchError.message : t.musicfeed_error,
-						);
+						setSearchError(fetchError instanceof Error ? fetchError.message : t.musicfeed_error);
 					}
 				} finally {
 					if (!cancelled) {

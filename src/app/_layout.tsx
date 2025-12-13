@@ -48,7 +48,8 @@ const RootNavigation = () => {
 				options={{
 					presentation: "card",
 					gestureEnabled: true,
-					gestureDirection: "vertical",
+					gestureDirection: "horizontal",
+					fullScreenGestureEnabled: true,
 					animationDuration: 400,
 					headerShown: false,
 				}}
