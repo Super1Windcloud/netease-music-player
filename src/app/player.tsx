@@ -1,7 +1,6 @@
-import { BlurView } from "expo-blur";
-import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { BlurView } from 'expo-blur'
+import { LinearGradient } from 'expo-linear-gradient'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
 	ActivityIndicator,
 	type LayoutChangeEvent,
@@ -10,7 +9,7 @@ import {
 	Text,
 	View,
 	type ViewStyle,
-} from "react-native";
+} from 'react-native'
 import Animated, {
 	cancelAnimation,
 	Easing,
@@ -24,38 +23,47 @@ import Animated, {
 	withTiming,
 	ZoomIn,
 	ZoomOut,
-} from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Svg, { Defs, Ellipse, FeGaussianBlur, Filter, RadialGradient, Stop } from "react-native-svg";
-import { MovingText } from "@/components/MovingText";
-import { PlayerControls } from "@/components/PlayerControls";
-import { PlayerProgressBar } from "@/components/PlayerProgressbar";
-import { PlayerRepeatToggle } from "@/components/PlayerRepeatToggle";
-import { PlayerVolumeBar } from "@/components/PlayerVolumeBar";
-import { unknownTrackImageUri } from "@/constants/images";
-import { fontSize, screenPadding } from "@/constants/tokens";
-import { withOpacity } from "@/helpers/colors";
-import { useLastActiveTrack } from "@/hooks/useLastActiveTrack";
-import { usePlayerBackground } from "@/hooks/usePlayerBackground";
-import { useTheme } from "@/hooks/useTheme";
-import { useActiveTrack } from "@/lib/expo-track-player";
-import { useThemeStyles } from "@/styles";
+} from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import Svg, {
+	Defs,
+	Ellipse,
+	FeColorMatrix,
+	FeGaussianBlur,
+	Filter,
+	RadialGradient,
+	Stop,
+	Image as SvgImage,
+} from 'react-native-svg'
+import { MovingText } from '@/components/MovingText'
+import { PlayerControls } from '@/components/PlayerControls'
+import { PlayerProgressBar } from '@/components/PlayerProgressbar'
+import { PlayerRepeatToggle } from '@/components/PlayerRepeatToggle'
+import { PlayerVolumeBar } from '@/components/PlayerVolumeBar'
+import { unknownTrackImageUri } from '@/constants/images'
+import { fontSize, screenPadding } from '@/constants/tokens'
+import { withOpacity } from '@/helpers/colors'
+import { useLastActiveTrack } from '@/hooks/useLastActiveTrack'
+import { usePlayerBackground } from '@/hooks/usePlayerBackground'
+import { useTheme } from '@/hooks/useTheme'
+import { useActiveTrack } from '@/lib/expo-track-player'
+import { useThemeStyles } from '@/styles'
 
 const SMOKE_SIZES = {
 	large: { width: 520, height: 620 },
 	medium: { width: 520, height: 520 },
 	small: { width: 420, height: 460 },
-} as const;
+} as const
 
 type SmokeLayerProps = {
-	gradientId: string;
-	width: number;
-	height: number;
-	blur: number;
-	opacity: number;
-	gradientStops: { inner: string; mid: string; outer: string };
-	animatedStyle: StyleProp<ViewStyle>;
-};
+	gradientId: string
+	width: number
+	height: number
+	blur: number
+	opacity: number
+	gradientStops: { inner: string; mid: string; outer: string }
+	animatedStyle: StyleProp<ViewStyle>
+}
 
 const SmokeLayer = ({
 	gradientId,
@@ -99,54 +107,105 @@ const SmokeLayer = ({
 			/>
 		</Svg>
 	</Animated.View>
-);
+)
+
+const GRAYSCALE_MATRIX =
+	'0.2126 0.7152 0.0722 0 0 ' +
+	'0.2126 0.7152 0.0722 0 0 ' +
+	'0.2126 0.7152 0.0722 0 0 ' +
+	'0 0 0 1 0'
+
+type GrayscaleArtworkLayerProps = {
+	uri: string
+	filterId: string
+	blur?: number
+	opacity?: number
+	style?: StyleProp<ViewStyle>
+}
+
+const GrayscaleArtworkLayer = ({
+	uri,
+	filterId,
+	blur = 0,
+	opacity = 1,
+	style,
+}: GrayscaleArtworkLayerProps) => (
+	<Svg
+		width="100%"
+		height="100%"
+		viewBox="0 0 100 100"
+		preserveAspectRatio="xMidYMid slice"
+		style={[StyleSheet.absoluteFillObject, style, { opacity }]}
+		pointerEvents="none"
+	>
+		<Defs>
+			<Filter id={filterId} x="-30%" y="-30%" width="160%" height="160%">
+				<FeColorMatrix type="matrix" values={GRAYSCALE_MATRIX} />
+				{blur > 0 ? <FeGaussianBlur stdDeviation={blur} /> : null}
+			</Filter>
+		</Defs>
+
+		<SvgImage
+			width="100%"
+			height="100%"
+			preserveAspectRatio="xMidYMid slice"
+			href={{ uri }}
+			filter={`url(#${filterId})`}
+		/>
+	</Svg>
+)
 
 const PlayerScreen = () => {
-	const activeTrack = useActiveTrack();
-	const lastActiveTrack = useLastActiveTrack();
-	const displayedTrack = activeTrack ?? lastActiveTrack;
-	const { imageColors } = usePlayerBackground(displayedTrack?.artwork ?? unknownTrackImageUri);
-	const { theme } = useTheme();
-	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
-	const backgroundColor = imageColors?.background ?? colors.background;
-	const accentColor = imageColors?.primary ?? colors.primary;
-	const trackTitle = displayedTrack?.title?.trim() || "Unknown Title";
-	const artistName = displayedTrack?.artist?.trim() || "Unknown Artist";
+	const activeTrack = useActiveTrack()
+	const lastActiveTrack = useLastActiveTrack()
+	const displayedTrack = activeTrack ?? lastActiveTrack
+	const { imageColors } = usePlayerBackground(displayedTrack?.artwork ?? unknownTrackImageUri)
+	const { theme } = useTheme()
+	const { colors, defaultStyles, utilsStyles } = useThemeStyles()
+	const backgroundColor = imageColors?.background ?? colors.background
+	const accentColor = imageColors?.primary ?? colors.primary
+	const trackTitle = displayedTrack?.title?.trim() || 'Unknown Title'
+	const artistName = displayedTrack?.artist?.trim() || 'Unknown Artist'
+	const artworkUri = displayedTrack?.artwork ?? unknownTrackImageUri
 	const themedStyles = useMemo(
 		() => styles(defaultStyles, utilsStyles, theme, backgroundColor, accentColor),
 		[accentColor, backgroundColor, defaultStyles, theme, utilsStyles],
-	);
+	)
 	const gradientColors = useMemo<readonly [string, string]>(
 		() => [withOpacity(accentColor, 0.92), withOpacity(backgroundColor, 0.88)],
 		[accentColor, backgroundColor],
-	);
+	)
 	const smokeGradientStops = useMemo(
 		() => ({
-			inner: withOpacity("#ffffff", theme === "dark" ? 0.58 : 0.4),
-			mid: withOpacity("#ffffff", theme === "dark" ? 0.26 : 0.2),
-			outer: withOpacity("#ffffff", 0),
+			inner: withOpacity('#ffffff', theme === 'dark' ? 0.58 : 0.4),
+			mid: withOpacity('#ffffff', theme === 'dark' ? 0.26 : 0.2),
+			outer: withOpacity('#ffffff', 0),
 		}),
 		[theme],
-	);
+	)
+	const artworkFilterBase = useMemo(() => {
+		const lengthMarker = (artworkUri?.length ?? 0).toString(16)
+		return `artwork-filter-${lengthMarker}-${Math.random().toString(16).slice(2)}`
+	}, [artworkUri])
 
-	const { top, bottom } = useSafeAreaInsets();
-	const smokePrimary = useSharedValue(0);
-	const smokeSecondary = useSharedValue(0);
-	const smokeTertiary = useSharedValue(0);
-	const smokePrimaryNoiseX = useSharedValue(0);
-	const smokePrimaryNoiseY = useSharedValue(0);
-	const smokeSecondaryNoiseX = useSharedValue(0);
-	const smokeSecondaryNoiseY = useSharedValue(0);
-	const smokeTertiaryNoiseX = useSharedValue(0);
-	const smokeTertiaryNoiseY = useSharedValue(0);
-	const [smokeOriginY, setSmokeOriginY] = useState<number | null>(null);
+	const { top, bottom } = useSafeAreaInsets()
+	const smokePrimary = useSharedValue(0)
+	const smokeSecondary = useSharedValue(0)
+	const smokeTertiary = useSharedValue(0)
+	const smokePrimaryNoiseX = useSharedValue(0)
+	const smokePrimaryNoiseY = useSharedValue(0)
+	const smokeSecondaryNoiseX = useSharedValue(0)
+	const smokeSecondaryNoiseY = useSharedValue(0)
+	const smokeTertiaryNoiseX = useSharedValue(0)
+	const smokeTertiaryNoiseY = useSharedValue(0)
+	const [smokeOriginY, setSmokeOriginY] = useState<number | null>(null)
 
 	useEffect(() => {
 		const layerConfigs = [
 			{ shared: smokePrimary, duration: 18000, delay: 0 },
 			{ shared: smokeSecondary, duration: 21000, delay: 1200 },
 			{ shared: smokeTertiary, duration: 16000, delay: 2200 },
-		];
+		]
 
 		layerConfigs.forEach(({ shared, duration, delay }) => {
 			shared.value = withDelay(
@@ -159,15 +218,15 @@ const PlayerScreen = () => {
 					-1,
 					false,
 				),
-			);
-		});
+			)
+		})
 
 		return () => {
 			layerConfigs.forEach(({ shared }) => {
-				cancelAnimation(shared);
-			});
-		};
-	}, [smokePrimary, smokeSecondary, smokeTertiary]);
+				cancelAnimation(shared)
+			})
+		}
+	}, [smokePrimary, smokeSecondary, smokeTertiary])
 
 	useEffect(() => {
 		const startNoiseLoop = (
@@ -176,60 +235,60 @@ const PlayerScreen = () => {
 			spread: { x: number; y: number },
 			baseDuration: number,
 		) => {
-			let timeoutId: ReturnType<typeof setTimeout> | null = null;
+			let timeoutId: ReturnType<typeof setTimeout> | null = null
 
 			const animate = () => {
-				const duration = baseDuration + Math.random() * baseDuration * 0.6;
-				const nextX = (Math.random() * 2 - 1) * spread.x;
-				const nextY = (Math.random() * 2 - 1) * spread.y;
+				const duration = baseDuration + Math.random() * baseDuration * 0.6
+				const nextX = (Math.random() * 2 - 1) * spread.x
+				const nextY = (Math.random() * 2 - 1) * spread.y
 
 				xShared.value = withTiming(nextX, {
 					duration,
 					easing: Easing.inOut(Easing.cubic),
-				});
+				})
 				yShared.value = withTiming(nextY, {
 					duration,
 					easing: Easing.inOut(Easing.cubic),
-				});
+				})
 
-				timeoutId = setTimeout(animate, duration);
-			};
+				timeoutId = setTimeout(animate, duration)
+			}
 
-			animate();
+			animate()
 
 			return () => {
 				if (timeoutId) {
-					clearTimeout(timeoutId);
+					clearTimeout(timeoutId)
 				}
-				cancelAnimation(xShared);
-				cancelAnimation(yShared);
-			};
-		};
+				cancelAnimation(xShared)
+				cancelAnimation(yShared)
+			}
+		}
 
 		const stopPrimaryNoise = startNoiseLoop(
 			smokePrimaryNoiseX,
 			smokePrimaryNoiseY,
 			{ x: 26, y: 34 },
 			2600,
-		);
+		)
 		const stopSecondaryNoise = startNoiseLoop(
 			smokeSecondaryNoiseX,
 			smokeSecondaryNoiseY,
 			{ x: 20, y: 26 },
 			2800,
-		);
+		)
 		const stopTertiaryNoise = startNoiseLoop(
 			smokeTertiaryNoiseX,
 			smokeTertiaryNoiseY,
 			{ x: 16, y: 22 },
 			2200,
-		);
+		)
 
 		return () => {
-			stopPrimaryNoise();
-			stopSecondaryNoise();
-			stopTertiaryNoise();
-		};
+			stopPrimaryNoise()
+			stopSecondaryNoise()
+			stopTertiaryNoise()
+		}
 	}, [
 		smokePrimaryNoiseX,
 		smokePrimaryNoiseY,
@@ -237,9 +296,9 @@ const PlayerScreen = () => {
 		smokeSecondaryNoiseY,
 		smokeTertiaryNoiseX,
 		smokeTertiaryNoiseY,
-	]);
+	])
 
-	const smokeAnchorY = useMemo(() => smokeOriginY ?? 420, [smokeOriginY]);
+	const smokeAnchorY = useMemo(() => smokeOriginY ?? 420, [smokeOriginY])
 	const smokePhases = useMemo(
 		() => ({
 			primary: { x: Math.random() * Math.PI * 2, y: Math.random() * Math.PI * 2 },
@@ -247,15 +306,14 @@ const PlayerScreen = () => {
 			tertiary: { x: Math.random() * Math.PI * 2, y: Math.random() * Math.PI * 2 },
 		}),
 		[],
-	);
+	)
 
 	const smokePrimaryStyle = useAnimatedStyle(() => {
-		const progress = smokePrimary.value;
-		const waveY = Math.sin(progress * Math.PI * 2 + smokePhases.primary.y) * 18;
-		const waveX = Math.cos(progress * Math.PI * 2 + smokePhases.primary.x) * 16;
-		const translateY =
-			interpolate(progress, [0, 1], [130, -260]) + waveY + smokePrimaryNoiseY.value;
-		const translateX = interpolate(progress, [0, 1], [-22, 18]) + waveX + smokePrimaryNoiseX.value;
+		const progress = smokePrimary.value
+		const waveY = Math.sin(progress * Math.PI * 2 + smokePhases.primary.y) * 18
+		const waveX = Math.cos(progress * Math.PI * 2 + smokePhases.primary.x) * 16
+		const translateY = interpolate(progress, [0, 1], [130, -260]) + waveY + smokePrimaryNoiseY.value
+		const translateX = interpolate(progress, [0, 1], [-22, 18]) + waveX + smokePrimaryNoiseX.value
 
 		return {
 			transform: [
@@ -263,17 +321,16 @@ const PlayerScreen = () => {
 				{ translateX },
 				{ scale: 1.02 + Math.sin(progress * Math.PI * 2 + 0.6) * 0.05 },
 			],
-		};
-	});
+		}
+	})
 
 	const smokeSecondaryStyle = useAnimatedStyle(() => {
-		const progress = smokeSecondary.value;
-		const waveY = Math.sin(progress * Math.PI * 2 + smokePhases.secondary.y) * 14;
-		const waveX = Math.cos(progress * Math.PI * 2 + smokePhases.secondary.x) * 12;
+		const progress = smokeSecondary.value
+		const waveY = Math.sin(progress * Math.PI * 2 + smokePhases.secondary.y) * 14
+		const waveX = Math.cos(progress * Math.PI * 2 + smokePhases.secondary.x) * 12
 		const translateY =
-			interpolate(progress, [0, 1], [160, -220]) + waveY + smokeSecondaryNoiseY.value;
-		const translateX =
-			interpolate(progress, [0, 1], [16, -20]) + waveX + smokeSecondaryNoiseX.value;
+			interpolate(progress, [0, 1], [160, -220]) + waveY + smokeSecondaryNoiseY.value
+		const translateX = interpolate(progress, [0, 1], [16, -20]) + waveX + smokeSecondaryNoiseX.value
 
 		return {
 			transform: [
@@ -281,16 +338,16 @@ const PlayerScreen = () => {
 				{ translateX },
 				{ scale: 1.08 + Math.sin(progress * Math.PI * 2 + 1.4) * 0.06 },
 			],
-		};
-	});
+		}
+	})
 
 	const smokeTertiaryStyle = useAnimatedStyle(() => {
-		const progress = smokeTertiary.value;
-		const waveY = Math.sin(progress * Math.PI * 2 + smokePhases.tertiary.y) * 16;
-		const waveX = Math.cos(progress * Math.PI * 2 + smokePhases.tertiary.x) * 10;
+		const progress = smokeTertiary.value
+		const waveY = Math.sin(progress * Math.PI * 2 + smokePhases.tertiary.y) * 16
+		const waveX = Math.cos(progress * Math.PI * 2 + smokePhases.tertiary.x) * 10
 		const translateY =
-			interpolate(progress, [0, 1], [120, -230]) + waveY + smokeTertiaryNoiseY.value;
-		const translateX = interpolate(progress, [0, 1], [8, -12]) + waveX + smokeTertiaryNoiseX.value;
+			interpolate(progress, [0, 1], [120, -230]) + waveY + smokeTertiaryNoiseY.value
+		const translateX = interpolate(progress, [0, 1], [8, -12]) + waveX + smokeTertiaryNoiseX.value
 
 		return {
 			transform: [
@@ -298,13 +355,13 @@ const PlayerScreen = () => {
 				{ translateX },
 				{ scale: 0.92 + Math.sin(progress * Math.PI * 2 + 0.2) * 0.05 },
 			],
-		};
-	});
+		}
+	})
 
 	const handleProgressLayout = useCallback((event: LayoutChangeEvent) => {
-		const { y, height } = event.nativeEvent.layout;
-		setSmokeOriginY(y + height / 2);
-	}, []);
+		const { y, height } = event.nativeEvent.layout
+		setSmokeOriginY(y + height / 2)
+	}, [])
 
 	const smokeOffsets = useMemo(
 		() => ({
@@ -313,14 +370,14 @@ const PlayerScreen = () => {
 			tertiary: smokeAnchorY - SMOKE_SIZES.small.height * 0.66,
 		}),
 		[smokeAnchorY],
-	);
+	)
 
 	if (!displayedTrack) {
 		return (
-			<View style={[defaultStyles.container, { justifyContent: "center" }]}>
+			<View style={[defaultStyles.container, { justifyContent: 'center' }]}>
 				<ActivityIndicator color={colors.icon} />
 			</View>
-		);
+		)
 	}
 
 	return (
@@ -349,12 +406,12 @@ const PlayerScreen = () => {
 			<LinearGradient style={{ flex: 1 }} colors={gradientColors}>
 				<LinearGradient
 					colors={[
-						withOpacity("#ffffff", theme === "dark" ? 0.12 : 0.3),
+						withOpacity('#ffffff', theme === 'dark' ? 0.12 : 0.3),
 						withOpacity(accentColor, 0.08),
-						withOpacity("#000000", theme === "dark" ? 0.48 : 0.26),
+						withOpacity('#000000', theme === 'dark' ? 0.48 : 0.26),
 					]}
 					locations={[0, 0.55, 1]}
-					style={[StyleSheet.absoluteFillObject, { pointerEvents: "none" }]}
+					style={[StyleSheet.absoluteFillObject, { pointerEvents: 'none' }]}
 				/>
 
 				<View style={themedStyles.overlayContainer}>
@@ -428,18 +485,27 @@ const PlayerScreen = () => {
 								.damping(18)}
 							style={themedStyles.artworkImageContainer}
 						>
-							<Image
-								source={{
-									uri: displayedTrack.artwork ?? unknownTrackImageUri,
-								}}
-								priority={"high"}
-								contentFit="cover"
-								style={themedStyles.artworkImage}
+							<GrayscaleArtworkLayer
+								uri={artworkUri}
+								filterId={`${artworkFilterBase}-backdrop`}
+								blur={18}
+								opacity={0.56}
+								style={themedStyles.artworkLayer}
 							/>
+
+							<View style={themedStyles.artworkColorOverlay} pointerEvents="none" />
+
+							<GrayscaleArtworkLayer
+								uri={artworkUri}
+								filterId={`${artworkFilterBase}-detail`}
+								opacity={0.6}
+								style={themedStyles.artworkLayer}
+							/>
+
 							<LinearGradient
 								colors={[
-									withOpacity("#ffffff", theme === "dark" ? 0.08 : 0.18),
-									withOpacity(backgroundColor, theme === "dark" ? 0.12 : 0.22),
+									withOpacity(backgroundColor, theme === 'dark' ? 0.22 : 0.28),
+									withOpacity(backgroundColor, theme === 'dark' ? 0.46 : 0.52),
 								]}
 								locations={[0, 1]}
 								style={themedStyles.artworkDimmer}
@@ -462,7 +528,7 @@ const PlayerScreen = () => {
 
 						<View style={themedStyles.panelWrapper}>
 							<BlurView
-								tint={theme === "dark" ? "dark" : "light"}
+								tint={theme === 'dark' ? 'dark' : 'light'}
 								intensity={0}
 								style={themedStyles.panelBlur}
 								pointerEvents="none"
@@ -486,27 +552,27 @@ const PlayerScreen = () => {
 				</View>
 			</LinearGradient>
 		</Animated.View>
-	);
-};
+	)
+}
 
 type DismissPlayerSymbolProps = {
-	accentColor: string;
-};
+	accentColor: string
+}
 
 const DismissPlayerSymbol = ({ accentColor }: DismissPlayerSymbolProps) => {
-	const { top } = useSafeAreaInsets();
-	const { theme } = useTheme();
-	const { colors } = useThemeStyles();
+	const { top } = useSafeAreaInsets()
+	const { theme } = useTheme()
+	const { colors } = useThemeStyles()
 
 	return (
 		<View
 			style={{
-				position: "absolute",
+				position: 'absolute',
 				top: top + 8,
 				left: 0,
 				right: 0,
-				flexDirection: "row",
-				justifyContent: "center",
+				flexDirection: 'row',
+				justifyContent: 'center',
 			}}
 		>
 			<View
@@ -518,28 +584,28 @@ const DismissPlayerSymbol = ({ accentColor }: DismissPlayerSymbolProps) => {
 					backgroundColor: withOpacity(accentColor, 0.7),
 					borderWidth: StyleSheet.hairlineWidth,
 					borderColor: withOpacity(colors.background, 0.3),
-					opacity: theme === "dark" ? 0.7 : 0.9,
+					opacity: theme === 'dark' ? 0.7 : 0.9,
 				}}
 			/>
 		</View>
-	);
-};
+	)
+}
 
 const styles = (
-	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
-	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"],
-	theme: ReturnType<typeof useTheme>["theme"],
+	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
+	utilsStyles: ReturnType<typeof useThemeStyles>['utilsStyles'],
+	theme: ReturnType<typeof useTheme>['theme'],
 	backgroundColor: string,
 	accentColor: string,
 ) =>
 	StyleSheet.create({
 		smokeContainer: {
 			...StyleSheet.absoluteFillObject,
-			overflow: "hidden",
+			overflow: 'hidden',
 			zIndex: 0,
 		},
 		smoke: {
-			position: "absolute",
+			position: 'absolute',
 			borderRadius: 400,
 		},
 		smokeLarge: {
@@ -561,28 +627,35 @@ const styles = (
 			...defaultStyles.container,
 			backgroundColor: withOpacity(backgroundColor, 0.55),
 			paddingHorizontal: screenPadding.horizontal,
-			position: "relative",
+			position: 'relative',
 		},
 		artworkImageContainer: {
+			position: 'relative',
 			shadowOffset: {
 				width: 0,
 				height: 12,
 			},
 			shadowOpacity: 0.32,
 			shadowRadius: 18,
-			flexDirection: "row",
-			justifyContent: "center",
-			height: "50%",
-		},
-		artworkImage: {
-			width: "100%",
-			height: "100%",
-			resizeMode: "cover",
+			flexDirection: 'row',
+			justifyContent: 'center',
+			height: '50%',
+			overflow: 'hidden',
 			borderRadius: 24,
+			backgroundColor: withOpacity(backgroundColor, theme === 'dark' ? 0.76 : 0.88),
 			borderWidth: StyleSheet.hairlineWidth,
-			borderColor: theme === "dark" ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.6)",
-			opacity: 0.82,
-			backgroundColor: withOpacity(accentColor, 0.12),
+			borderColor: withOpacity(accentColor, theme === 'dark' ? 0.32 : 0.28),
+		},
+		artworkLayer: {
+			...StyleSheet.absoluteFillObject,
+			borderRadius: 24,
+			backgroundColor: withOpacity(accentColor, 0.06),
+		},
+		artworkColorOverlay: {
+			...StyleSheet.absoluteFillObject,
+			borderRadius: 24,
+			backgroundColor: backgroundColor,
+			opacity: theme === 'dark' ? 0.26 : 0.32,
 		},
 		artworkDimmer: {
 			...StyleSheet.absoluteFillObject,
@@ -590,45 +663,45 @@ const styles = (
 		},
 		infoBlock: {
 			gap: 4,
-			alignItems: "center",
-			justifyContent: "flex-start",
-			flexDirection: "column",
-			width: "100%",
+			alignItems: 'center',
+			justifyContent: 'flex-start',
+			flexDirection: 'column',
+			width: '100%',
 			paddingHorizontal: 6,
 			paddingVertical: 10,
 			borderRadius: 18,
 			zIndex: 2,
-			backgroundColor: withOpacity(backgroundColor, theme === "dark" ? 0.42 : 0.82),
+			backgroundColor: withOpacity(backgroundColor, theme === 'dark' ? 0.42 : 0.82),
 			borderWidth: StyleSheet.hairlineWidth,
-			borderColor: withOpacity(accentColor, theme === "dark" ? 0.35 : 0.28),
+			borderColor: withOpacity(accentColor, theme === 'dark' ? 0.35 : 0.28),
 		},
 		trackTitleContainer: {
-			alignSelf: "stretch",
-			overflow: "hidden",
-			width: "100%",
+			alignSelf: 'stretch',
+			overflow: 'hidden',
+			width: '100%',
 			paddingHorizontal: 8,
 		},
 		trackTitleText: {
 			...defaultStyles.text,
 			fontSize: 22,
-			fontWeight: "700",
-			textAlign: "center",
+			fontWeight: '700',
+			textAlign: 'center',
 			lineHeight: 26,
 		},
 		trackArtistText: {
 			...defaultStyles.text,
 			fontSize: fontSize.base,
 			opacity: 0.7,
-			textAlign: "center",
-			maxWidth: "90%",
+			textAlign: 'center',
+			maxWidth: '90%',
 		},
 		panelWrapper: {
 			...utilsStyles.glassCard,
 			padding: 10,
 			borderRadius: 22,
-			overflow: "hidden",
-			backgroundColor: withOpacity(backgroundColor, theme === "dark" ? 0.38 : 0.78),
-			borderColor: withOpacity(accentColor, theme === "dark" ? 0.32 : 0.26),
+			overflow: 'hidden',
+			backgroundColor: withOpacity(backgroundColor, theme === 'dark' ? 0.38 : 0.78),
+			borderColor: withOpacity(accentColor, theme === 'dark' ? 0.32 : 0.26),
 		},
 		panelBlur: {
 			...StyleSheet.absoluteFillObject,
@@ -636,6 +709,6 @@ const styles = (
 		panelContent: {
 			rowGap: 10,
 		},
-	});
+	})
 
-export default PlayerScreen;
+export default PlayerScreen
