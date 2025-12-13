@@ -11,6 +11,7 @@ const DRAG_SCALE = 3;
 export const PlayerVolumeBar = ({ style }: ViewProps) => {
 	const { volume, updateVolume } = useTrackPlayerVolume();
 	const { colors } = useThemeStyles();
+	const accentColor = colors.primary;
 
 	const [value, setValue] = useState(volume ?? 0);
 	const [isSliding, setIsSliding] = useState(false);
@@ -69,7 +70,7 @@ export const PlayerVolumeBar = ({ style }: ViewProps) => {
 								value={value}
 								step={0}
 								tapToSeek={true}
-								minimumTrackTintColor={colors.minimumTrackTintColor}
+								minimumTrackTintColor={accentColor}
 								maximumTrackTintColor={colors.maximumTrackTintColor}
 								thumbTintColor="transparent"
 								onSlidingStart={handleSlidingStart}

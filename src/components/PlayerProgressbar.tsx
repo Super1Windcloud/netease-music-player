@@ -13,6 +13,7 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 	const { duration, position } = useProgress(250);
 	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
 	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
+	const accentColor = colors.primary;
 
 	const [scrubValue, setScrubValue] = useState<number | null>(null);
 	const [trackWidth, setTrackWidth] = useState(0);
@@ -44,7 +45,7 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 					style={[utilsStyles.slider, { width: "100%" }]}
 					minimumValue={0}
 					maximumValue={safeDuration}
-					minimumTrackTintColor={colors.minimumTrackTintColor}
+					minimumTrackTintColor={accentColor}
 					maximumTrackTintColor={colors.maximumTrackTintColor}
 					thumbTintColor="transparent"
 					step={0}
@@ -104,7 +105,7 @@ const styles = (
 			width: DOT_SIZE,
 			height: DOT_SIZE,
 			borderRadius: DOT_SIZE / 2,
-			backgroundColor: colors.minimumTrackTintColor,
+			backgroundColor: colors.primary,
 			shadowColor: "#000",
 			shadowOpacity: 0.15,
 			shadowRadius: 6,
