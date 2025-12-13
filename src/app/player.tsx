@@ -3,8 +3,8 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useMemo } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, { Easing, FadeIn, FadeOut, ZoomIn, ZoomOut } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MovingText } from "@/components/MovingText";
 import { PlayerControls } from "@/components/PlayerControls";
 import { PlayerProgressBar } from "@/components/PlayerProgressbar";
@@ -49,17 +49,37 @@ const PlayerScreen = () => {
 	return (
 		<Animated.View
 			style={{ flex: 1 }}
-			entering={FadeIn.duration(220)
-				.easing(Easing.bezier(0.15, 0.55, 0.25, 1))
-				.springify()
-				.damping(16)
-				.mass(0.9)}
-			exiting={FadeOut.duration(240)
-				.easing(Easing.bezier(0.45, 0, 0.75, 0.95))
-				.withInitialValues({ transform: [{ scale: 1.02 }] })
+			entering={FadeIn.duration(320)
+				.easing(Easing.bezier(0.18, 0.65, 0.16, 1))
+				.withInitialValues({
+					opacity: 0.35,
+					transform: [{ translateY: 42 }, { scale: 0.92 }],
+				})
 				.springify()
 				.damping(15)
-				.mass(0.8)}
+				.mass(0.9)
+				.stiffness(140)}
+			exiting={FadeOut.duration(260)
+				.easing(Easing.bezier(0.35, 0, 0.75, 0.82))
+				.withInitialValues({
+					opacity: 1,
+					transform: [{ translateY: 0 }, { scale: 1.02 }],
+				})
+				.springify()
+				.damping(18)
+				.mass(0.85)
+				.withInitialValues({
+					opacity: 1,
+					transform: [{ translateY: 0 }, { scale: 1 }],
+				})
+				.withCallback((finished, current) => {
+					return finished
+						? {
+								opacity: 0.4,
+								transform: [{ translateY: 48 }, { scale: 0.9 }],
+						  }
+						: current;
+				})}
 		>
 			<LinearGradient style={{ flex: 1 }} colors={gradientColors}>
 				<LinearGradient
@@ -190,36 +210,36 @@ const styles = (
 			borderWidth: StyleSheet.hairlineWidth,
 			borderColor: theme === "dark" ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.6)",
 		},
-	infoBlock: {
-		gap: 4,
-		alignItems: "center",
-		justifyContent: "flex-start",
-		flexDirection: "column",
-		width: "100%",
-		paddingHorizontal: 6,
-		paddingVertical: 10,
-		borderRadius: 18,
-		zIndex: 2,
-		backgroundColor: theme === "dark" ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.7)",
-	},
-	trackTitleContainer: {
-		alignSelf: "stretch",
-		overflow: "hidden",
-		width: "100%",
-		paddingHorizontal: 8,
-	},
-	trackTitleText: {
-		...defaultStyles.text,
-		fontSize: 22,
-		fontWeight: "700",
+		infoBlock: {
+			gap: 4,
+			alignItems: "center",
+			justifyContent: "flex-start",
+			flexDirection: "column",
+			width: "100%",
+			paddingHorizontal: 6,
+			paddingVertical: 10,
+			borderRadius: 18,
+			zIndex: 2,
+			backgroundColor: theme === "dark" ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.7)",
+		},
+		trackTitleContainer: {
+			alignSelf: "stretch",
+			overflow: "hidden",
+			width: "100%",
+			paddingHorizontal: 8,
+		},
+		trackTitleText: {
+			...defaultStyles.text,
+			fontSize: 22,
+			fontWeight: "700",
 			textAlign: "center",
 			lineHeight: 26,
 		},
-	trackArtistText: {
-		...defaultStyles.text,
-		fontSize: fontSize.base,
-		opacity: 0.7,
-		textAlign: "center",
+		trackArtistText: {
+			...defaultStyles.text,
+			fontSize: fontSize.base,
+			opacity: 0.7,
+			textAlign: "center",
 			maxWidth: "90%",
 		},
 		panel: {

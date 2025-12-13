@@ -1,7 +1,7 @@
 import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import { useEffect, useMemo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, type ViewProps } from "react-native";
 import Animated, {
@@ -9,6 +9,8 @@ import Animated, {
 	Easing,
 	useAnimatedStyle,
 	useSharedValue,
+	withSequence,
+	withSpring,
 	withRepeat,
 	withTiming,
 } from "react-native-reanimated";
@@ -24,10 +26,13 @@ import { MovingText } from "./MovingText";
 
 export const FloatingPlayer = ({ style }: ViewProps) => {
 	const router = useRouter();
+	const pathname = usePathname();
 	const { theme } = useTheme();
 	const { defaultStyles, utilsStyles } = useThemeStyles();
 	const { playing } = useIsPlaying();
 	const artworkRotation = useSharedValue(0);
+	const miniBounce = useSharedValue(1);
+	const translateY = useSharedValue(0);
 
 	useEffect(() => {
 		if (playing) {
@@ -46,8 +51,29 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 		};
 	}, [artworkRotation, playing]);
 
+	useEffect(() => {
+		if (!pathname) return;
+		if (pathname === "/player") {
+			miniBounce.value = withTiming(0.96, { duration: 160, easing: Easing.out(Easing.cubic) });
+			translateY.value = withTiming(6, { duration: 160, easing: Easing.out(Easing.cubic) });
+		} else {
+			miniBounce.value = withSequence(
+				withTiming(0.9, { duration: 120, easing: Easing.out(Easing.quad) }),
+				withSpring(1, { damping: 10, stiffness: 160, mass: 0.8 }),
+			);
+			translateY.value = withSequence(
+				withTiming(8, { duration: 120, easing: Easing.out(Easing.quad) }),
+				withSpring(0, { damping: 10, stiffness: 140, mass: 0.8 }),
+			);
+		}
+	}, [miniBounce, pathname, translateY]);
+
 	const artworkSpinStyle = useAnimatedStyle(() => ({
 		transform: [{ rotate: `${artworkRotation.value}deg` }],
+	}));
+
+	const bounceStyle = useAnimatedStyle(() => ({
+		transform: [{ scale: miniBounce.value }, { translateY: translateY.value }],
 	}));
 
 	const activeTrack = useActiveTrack();
@@ -142,51 +168,49 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
 	if (!displayedTrack) return null;
 
 	return (
-		<TouchableOpacity
-			onPress={handlePress}
-			activeOpacity={0.9}
-			style={[themedStyles.container, style]}
-		>
-			<LinearGradient
-				pointerEvents="none"
-				colors={containerGradient}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 1, y: 1 }}
-				style={themedStyles.gradientOverlay}
-			/>
-			<BlurView
-				tint={theme === "dark" ? "dark" : "light"}
-				intensity={60}
-				style={themedStyles.blurLayer}
-				pointerEvents="none"
-			/>
-
-			<Animated.View style={[themedStyles.artworkWrapper, artworkSpinStyle]}>
-				<Image
-					source={{
-						uri: displayedTrack.artwork ?? unknownTrackImageUri,
-					}}
-					contentFit="cover"
-					style={themedStyles.trackArtworkImage}
+		<Animated.View style={[style, bounceStyle]}>
+			<TouchableOpacity onPress={handlePress} activeOpacity={0.9} style={themedStyles.container}>
+				<LinearGradient
+					pointerEvents="none"
+					colors={containerGradient}
+					start={{ x: 0, y: 0 }}
+					end={{ x: 1, y: 1 }}
+					style={themedStyles.gradientOverlay}
 				/>
-			</Animated.View>
-
-			<View style={themedStyles.trackTitleContainer}>
-				<MovingText
-					style={themedStyles.trackTitle}
-					text={displayedTrack.title ?? ""}
-					animationThreshold={25}
-					direction="ltr"
+				<BlurView
+					tint={theme === "dark" ? "dark" : "light"}
+					intensity={60}
+					style={themedStyles.blurLayer}
+					pointerEvents="none"
 				/>
-				<Text numberOfLines={1} style={themedStyles.trackSubtitle}>
-					{displayedTrack.artist ?? ""}
-				</Text>
-			</View>
 
-			<View style={themedStyles.trackControlsContainer}>
-				<PlayPauseButton iconSize={24} style={themedStyles.transparentButton} />
-				<SkipToNextButton iconSize={22} style={themedStyles.transparentButton} />
-			</View>
-		</TouchableOpacity>
+				<Animated.View style={[themedStyles.artworkWrapper, artworkSpinStyle]}>
+					<Image
+						source={{
+							uri: displayedTrack.artwork ?? unknownTrackImageUri,
+						}}
+						contentFit="cover"
+						style={themedStyles.trackArtworkImage}
+					/>
+				</Animated.View>
+
+				<View style={themedStyles.trackTitleContainer}>
+					<MovingText
+						style={themedStyles.trackTitle}
+						text={displayedTrack.title ?? ""}
+						animationThreshold={25}
+						direction="ltr"
+					/>
+					<Text numberOfLines={1} style={themedStyles.trackSubtitle}>
+						{displayedTrack.artist ?? ""}
+					</Text>
+				</View>
+
+				<View style={themedStyles.trackControlsContainer}>
+					<PlayPauseButton iconSize={24} style={themedStyles.transparentButton} />
+					<SkipToNextButton iconSize={22} style={themedStyles.transparentButton} />
+				</View>
+			</TouchableOpacity>
+		</Animated.View>
 	);
 };

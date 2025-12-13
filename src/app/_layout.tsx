@@ -50,7 +50,7 @@ const RootNavigation = () => {
 					gestureEnabled: true,
 					gestureDirection: "vertical",
 					fullScreenGestureEnabled: true,
-					animationDuration: 300,
+					animationDuration: 500,
 					headerShown: false,
 				}}
 			/>
