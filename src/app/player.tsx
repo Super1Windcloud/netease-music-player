@@ -1,9 +1,8 @@
 import { BlurView } from 'expo-blur'
 import { LinearGradient } from 'expo-linear-gradient'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
 	ActivityIndicator,
-	type LayoutChangeEvent,
 	type StyleProp,
 	StyleSheet,
 	Text,
@@ -177,11 +176,11 @@ const PlayerScreen = () => {
 	)
 	const smokeGradientStops = useMemo(
 		() => ({
-			inner: withOpacity('#ffffff', theme === 'dark' ? 0.58 : 0.4),
-			mid: withOpacity('#ffffff', theme === 'dark' ? 0.26 : 0.2),
-			outer: withOpacity('#ffffff', 0),
+			inner: withOpacity('#ffffff', theme === 'dark' ? 0.62 : 0.48),
+			mid: withOpacity(backgroundColor, theme === 'dark' ? 0.35 : 0.3),
+			outer: withOpacity(backgroundColor, 0),
 		}),
-		[theme],
+		[backgroundColor, theme],
 	)
 	const artworkFilterBase = useMemo(() => {
 		const lengthMarker = (artworkUri?.length ?? 0).toString(16)
@@ -198,6 +197,8 @@ const PlayerScreen = () => {
 	const smokeSecondaryNoiseY = useSharedValue(0)
 	const smokeTertiaryNoiseX = useSharedValue(0)
 	const smokeTertiaryNoiseY = useSharedValue(0)
+	const overlayRef = useRef<View | null>(null)
+	const progressBarRef = useRef<View | null>(null)
 	const [smokeOriginY, setSmokeOriginY] = useState<number | null>(null)
 
 	useEffect(() => {
@@ -268,19 +269,19 @@ const PlayerScreen = () => {
 		const stopPrimaryNoise = startNoiseLoop(
 			smokePrimaryNoiseX,
 			smokePrimaryNoiseY,
-			{ x: 26, y: 34 },
+			{ x: 60, y: 38 },
 			2600,
 		)
 		const stopSecondaryNoise = startNoiseLoop(
 			smokeSecondaryNoiseX,
 			smokeSecondaryNoiseY,
-			{ x: 20, y: 26 },
+			{ x: 48, y: 30 },
 			2800,
 		)
 		const stopTertiaryNoise = startNoiseLoop(
 			smokeTertiaryNoiseX,
 			smokeTertiaryNoiseY,
-			{ x: 16, y: 22 },
+			{ x: 38, y: 26 },
 			2200,
 		)
 
@@ -311,9 +312,9 @@ const PlayerScreen = () => {
 	const smokePrimaryStyle = useAnimatedStyle(() => {
 		const progress = smokePrimary.value
 		const waveY = Math.sin(progress * Math.PI * 2 + smokePhases.primary.y) * 18
-		const waveX = Math.cos(progress * Math.PI * 2 + smokePhases.primary.x) * 16
-		const translateY = interpolate(progress, [0, 1], [130, -260]) + waveY + smokePrimaryNoiseY.value
-		const translateX = interpolate(progress, [0, 1], [-22, 18]) + waveX + smokePrimaryNoiseX.value
+		const waveX = Math.cos(progress * Math.PI * 2 + smokePhases.primary.x) * 34
+		const translateY = interpolate(progress, [0, 1], [24, -280]) + waveY + smokePrimaryNoiseY.value
+		const translateX = interpolate(progress, [0, 1], [-90, 90]) + waveX + smokePrimaryNoiseX.value
 
 		return {
 			transform: [
@@ -327,10 +328,11 @@ const PlayerScreen = () => {
 	const smokeSecondaryStyle = useAnimatedStyle(() => {
 		const progress = smokeSecondary.value
 		const waveY = Math.sin(progress * Math.PI * 2 + smokePhases.secondary.y) * 14
-		const waveX = Math.cos(progress * Math.PI * 2 + smokePhases.secondary.x) * 12
+		const waveX = Math.cos(progress * Math.PI * 2 + smokePhases.secondary.x) * 26
 		const translateY =
-			interpolate(progress, [0, 1], [160, -220]) + waveY + smokeSecondaryNoiseY.value
-		const translateX = interpolate(progress, [0, 1], [16, -20]) + waveX + smokeSecondaryNoiseX.value
+			interpolate(progress, [0, 1], [18, -240]) + waveY + smokeSecondaryNoiseY.value
+		const translateX =
+			interpolate(progress, [0, 1], [-70, 70]) + waveX + smokeSecondaryNoiseX.value
 
 		return {
 			transform: [
@@ -344,10 +346,11 @@ const PlayerScreen = () => {
 	const smokeTertiaryStyle = useAnimatedStyle(() => {
 		const progress = smokeTertiary.value
 		const waveY = Math.sin(progress * Math.PI * 2 + smokePhases.tertiary.y) * 16
-		const waveX = Math.cos(progress * Math.PI * 2 + smokePhases.tertiary.x) * 10
+		const waveX = Math.cos(progress * Math.PI * 2 + smokePhases.tertiary.x) * 20
 		const translateY =
-			interpolate(progress, [0, 1], [120, -230]) + waveY + smokeTertiaryNoiseY.value
-		const translateX = interpolate(progress, [0, 1], [8, -12]) + waveX + smokeTertiaryNoiseX.value
+			interpolate(progress, [0, 1], [16, -220]) + waveY + smokeTertiaryNoiseY.value
+		const translateX =
+			interpolate(progress, [0, 1], [-55, 55]) + waveX + smokeTertiaryNoiseX.value
 
 		return {
 			transform: [
@@ -358,16 +361,35 @@ const PlayerScreen = () => {
 		}
 	})
 
-	const handleProgressLayout = useCallback((event: LayoutChangeEvent) => {
-		const { y, height } = event.nativeEvent.layout
-		setSmokeOriginY(y + height / 2)
+	const updateSmokeOrigin = useCallback(() => {
+		if (!progressBarRef.current || !overlayRef.current) {
+			return
+		}
+
+		progressBarRef.current.measure((_, __, ___, height, ____, pageY) => {
+			overlayRef.current?.measure((_x1, _y1, _w1, _h1, _pageX1, overlayPageY) => {
+				if (overlayPageY == null || pageY == null || height == null) {
+					return
+				}
+
+				setSmokeOriginY(pageY - overlayPageY + height / 2)
+			})
+		})
 	}, [])
+
+	const handleProgressLayout = useCallback(() => {
+		updateSmokeOrigin()
+	}, [updateSmokeOrigin])
+
+	const handleOverlayLayout = useCallback(() => {
+		updateSmokeOrigin()
+	}, [updateSmokeOrigin])
 
 	const smokeOffsets = useMemo(
 		() => ({
-			primary: smokeAnchorY - SMOKE_SIZES.large.height * 0.72,
-			secondary: smokeAnchorY - SMOKE_SIZES.medium.height * 0.7,
-			tertiary: smokeAnchorY - SMOKE_SIZES.small.height * 0.66,
+			primary: smokeAnchorY - SMOKE_SIZES.large.height + 28,
+			secondary: smokeAnchorY - SMOKE_SIZES.medium.height + 22,
+			tertiary: smokeAnchorY - SMOKE_SIZES.small.height + 18,
 		}),
 		[smokeAnchorY],
 	)
@@ -414,7 +436,7 @@ const PlayerScreen = () => {
 					style={[StyleSheet.absoluteFillObject, { pointerEvents: 'none' }]}
 				/>
 
-				<View style={themedStyles.overlayContainer}>
+				<View ref={overlayRef} style={themedStyles.overlayContainer} onLayout={handleOverlayLayout}>
 					<View style={themedStyles.smokeContainer} pointerEvents="none">
 						<SmokeLayer
 							gradientId="smoke-primary"
@@ -489,7 +511,7 @@ const PlayerScreen = () => {
 								uri={artworkUri}
 								filterId={`${artworkFilterBase}-backdrop`}
 								blur={18}
-								opacity={0.56}
+								opacity={0.6}
 								style={themedStyles.artworkLayer}
 							/>
 
@@ -535,7 +557,7 @@ const PlayerScreen = () => {
 							/>
 
 							<View style={themedStyles.panelContent}>
-								<View onLayout={handleProgressLayout}>
+								<View ref={progressBarRef} onLayout={handleProgressLayout}>
 									<PlayerProgressBar />
 								</View>
 
@@ -602,26 +624,28 @@ const styles = (
 		smokeContainer: {
 			...StyleSheet.absoluteFillObject,
 			overflow: 'hidden',
-			zIndex: 0,
+			zIndex: 6,
 		},
 		smoke: {
 			position: 'absolute',
 			borderRadius: 400,
+			zIndex: 5,
+			pointerEvents: 'none',
 		},
 		smokeLarge: {
 			width: SMOKE_SIZES.large.width,
 			height: SMOKE_SIZES.large.height,
-			left: -80,
+			left: -140,
 		},
 		smokeMedium: {
 			width: SMOKE_SIZES.medium.width,
 			height: SMOKE_SIZES.medium.height,
-			right: -60,
+			right: -130,
 		},
 		smokeSmall: {
 			width: SMOKE_SIZES.small.width,
 			height: SMOKE_SIZES.small.height,
-			left: 40,
+			left: 90,
 		},
 		overlayContainer: {
 			...defaultStyles.container,
