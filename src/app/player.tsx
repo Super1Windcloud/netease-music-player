@@ -214,8 +214,7 @@ const PlayerScreen = () => {
 							<GrayscaleArtworkLayer
 								uri={artworkUri}
 								filterId={`${artworkFilterBase}-backdrop`}
-								blur={18}
-								opacity={0.55}
+								opacity={0.4}
 								style={themedStyles.artworkLayer}
 							/>
 
@@ -224,7 +223,7 @@ const PlayerScreen = () => {
 							<GrayscaleArtworkLayer
 								uri={artworkUri}
 								filterId={`${artworkFilterBase}-detail`}
-								opacity={0.78}
+								opacity={0.6}
 								style={themedStyles.artworkLayer}
 							/>
 
