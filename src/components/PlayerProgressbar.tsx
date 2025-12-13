@@ -6,10 +6,14 @@ import { formatSecondsToMinutes } from "@/helpers/miscellaneous";
 import TrackPlayer, { useProgress } from "@/lib/expo-track-player";
 import { useThemeStyles } from "@/styles";
 
-const DOT_SIZE = 10;
+const DOT_SIZE = 15;
 const DRAG_SCALE = 1.6;
 
-export const PlayerProgressBar = ({ style }: ViewProps) => {
+type PlayerProgressBarProps = ViewProps & {
+	onPositionChange?: (ratio: number) => void;
+};
+
+export const PlayerProgressBar = ({ style, onPositionChange }: PlayerProgressBarProps) => {
 	const { duration, position } = useProgress(250);
 	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
 	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
@@ -34,6 +38,13 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 	const safeDuration = duration > 0 ? duration : 1;
 	const progressValue = scrubValue ?? position;
 	const progressRatio = Math.min(1, Math.max(0, progressValue / safeDuration));
+
+	useEffect(() => {
+		if (!onPositionChange) {
+			return;
+		}
+		onPositionChange(progressRatio);
+	}, [onPositionChange, progressRatio]);
 
 	return (
 		<View style={style}>
@@ -65,7 +76,7 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 						setIsSliding(false);
 					}}
 				/>
-
+				{/*PositionDot*/}
 				{trackWidth > 0 && (
 					<View
 						pointerEvents="none"

@@ -1,15 +1,29 @@
+/** biome-ignore-all lint/correctness/noUnusedImports: <explanation> */
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
 	ActivityIndicator,
+	type LayoutChangeEvent,
 	type StyleProp,
 	StyleSheet,
 	Text,
 	View,
 	type ViewStyle,
 } from 'react-native'
-import Animated, { Easing, FadeIn, FadeOut, ZoomIn, ZoomOut } from 'react-native-reanimated'
+import Animated, {
+	Easing,
+	FadeIn,
+	FadeOut,
+	ZoomIn,
+	ZoomOut,
+	createAnimatedComponent,
+	useAnimatedProps,
+	useDerivedValue,
+	withRepeat,
+	withSequence,
+	withTiming,
+} from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Svg, {
 	Defs,
@@ -17,6 +31,11 @@ import Svg, {
 	FeGaussianBlur,
 	Filter,
 	Image as SvgImage,
+	LinearGradient as SvgLinearGradient,
+	Path,
+	RadialGradient,
+	Rect,
+	Stop,
 } from 'react-native-svg'
 import smokeGif from '@/assets/smoke.gif'
 import { MovingText } from '@/components/MovingText'
@@ -38,6 +57,10 @@ const GRAYSCALE_MATRIX =
 	'0.2126 0.7152 0.0722 0 0 ' +
 	'0.2126 0.7152 0.0722 0 0 ' +
 	'0 0 0 1 0'
+
+const AnimatedLinearGradient = createAnimatedComponent(SvgLinearGradient)
+const AnimatedRadialGradient = createAnimatedComponent(RadialGradient)
+const AnimatedPath = createAnimatedComponent(Path)
 
 type SmokeBackgroundProps = {
 	backgroundColor: string
@@ -94,7 +117,7 @@ const GrayscaleArtworkLayer = ({
 		height="100%"
 		viewBox="0 0 100 100"
 		preserveAspectRatio="xMidYMid slice"
-		style={[StyleSheet.absoluteFillObject, style, { opacity }]}
+		style={[StyleSheet.absoluteFillObject, { backgroundColor: 'transparent' }, style, { opacity }]}
 		pointerEvents="none"
 	>
 		<Defs>
@@ -114,6 +137,13 @@ const GrayscaleArtworkLayer = ({
 	</Svg>
 )
 
+type FlashlightOverlayProps = {
+	accentColor: string
+	progressRatio: number
+	artworkLayout: { width: number; height: number }
+}
+
+
 const PlayerScreen = () => {
 	const activeTrack = useActiveTrack()
 	const lastActiveTrack = useLastActiveTrack()
@@ -130,6 +160,8 @@ const PlayerScreen = () => {
 		() => styles(defaultStyles, utilsStyles, theme, backgroundColor, accentColor),
 		[accentColor, backgroundColor, defaultStyles, theme, utilsStyles],
 	)
+	const [progressRatio, setProgressRatio] = useState(0)
+	const [artworkLayout, setArtworkLayout] = useState({ width: 0, height: 0 })
 	const gradientColors = useMemo<readonly [string, string]>(
 		() => [withOpacity(backgroundColor, 0.35), withOpacity(backgroundColor, 0.98)],
 		[backgroundColor],
@@ -210,6 +242,10 @@ const PlayerScreen = () => {
 								.springify()
 								.damping(18)}
 							style={themedStyles.artworkImageContainer}
+							onLayout={(event: LayoutChangeEvent) => {
+								const { width, height } = event.nativeEvent.layout
+								setArtworkLayout({ width, height })
+							}}
 						>
 							<GrayscaleArtworkLayer
 								uri={artworkUri}
@@ -236,6 +272,8 @@ const PlayerScreen = () => {
 								style={themedStyles.artworkDimmer}
 								pointerEvents="none"
 							/>
+
+
 						</Animated.View>
 
 						<View style={themedStyles.infoBlock}>
@@ -256,7 +294,7 @@ const PlayerScreen = () => {
 
 							<View style={themedStyles.panelContent}>
 								<View>
-									<PlayerProgressBar />
+									<PlayerProgressBar onPositionChange={setProgressRatio} />
 								</View>
 
 								<PlayerControls style={{ marginTop: 10 }} />
@@ -281,7 +319,6 @@ type DismissPlayerSymbolProps = {
 
 const DismissPlayerSymbol = ({ accentColor }: DismissPlayerSymbolProps) => {
 	const { top } = useSafeAreaInsets()
-	const { theme } = useTheme()
 	const { colors } = useThemeStyles()
 
 	return (
@@ -301,10 +338,10 @@ const DismissPlayerSymbol = ({ accentColor }: DismissPlayerSymbolProps) => {
 					width: 50,
 					height: 6,
 					borderRadius: 10,
-					backgroundColor: withOpacity(accentColor, 0.7),
+					backgroundColor: withOpacity(accentColor, 0.9),
 					borderWidth: StyleSheet.hairlineWidth,
 					borderColor: withOpacity(colors.background, 0.3),
-					opacity: theme === 'dark' ? 0.7 : 0.9,
+					opacity: 0.9,
 				}}
 			/>
 		</View>
@@ -326,7 +363,7 @@ const styles = (
 		},
 		overlayContainer: {
 			...defaultStyles.container,
-			backgroundColor: withOpacity(backgroundColor, 0.55),
+			backgroundColor: backgroundColor,
 			paddingHorizontal: screenPadding.horizontal,
 			position: 'relative',
 		},
@@ -343,14 +380,14 @@ const styles = (
 			height: '50%',
 			overflow: 'hidden',
 			borderRadius: 24,
-			backgroundColor: withOpacity(backgroundColor, theme === 'dark' ? 0.76 : 0.88),
-			borderWidth: StyleSheet.hairlineWidth,
-			borderColor: withOpacity(accentColor, theme === 'dark' ? 0.32 : 0.28),
+			backgroundColor: backgroundColor,
+			borderWidth: 0,
+			borderColor: backgroundColor,
 		},
 		artworkLayer: {
 			...StyleSheet.absoluteFillObject,
 			borderRadius: 24,
-			backgroundColor: withOpacity(backgroundColor, 0.18),
+			backgroundColor: backgroundColor,
 		},
 		artworkColorOverlay: {
 			...StyleSheet.absoluteFillObject,
