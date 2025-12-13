@@ -14,7 +14,7 @@ export const PlayerVolumeBar = ({ style }: ViewProps) => {
 
 	const [value, setValue] = useState(volume ?? 0);
 	const [isSliding, setIsSliding] = useState(false);
-	const [trackWidth, setTrackWidth] = useState(0);
+	const [_trackWidth, setTrackWidth] = useState(0);
 	const sliderScaleY = useRef(new Animated.Value(1)).current;
 
 	useEffect(() => {
