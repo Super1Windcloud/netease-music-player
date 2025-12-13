@@ -67,19 +67,7 @@ const PlayerScreen = () => {
 				})
 				.springify()
 				.damping(18)
-				.mass(0.85)
-				.withInitialValues({
-					opacity: 1,
-					transform: [{ translateY: 0 }, { scale: 1 }],
-				})
-				.withCallback((finished, current) => {
-					return finished
-						? {
-								opacity: 0.4,
-								transform: [{ translateY: 48 }, { scale: 0.9 }],
-						  }
-						: current;
-				})}
+				.mass(0.85)}
 		>
 			<LinearGradient style={{ flex: 1 }} colors={gradientColors}>
 				<LinearGradient

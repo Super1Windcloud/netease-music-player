@@ -9,9 +9,9 @@ import Animated, {
 	Easing,
 	useAnimatedStyle,
 	useSharedValue,
+	withRepeat,
 	withSequence,
 	withSpring,
-	withRepeat,
 	withTiming,
 } from "react-native-reanimated";
 import { PlayPauseButton, SkipToNextButton } from "@/components/PlayerControls";
