@@ -1,24 +1,24 @@
-import Slider from "@react-native-community/slider";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Animated, StyleSheet, Text, View, type ViewProps } from "react-native";
-import { fontSize } from "@/constants/tokens";
-import { formatSecondsToMinutes } from "@/helpers/miscellaneous";
-import TrackPlayer, { useProgress } from "@/lib/expo-track-player";
-import { useThemeStyles } from "@/styles";
+import Slider from '@react-native-community/slider'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Animated, StyleSheet, Text, View, type ViewProps } from 'react-native'
+import { fontSize } from '@/constants/tokens'
+import { formatSecondsToMinutes } from '@/helpers/miscellaneous'
+import TrackPlayer, { useProgress } from '@/lib/expo-track-player'
+import { useThemeStyles } from '@/styles'
 
-const DOT_SIZE = 10;
-const DRAG_SCALE = 2;
+const DOT_SIZE = 10
+const DRAG_SCALE = 1.6
 
 export const PlayerProgressBar = ({ style }: ViewProps) => {
-	const { duration, position } = useProgress(250);
-	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
-	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles]);
-	const accentColor = colors.primary;
+	const { duration, position } = useProgress(250)
+	const { colors, defaultStyles, utilsStyles } = useThemeStyles()
+	const themedStyles = useMemo(() => styles(colors, defaultStyles), [colors, defaultStyles])
+	const accentColor = colors.primary
 
-	const [scrubValue, setScrubValue] = useState<number | null>(null);
-	const [trackWidth, setTrackWidth] = useState(0);
-	const [isSliding, setIsSliding] = useState(false);
-	const sliderScaleY = useRef(new Animated.Value(1)).current;
+	const [scrubValue, setScrubValue] = useState<number | null>(null)
+	const [trackWidth, setTrackWidth] = useState(0)
+	const [isSliding, setIsSliding] = useState(false)
+	const sliderScaleY = useRef(new Animated.Value(1)).current
 
 	useEffect(() => {
 		Animated.spring(sliderScaleY, {
@@ -26,14 +26,14 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 			useNativeDriver: true,
 			friction: 10,
 			tension: 80,
-		}).start();
-	}, [isSliding, sliderScaleY]);
+		}).start()
+	}, [isSliding, sliderScaleY])
 
-	const trackElapsedTime = formatSecondsToMinutes(position);
-	const trackTotalTime = formatSecondsToMinutes(duration);
-	const safeDuration = duration > 0 ? duration : 1;
-	const progressValue = scrubValue ?? position;
-	const progressRatio = Math.min(1, Math.max(0, progressValue / safeDuration));
+	const trackElapsedTime = formatSecondsToMinutes(position)
+	const trackTotalTime = formatSecondsToMinutes(duration)
+	const safeDuration = duration > 0 ? duration : 1
+	const progressValue = scrubValue ?? position
+	const progressRatio = Math.min(1, Math.max(0, progressValue / safeDuration))
 
 	return (
 		<View style={style}>
@@ -42,7 +42,7 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 				onLayout={(event) => setTrackWidth(event.nativeEvent.layout.width)}
 			>
 				<Slider
-					style={[utilsStyles.slider, { width: "100%" }]}
+					style={[utilsStyles.slider, { width: '100%' }]}
 					minimumValue={0}
 					maximumValue={safeDuration}
 					minimumTrackTintColor={accentColor}
@@ -52,17 +52,17 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 					tapToSeek
 					value={progressValue}
 					onSlidingStart={() => {
-						setIsSliding(true);
-						setScrubValue(position);
+						setIsSliding(true)
+						setScrubValue(position)
 					}}
 					onValueChange={(nextValue) => {
-						setScrubValue(nextValue);
+						setScrubValue(nextValue)
 					}}
 					onSlidingComplete={async (nextValue) => {
-						setScrubValue(nextValue);
-						await TrackPlayer.seekTo(nextValue);
-						setScrubValue(null);
-						setIsSliding(false);
+						setScrubValue(nextValue)
+						await TrackPlayer.seekTo(nextValue)
+						setScrubValue(null)
+						setIsSliding(false)
 					}}
 				/>
 
@@ -88,33 +88,33 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
 				<Text style={themedStyles.timeText}>{trackTotalTime}</Text>
 			</View>
 		</View>
-	);
-};
+	)
+}
 
 const styles = (
-	colors: ReturnType<typeof useThemeStyles>["colors"],
-	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
+	colors: ReturnType<typeof useThemeStyles>['colors'],
+	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
 ) =>
 	StyleSheet.create({
 		sliderContainer: {
-			position: "relative",
+			position: 'relative',
 		},
 		positionDot: {
-			position: "absolute",
+			position: 'absolute',
 			top: (7 - DOT_SIZE) / 2,
 			width: DOT_SIZE,
 			height: DOT_SIZE,
 			borderRadius: DOT_SIZE / 2,
 			backgroundColor: colors.primary,
-			shadowColor: "#000",
+			shadowColor: '#000',
 			shadowOpacity: 0.15,
 			shadowRadius: 6,
 			shadowOffset: { width: 0, height: 2 },
 		},
 		timeRow: {
-			flexDirection: "row",
-			justifyContent: "space-between",
-			alignItems: "baseline",
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			alignItems: 'baseline',
 			marginTop: 20,
 		},
 		timeText: {
@@ -123,6 +123,6 @@ const styles = (
 			opacity: 0.75,
 			fontSize: fontSize.xs,
 			letterSpacing: 0.7,
-			fontWeight: "500",
+			fontWeight: '500',
 		},
-	});
+	})

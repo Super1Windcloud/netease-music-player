@@ -121,21 +121,26 @@ const PlayerScreen = () => {
 							</Text>
 						</View>
 
-						<BlurView
-							tint={theme === 'dark' ? 'dark' : 'light'}
-							intensity={75}
-							style={themedStyles.panel}
-						>
-							<PlayerProgressBar />
+						<View style={themedStyles.panelWrapper}>
+							<BlurView
+								tint={theme === 'dark' ? 'dark' : 'light'}
+								intensity={0}
+								style={themedStyles.panelBlur}
+								pointerEvents="none"
+							/>
 
-							<PlayerControls style={{ marginTop: 10 }} />
+							<View style={themedStyles.panelContent}>
+								<PlayerProgressBar />
 
-							<PlayerVolumeBar style={{ marginTop: 15 }} />
+								<PlayerControls style={{ marginTop: 10 }} />
 
-							<View style={[utilsStyles.centeredRow, { marginTop: 10 }]}>
-								<PlayerRepeatToggle size={30} style={{ marginBottom: 4 }} />
+								<PlayerVolumeBar style={{ marginTop: 15 }} />
+
+								<View style={[utilsStyles.centeredRow, { marginTop: 10 }]}>
+									<PlayerRepeatToggle size={30} style={{ marginBottom: 4 }} />
+								</View>
 							</View>
-						</BlurView>
+						</View>
 					</View>
 				</View>
 			</LinearGradient>
@@ -245,12 +250,18 @@ const styles = (
 			textAlign: 'center',
 			maxWidth: '90%',
 		},
-		panel: {
+		panelWrapper: {
 			...utilsStyles.glassCard,
 			padding: 10,
 			borderRadius: 22,
-			backgroundColor: withOpacity(backgroundColor, theme === 'dark' ? 0.35 : 0.76),
+			overflow: 'hidden',
+			backgroundColor: withOpacity(backgroundColor, theme === 'dark' ? 0.38 : 0.78),
 			borderColor: withOpacity(accentColor, theme === 'dark' ? 0.32 : 0.26),
+		},
+		panelBlur: {
+			...StyleSheet.absoluteFillObject,
+		},
+		panelContent: {
 			rowGap: 10,
 		},
 	})
