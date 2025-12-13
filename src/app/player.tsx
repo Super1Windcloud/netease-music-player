@@ -1,49 +1,52 @@
-import { BlurView } from "expo-blur";
-import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
-import { useMemo } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import Animated, { Easing, FadeIn, FadeOut, ZoomIn, ZoomOut } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MovingText } from "@/components/MovingText";
-import { PlayerControls } from "@/components/PlayerControls";
-import { PlayerProgressBar } from "@/components/PlayerProgressbar";
-import { PlayerRepeatToggle } from "@/components/PlayerRepeatToggle";
-import { PlayerVolumeBar } from "@/components/PlayerVolumeBar";
-import { unknownTrackImageUri } from "@/constants/images";
-import { fontSize, screenPadding } from "@/constants/tokens";
-import { useLastActiveTrack } from "@/hooks/useLastActiveTrack";
-import { usePlayerBackground } from "@/hooks/usePlayerBackground";
-import { useTheme } from "@/hooks/useTheme";
-import { useActiveTrack } from "@/lib/expo-track-player";
-import { useThemeStyles } from "@/styles";
+import { BlurView } from 'expo-blur'
+import { Image } from 'expo-image'
+import { LinearGradient } from 'expo-linear-gradient'
+import { useMemo } from 'react'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import Animated, { Easing, FadeIn, FadeOut, ZoomIn, ZoomOut } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { MovingText } from '@/components/MovingText'
+import { PlayerControls } from '@/components/PlayerControls'
+import { PlayerProgressBar } from '@/components/PlayerProgressbar'
+import { PlayerRepeatToggle } from '@/components/PlayerRepeatToggle'
+import { PlayerVolumeBar } from '@/components/PlayerVolumeBar'
+import { unknownTrackImageUri } from '@/constants/images'
+import { fontSize, screenPadding } from '@/constants/tokens'
+import { withOpacity } from '@/helpers/colors'
+import { useLastActiveTrack } from '@/hooks/useLastActiveTrack'
+import { usePlayerBackground } from '@/hooks/usePlayerBackground'
+import { useTheme } from '@/hooks/useTheme'
+import { useActiveTrack } from '@/lib/expo-track-player'
+import { useThemeStyles } from '@/styles'
 
 const PlayerScreen = () => {
-	const activeTrack = useActiveTrack();
-	const lastActiveTrack = useLastActiveTrack();
-	const displayedTrack = activeTrack ?? lastActiveTrack;
-	const { imageColors } = usePlayerBackground(displayedTrack?.artwork ?? unknownTrackImageUri);
-	const { theme } = useTheme();
-	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
-	const trackTitle = displayedTrack?.title?.trim() || "Unknown Title";
-	const artistName = displayedTrack?.artist?.trim() || "Unknown Artist";
+	const activeTrack = useActiveTrack()
+	const lastActiveTrack = useLastActiveTrack()
+	const displayedTrack = activeTrack ?? lastActiveTrack
+	const { imageColors } = usePlayerBackground(displayedTrack?.artwork ?? unknownTrackImageUri)
+	const { theme } = useTheme()
+	const { colors, defaultStyles, utilsStyles } = useThemeStyles()
+	const backgroundColor = imageColors?.background ?? colors.background
+	const accentColor = imageColors?.primary ?? colors.primary
+	const trackTitle = displayedTrack?.title?.trim() || 'Unknown Title'
+	const artistName = displayedTrack?.artist?.trim() || 'Unknown Artist'
 	const themedStyles = useMemo(
-		() => styles(defaultStyles, utilsStyles, theme),
-		[defaultStyles, theme, utilsStyles],
-	);
+		() => styles(defaultStyles, utilsStyles, theme, backgroundColor, accentColor),
+		[accentColor, backgroundColor, defaultStyles, theme, utilsStyles],
+	)
 	const gradientColors = useMemo<readonly [string, string]>(
-		() => [imageColors?.background ?? colors.background, imageColors?.primary ?? colors.primary],
-		[colors.background, colors.primary, imageColors?.background, imageColors?.primary],
-	);
+		() => [backgroundColor, accentColor],
+		[accentColor, backgroundColor],
+	)
 
-	const { top, bottom } = useSafeAreaInsets();
+	const { top, bottom } = useSafeAreaInsets()
 
 	if (!displayedTrack) {
 		return (
-			<View style={[defaultStyles.container, { justifyContent: "center" }]}>
+			<View style={[defaultStyles.container, { justifyContent: 'center' }]}>
 				<ActivityIndicator color={colors.icon} />
 			</View>
-		);
+		)
 	}
 
 	return (
@@ -72,15 +75,15 @@ const PlayerScreen = () => {
 			<LinearGradient style={{ flex: 1 }} colors={gradientColors}>
 				<LinearGradient
 					colors={
-						theme === "dark"
-							? ["rgba(5, 9, 16, 0.65)", "rgba(5, 9, 16, 0.15)"]
-							: ["rgba(255,255,255,0.65)", "rgba(255,255,255,0.2)"]
+						theme === 'dark'
+							? ['rgba(5, 9, 16, 0.65)', 'rgba(5, 9, 16, 0.15)']
+							: ['rgba(255,255,255,0.65)', 'rgba(255,255,255,0.2)']
 					}
 					style={StyleSheet.absoluteFillObject}
 				/>
 
 				<View style={themedStyles.overlayContainer}>
-					<DismissPlayerSymbol />
+					<DismissPlayerSymbol accentColor={accentColor} />
 
 					<View style={{ flex: 1, marginTop: top + 36, marginBottom: bottom + 10, gap: 20 }}>
 						<Animated.View
@@ -99,7 +102,7 @@ const PlayerScreen = () => {
 								source={{
 									uri: displayedTrack.artwork ?? unknownTrackImageUri,
 								}}
-								priority={"high"}
+								priority={'high'}
 								contentFit="cover"
 								style={themedStyles.artworkImage}
 							/>
@@ -119,7 +122,7 @@ const PlayerScreen = () => {
 						</View>
 
 						<BlurView
-							tint={theme === "dark" ? "dark" : "light"}
+							tint={theme === 'dark' ? 'dark' : 'light'}
 							intensity={75}
 							style={themedStyles.panel}
 						>
@@ -137,22 +140,27 @@ const PlayerScreen = () => {
 				</View>
 			</LinearGradient>
 		</Animated.View>
-	);
-};
+	)
+}
 
-const DismissPlayerSymbol = () => {
-	const { top } = useSafeAreaInsets();
-	const { colors } = useThemeStyles();
+type DismissPlayerSymbolProps = {
+	accentColor: string
+}
+
+const DismissPlayerSymbol = ({ accentColor }: DismissPlayerSymbolProps) => {
+	const { top } = useSafeAreaInsets()
+	const { theme } = useTheme()
+	const { colors } = useThemeStyles()
 
 	return (
 		<View
 			style={{
-				position: "absolute",
+				position: 'absolute',
 				top: top + 8,
 				left: 0,
 				right: 0,
-				flexDirection: "row",
-				justifyContent: "center",
+				flexDirection: 'row',
+				justifyContent: 'center',
 			}}
 		>
 			<View
@@ -161,22 +169,27 @@ const DismissPlayerSymbol = () => {
 					width: 50,
 					height: 6,
 					borderRadius: 10,
-					backgroundColor: colors.text,
-					opacity: 0.2,
+					backgroundColor: withOpacity(accentColor, 0.7),
+					borderWidth: StyleSheet.hairlineWidth,
+					borderColor: withOpacity(colors.background, 0.3),
+					opacity: theme === 'dark' ? 0.7 : 0.9,
 				}}
 			/>
 		</View>
-	);
-};
+	)
+}
 
 const styles = (
-	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
-	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"],
-	theme: ReturnType<typeof useTheme>["theme"],
+	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
+	utilsStyles: ReturnType<typeof useThemeStyles>['utilsStyles'],
+	theme: ReturnType<typeof useTheme>['theme'],
+	backgroundColor: string,
+	accentColor: string,
 ) =>
 	StyleSheet.create({
 		overlayContainer: {
 			...defaultStyles.container,
+			backgroundColor,
 			paddingHorizontal: screenPadding.horizontal,
 		},
 		artworkImageContainer: {
@@ -186,57 +199,60 @@ const styles = (
 			},
 			shadowOpacity: 0.32,
 			shadowRadius: 18,
-			flexDirection: "row",
-			justifyContent: "center",
-			height: "50%",
+			flexDirection: 'row',
+			justifyContent: 'center',
+			height: '50%',
 		},
 		artworkImage: {
-			width: "100%",
-			height: "100%",
-			resizeMode: "cover",
+			width: '100%',
+			height: '100%',
+			resizeMode: 'cover',
 			borderRadius: 24,
 			borderWidth: StyleSheet.hairlineWidth,
-			borderColor: theme === "dark" ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.6)",
+			borderColor: theme === 'dark' ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.6)',
 		},
 		infoBlock: {
 			gap: 4,
-			alignItems: "center",
-			justifyContent: "flex-start",
-			flexDirection: "column",
-			width: "100%",
+			alignItems: 'center',
+			justifyContent: 'flex-start',
+			flexDirection: 'column',
+			width: '100%',
 			paddingHorizontal: 6,
 			paddingVertical: 10,
 			borderRadius: 18,
 			zIndex: 2,
-			backgroundColor: theme === "dark" ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.7)",
+			backgroundColor: withOpacity(backgroundColor, theme === 'dark' ? 0.42 : 0.82),
+			borderWidth: StyleSheet.hairlineWidth,
+			borderColor: withOpacity(accentColor, theme === 'dark' ? 0.35 : 0.28),
 		},
 		trackTitleContainer: {
-			alignSelf: "stretch",
-			overflow: "hidden",
-			width: "100%",
+			alignSelf: 'stretch',
+			overflow: 'hidden',
+			width: '100%',
 			paddingHorizontal: 8,
 		},
 		trackTitleText: {
 			...defaultStyles.text,
 			fontSize: 22,
-			fontWeight: "700",
-			textAlign: "center",
+			fontWeight: '700',
+			textAlign: 'center',
 			lineHeight: 26,
 		},
 		trackArtistText: {
 			...defaultStyles.text,
 			fontSize: fontSize.base,
 			opacity: 0.7,
-			textAlign: "center",
-			maxWidth: "90%",
+			textAlign: 'center',
+			maxWidth: '90%',
 		},
 		panel: {
 			...utilsStyles.glassCard,
 			padding: 10,
 			borderRadius: 22,
-			backgroundColor: theme === "dark" ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.7)",
+			backgroundColor: withOpacity(backgroundColor, theme === 'dark' ? 0.35 : 0.76),
+			borderColor: withOpacity(accentColor, theme === 'dark' ? 0.32 : 0.26),
 			rowGap: 10,
 		},
-	});
+	})
 
-export default PlayerScreen;
+export default PlayerScreen
