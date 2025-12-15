@@ -1,15 +1,29 @@
 # NeteaseCloud Music Player
 
-A native music player application built with Expo, React Native, Typescript and Zustand. Design is inspired by Apple Music app And NeteaseCloud Music.
+A NetEase- and Apple Music-inspired player built with Expo Router, React Native, and Zustand. Streams from MusicAPI with polished visuals and a feature-rich Now Playing experience.
 
-## Installation
+## Features
+- Home feed with tailored picks, favorites, and recently played sections powered by MusicAPI, plus quick queue actions.
+- Fullscreen player with animated/blurred artwork backdrops, progress + volume bars, repeat toggle, and marquee titles.
+- Library tab backed by bundled tracks in `assets/data/library.json`, including fuzzy search and remote search fallback.
+- Explore tab that searches Apple Music previews, trending chips, curated mood queues, and “surprise me” shortcuts.
+- Multilingual UI (English/中文), theme + accent picker (system/light/dark; Apple pink, ocean blue, mint, sunset).
+- Zustand-driven queue and preferences; resumes your last active track and keeps playback in sync across tabs.
 
-```bash
-npm  install
-```
+## Screenshots
+![Home and feed](img/1.png)
+![Search and explore](img/2.png)
+![Player](img/3.png)
 
-## Run Start
+## Getting started
+1. Install dependencies: `npm install`
+2. Start Expo (choose web, Android, or iOS simulator/device): `npm start`
+3. Optional scripts: `npm run android`, `npm run ios`, `npm run startc` (clear cache), `npm run type-check`, `npm run fix` (Biome format/lint)
 
-```bash
-npm start
-```
+Set `EXPO_PUBLIC_API_BASE_URL` if you want MusicAPI calls to target a different backend.
+
+## Project structure
+- `src/app`: Expo Router entry + tab screens (Home, Music library, Explore, Settings) and the `player` route.
+- `src/components`: Reusable UI parts (controls, lists, overlays).
+- `src/hooks`, `src/store`: Playback/library state, queue, preferences, and theming powered by Zustand hooks.
+- `assets`: Images/fonts and the sample library used for offline-friendly playback.
