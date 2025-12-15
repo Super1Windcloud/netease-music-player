@@ -18,7 +18,7 @@ A NetEase- and Apple Music-inspired player built with Expo Router, React Native,
   </tr>
   <tr>
     <td><img src="img/3.png" alt="Player" width="100%"></td>
-    <td><img src="img/netease.png" alt="Branding" width="100%"></td>
+    <td><img src="img/4.png" alt="Branding" width="100%"></td>
   </tr>
 </table>
 
