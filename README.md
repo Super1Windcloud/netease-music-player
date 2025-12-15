@@ -11,9 +11,16 @@ A NetEase- and Apple Music-inspired player built with Expo Router, React Native,
 - Zustand-driven queue and preferences; resumes your last active track and keeps playback in sync across tabs.
 
 ## Screenshots
-![Home and feed](img/1.png)
-![Search and explore](img/2.png)
-![Player](img/3.png)
+<table>
+  <tr>
+    <td><img src="img/1.png" alt="Home and feed" width="100%"></td>
+    <td><img src="img/2.png" alt="Search and explore" width="100%"></td>
+  </tr>
+  <tr>
+    <td><img src="img/3.png" alt="Player" width="100%"></td>
+    <td><img src="img/netease.png" alt="Branding" width="100%"></td>
+  </tr>
+</table>
 
 ## Getting started
 1. Install dependencies: `npm install`
