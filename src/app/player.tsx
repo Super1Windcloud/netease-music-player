@@ -1,13 +1,7 @@
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import {
-	ActivityIndicator,
-	type LayoutChangeEvent,
-	StyleSheet,
-	Text,
-	View,
-} from 'react-native'
+import { ActivityIndicator, type LayoutChangeEvent, StyleSheet, Text, View } from 'react-native'
 import Animated, {
 	createAnimatedComponent,
 	Easing,
@@ -376,7 +370,6 @@ const PlayerScreen = () => {
 										contentFit="cover"
 										transition={240}
 										blurRadius={18}
-
 									/>
 									<Image
 										source={{ uri: artworkUri }}
@@ -447,12 +440,12 @@ const PlayerScreen = () => {
 						</View>
 					</View>
 
-					{/*<FlashlightOverlay*/}
-					{/*	accentColor={accentColor}*/}
-					{/*	progressRatio={progressRatio}*/}
-					{/*	containerLayout={containerLayout}*/}
-					{/*	progressLayout={progressLayout}*/}
-					{/*/>*/}
+					<FlashlightOverlay
+						accentColor={accentColor}
+						progressRatio={progressRatio}
+						containerLayout={containerLayout}
+						progressLayout={progressLayout}
+					/>
 				</View>
 			</LinearGradient>
 		</Animated.View>
