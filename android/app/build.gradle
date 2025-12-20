@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.music.player'
+    namespace 'com.netease.music'
     defaultConfig {
-        applicationId 'com.music.player'
+        applicationId 'com.netease.music'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -129,6 +129,12 @@ android {
     }
     androidResources {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "NetEaseMusic_${variant.name}_${variant.versionName}.apk"
+        }
     }
 }
 
