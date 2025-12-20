@@ -1,28 +1,28 @@
-import { Image } from 'expo-image'
-import { LinearGradient } from 'expo-linear-gradient'
-import { useMemo } from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
-import Animated, { Easing, FadeIn, FadeOut, ZoomIn, ZoomOut } from 'react-native-reanimated'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import smokeGif from '@/assets/smoke.gif'
-import smokeGif2 from  '@/assets/spotlight1.jpg'
-import { MovingText } from '@/components/MovingText'
-import { PlayerControls } from '@/components/PlayerControls'
-import { PlayerProgressBar } from '@/components/PlayerProgressbar'
-import { PlayerRepeatToggle } from '@/components/PlayerRepeatToggle'
-import { PlayerVolumeBar } from '@/components/PlayerVolumeBar'
-import { unknownTrackImageUri } from '@/constants/images'
-import { fontSize, screenPadding } from '@/constants/tokens'
-import { withOpacity } from '@/helpers/colors'
-import { useLastActiveTrack } from '@/hooks/useLastActiveTrack'
-import { usePlayerBackground } from '@/hooks/usePlayerBackground'
-import { useTheme } from '@/hooks/useTheme'
-import { useActiveTrack } from '@/lib/expo-track-player'
-import { useThemeStyles } from '@/styles'
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
+import { useMemo } from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import Animated, { Easing, FadeIn, FadeOut, ZoomIn, ZoomOut } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import smokeGif from "@/assets/smoke.gif";
+import smokeGif2 from "@/assets/spotlight1.jpg";
+import { MovingText } from "@/components/MovingText";
+import { PlayerControls } from "@/components/PlayerControls";
+import { PlayerProgressBar } from "@/components/PlayerProgressbar";
+import { PlayerRepeatToggle } from "@/components/PlayerRepeatToggle";
+import { PlayerVolumeBar } from "@/components/PlayerVolumeBar";
+import { unknownTrackImageUri } from "@/constants/images";
+import { fontSize, screenPadding } from "@/constants/tokens";
+import { withOpacity } from "@/helpers/colors";
+import { useLastActiveTrack } from "@/hooks/useLastActiveTrack";
+import { usePlayerBackground } from "@/hooks/usePlayerBackground";
+import { useTheme } from "@/hooks/useTheme";
+import { useActiveTrack } from "@/lib/expo-track-player";
+import { useThemeStyles } from "@/styles";
 
 type SmokeBackgroundProps = {
-	backgroundColor: string
-}
+	backgroundColor: string;
+};
 
 const SmokeBackground = ({ backgroundColor }: SmokeBackgroundProps) => (
 	<View style={StyleSheet.absoluteFill} pointerEvents="none">
@@ -45,7 +45,7 @@ const SmokeBackground = ({ backgroundColor }: SmokeBackgroundProps) => (
 			colors={[
 				withOpacity(backgroundColor, 0.12),
 				withOpacity(backgroundColor, 0.06),
-				withOpacity('#ffffff', 0),
+				withOpacity("#ffffff", 0),
 			]}
 			start={{ x: 0.5, y: 1 }}
 			end={{ x: 0.5, y: 0 }}
@@ -53,38 +53,38 @@ const SmokeBackground = ({ backgroundColor }: SmokeBackgroundProps) => (
 			style={StyleSheet.absoluteFillObject}
 		/>
 	</View>
-)
+);
 
 const PlayerScreen = () => {
-	const activeTrack = useActiveTrack()
-	const lastActiveTrack = useLastActiveTrack()
-	const displayedTrack = activeTrack ?? lastActiveTrack
-	const { imageColors } = usePlayerBackground(displayedTrack?.artwork ?? unknownTrackImageUri)
-	const { theme } = useTheme()
-	const { colors, defaultStyles, utilsStyles } = useThemeStyles()
-	const backgroundColor = imageColors?.background ?? colors.background
-	const accentColor = imageColors?.primary ?? colors.primary
-	const trackTitle = displayedTrack?.title?.trim() || 'Unknown Title'
-	const artistName = displayedTrack?.artist?.trim() || 'Unknown Artist'
-	const artworkUri = displayedTrack?.artwork ?? unknownTrackImageUri
-	const hasArtwork = Boolean(displayedTrack?.artwork)
+	const activeTrack = useActiveTrack();
+	const lastActiveTrack = useLastActiveTrack();
+	const displayedTrack = activeTrack ?? lastActiveTrack;
+	const { imageColors } = usePlayerBackground(displayedTrack?.artwork ?? unknownTrackImageUri);
+	const { theme } = useTheme();
+	const { colors, defaultStyles, utilsStyles } = useThemeStyles();
+	const backgroundColor = imageColors?.background ?? colors.background;
+	const accentColor = imageColors?.primary ?? colors.primary;
+	const trackTitle = displayedTrack?.title?.trim() || "Unknown Title";
+	const artistName = displayedTrack?.artist?.trim() || "Unknown Artist";
+	const artworkUri = displayedTrack?.artwork ?? unknownTrackImageUri;
+	const hasArtwork = Boolean(displayedTrack?.artwork);
 	const themedStyles = useMemo(
 		() => styles(defaultStyles, utilsStyles, theme, backgroundColor, accentColor, hasArtwork),
 		[accentColor, backgroundColor, defaultStyles, hasArtwork, theme, utilsStyles],
-	)
+	);
 	const gradientColors = useMemo<readonly [string, string]>(
 		() => [withOpacity(backgroundColor, 0.35), withOpacity(backgroundColor, 0.98)],
 		[backgroundColor],
-	)
+	);
 
-	const { top, bottom } = useSafeAreaInsets()
+	const { top, bottom } = useSafeAreaInsets();
 
 	if (!displayedTrack) {
 		return (
-			<View style={[defaultStyles.container, { justifyContent: 'center' }]}>
+			<View style={[defaultStyles.container, { justifyContent: "center" }]}>
 				<ActivityIndicator color={colors.icon} />
 			</View>
-		)
+		);
 	}
 
 	return (
@@ -113,12 +113,12 @@ const PlayerScreen = () => {
 			<LinearGradient style={{ flex: 1 }} colors={gradientColors}>
 				<LinearGradient
 					colors={[
-						withOpacity('#ffffff', theme === 'dark' ? 0.12 : 0.3),
+						withOpacity("#ffffff", theme === "dark" ? 0.12 : 0.3),
 						withOpacity(accentColor, 0.08),
-						withOpacity('#000000', theme === 'dark' ? 0.48 : 0.26),
+						withOpacity("#000000", theme === "dark" ? 0.48 : 0.26),
 					]}
 					locations={[0, 0.55, 1]}
-					style={[StyleSheet.absoluteFillObject, { pointerEvents: 'none' }]}
+					style={[StyleSheet.absoluteFillObject, { pointerEvents: "none" }]}
 				/>
 
 				<View style={themedStyles.overlayContainer}>
@@ -179,8 +179,8 @@ const PlayerScreen = () => {
 
 									<LinearGradient
 										colors={[
-											withOpacity(backgroundColor, theme === 'dark' ? 0.22 : 0.28),
-											withOpacity(backgroundColor, theme === 'dark' ? 0.46 : 0.52),
+											withOpacity(backgroundColor, theme === "dark" ? 0.22 : 0.28),
+											withOpacity(backgroundColor, theme === "dark" ? 0.46 : 0.52),
 										]}
 										locations={[0, 1]}
 										style={themedStyles.artworkDimmer}
@@ -229,26 +229,26 @@ const PlayerScreen = () => {
 				</View>
 			</LinearGradient>
 		</Animated.View>
-	)
-}
+	);
+};
 
 type DismissPlayerSymbolProps = {
-	accentColor: string
-}
+	accentColor: string;
+};
 
 const DismissPlayerSymbol = ({ accentColor }: DismissPlayerSymbolProps) => {
-	const { top } = useSafeAreaInsets()
-	const { colors } = useThemeStyles()
+	const { top } = useSafeAreaInsets();
+	const { colors } = useThemeStyles();
 
 	return (
 		<View
 			style={{
-				position: 'absolute',
+				position: "absolute",
 				top: top + 8,
 				left: 0,
 				right: 0,
-				flexDirection: 'row',
-				justifyContent: 'center',
+				flexDirection: "row",
+				justifyContent: "center",
 			}}
 		>
 			<View
@@ -264,13 +264,13 @@ const DismissPlayerSymbol = ({ accentColor }: DismissPlayerSymbolProps) => {
 				}}
 			/>
 		</View>
-	)
-}
+	);
+};
 
 const styles = (
-	defaultStyles: ReturnType<typeof useThemeStyles>['defaultStyles'],
-	utilsStyles: ReturnType<typeof useThemeStyles>['utilsStyles'],
-	theme: ReturnType<typeof useTheme>['theme'],
+	defaultStyles: ReturnType<typeof useThemeStyles>["defaultStyles"],
+	utilsStyles: ReturnType<typeof useThemeStyles>["utilsStyles"],
+	theme: ReturnType<typeof useTheme>["theme"],
 	backgroundColor: string,
 	accentColor: string,
 	hasArtwork: boolean,
@@ -278,31 +278,31 @@ const styles = (
 	StyleSheet.create({
 		smokeContainer: {
 			...StyleSheet.absoluteFillObject,
-			overflow: 'hidden',
+			overflow: "hidden",
 			zIndex: 0,
 		},
 		overlayContainer: {
 			...defaultStyles.container,
 			backgroundColor: backgroundColor,
 			paddingHorizontal: screenPadding.horizontal,
-			position: 'relative',
+			position: "relative",
 		},
 		artworkImageContainer: {
-			position: 'relative',
+			position: "relative",
 			shadowOffset: {
 				width: 0,
 				height: 12,
 			},
 			shadowOpacity: 0,
 			shadowRadius: 0,
-			flexDirection: 'row',
-			justifyContent: 'center',
-			height: '50%',
-			overflow: 'hidden',
+			flexDirection: "row",
+			justifyContent: "center",
+			height: "50%",
+			overflow: "hidden",
 			borderRadius: 24,
-			backgroundColor: hasArtwork ? backgroundColor : 'transparent',
+			backgroundColor: hasArtwork ? backgroundColor : "transparent",
 			borderWidth: 0,
-			borderColor: hasArtwork ? backgroundColor : 'transparent',
+			borderColor: hasArtwork ? backgroundColor : "transparent",
 		},
 		artworkLayer: {
 			...StyleSheet.absoluteFillObject,
@@ -336,46 +336,46 @@ const styles = (
 		},
 		infoBlock: {
 			gap: 4,
-			alignItems: 'center',
-			justifyContent: 'flex-start',
-			flexDirection: 'column',
-			width: '100%',
+			alignItems: "center",
+			justifyContent: "flex-start",
+			flexDirection: "column",
+			width: "100%",
 			paddingHorizontal: 6,
 			paddingVertical: 10,
 			borderRadius: 18,
 			zIndex: 2,
-			backgroundColor: 'transparent',
+			backgroundColor: "transparent",
 			borderWidth: 0,
-			borderColor: withOpacity(accentColor, theme === 'dark' ? 0.35 : 0.28),
+			borderColor: withOpacity(accentColor, theme === "dark" ? 0.35 : 0.28),
 		},
 		trackTitleContainer: {
-			alignSelf: 'stretch',
-			overflow: 'hidden',
-			width: '100%',
+			alignSelf: "stretch",
+			overflow: "hidden",
+			width: "100%",
 			paddingHorizontal: 8,
 		},
 		trackTitleText: {
 			...defaultStyles.text,
 			fontSize: 22,
-			fontWeight: '700',
-			textAlign: 'center',
+			fontWeight: "700",
+			textAlign: "center",
 			lineHeight: 26,
 		},
 		trackArtistText: {
 			...defaultStyles.text,
 			fontSize: fontSize.base,
 			opacity: 0.7,
-			textAlign: 'center',
-			maxWidth: '90%',
+			textAlign: "center",
+			maxWidth: "90%",
 		},
 		panelWrapper: {
 			...utilsStyles.glassCard,
 			padding: 10,
-			width: '100%',
+			width: "100%",
 			borderRadius: 22,
-			backgroundColor: 'transparent',
+			backgroundColor: "transparent",
 			borderWidth: 0,
-			borderColor: withOpacity(accentColor, theme === 'dark' ? 0.32 : 0.26),
+			borderColor: withOpacity(accentColor, theme === "dark" ? 0.32 : 0.26),
 		},
 		panelBlur: {
 			...StyleSheet.absoluteFillObject,
@@ -385,8 +385,8 @@ const styles = (
 		},
 		lightOverlay: {
 			...StyleSheet.absoluteFillObject,
-			alignItems: 'center',
-			justifyContent: 'center',
+			alignItems: "center",
+			justifyContent: "center",
 			zIndex: 2,
 		},
 		lightDimmer: {
@@ -395,11 +395,11 @@ const styles = (
 			zIndex: 1,
 		},
 		lightImage: {
-			width: '100%',
-			height: '100%',
+			width: "100%",
+			height: "100%",
 			opacity: 0.3,
 			zIndex: 2,
 		},
-	})
+	});
 
-export default PlayerScreen
+export default PlayerScreen;
